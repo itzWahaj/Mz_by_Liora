@@ -1,3 +1,5 @@
+export const runtime = "edge";
+
 import { revalidate } from "@/lib/shopify";
 import { NextRequest, NextResponse } from "next/server";
 

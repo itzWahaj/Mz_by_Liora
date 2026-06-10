@@ -1,3 +1,5 @@
+export const runtime = "edge";
+
 import Prose from "@/components/prose";
 import { getPage } from "@/lib/shopify";
 import { Metadata } from "next";
@@ -39,7 +41,7 @@ export default async function Page({ params }: { params: { page: string } }) {
             year: "numeric",
             month: "long",
             day: "numeric",
-          }
+          },
         ).format(new Date(page.updatedAt))}.`}
       </p>
     </>
