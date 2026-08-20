@@ -7,10 +7,12 @@ import Footer from "@/components/layout/footer";
 import { CartProvider } from "@/components/cart/cart-context";
 import LenisProvider from "@/components/providers/lenis-provider";
 import { ThemeProvider } from "@/components/providers/theme-provider";
+import SplashWrapper from "@/components/splash-wrapper";
 import { cookies } from "next/headers";
 import { getCart } from "@/lib/shopify";
 import { BRAND } from "@/lib/constants";
 import { getSiteUrl } from "@/lib/utils";
+import Script from "next/script";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -89,14 +91,23 @@ export default async function RootLayout({
       </head>
       <body className={`${inter.variable} ${display.variable} font-sans`}>
         <ThemeProvider>
-          <CartProvider cartPromise={cart}>
-            <LenisProvider>
-              <Navbar />
-              {children}
-              <Footer />
-            </LenisProvider>
-          </CartProvider>
+          <SplashWrapper>
+            <CartProvider cartPromise={cart}>
+              <LenisProvider>
+                <Navbar />
+                {children}
+                <Footer />
+              </LenisProvider>
+            </CartProvider>
+          </SplashWrapper>
         </ThemeProvider>
+        {process.env.NEXT_PUBLIC_KLAVIYO_PUBLIC_KEY ? (
+          <Script
+            id="klaviyo-js"
+            strategy="afterInteractive"
+            src={`https://static.klaviyo.com/onsite/js/klaviyo.js?company_id=${process.env.NEXT_PUBLIC_KLAVIYO_PUBLIC_KEY}`}
+          />
+        ) : null}
       </body>
     </html>
   );

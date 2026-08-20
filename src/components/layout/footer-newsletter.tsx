@@ -5,18 +5,33 @@ import { FormEvent, useState } from "react";
 
 type SubmitStatus = "idle" | "submitting" | "success" | "error";
 
+declare global {
+  interface Window {
+    _learnq?: Array<unknown>;
+  }
+}
+
 async function subscribeEmail(email: string): Promise<void> {
-  const response = await fetch("/api/newsletter", {
+  // Fire onsite tracking event (non-blocking, best-effort)
+  if (typeof window !== "undefined") {
+    window._learnq = window._learnq || [];
+    window._learnq.push(["identify", { $email: email }]);
+    window._learnq.push(["track", "Subscribed to Newsletter", { $email: email }]);
+  }
+
+  // Server-side subscription (profile create + list add via private API key)
+  const res = await fetch("/api/subscribe", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ email }),
   });
 
-  if (!response.ok) {
-    const data = (await response.json().catch(() => null)) as {
-      error?: string;
-    } | null;
-    throw new Error(data?.error || "Subscribe failed");
+  if (!res.ok) {
+    const data = await res.json().catch(() => null);
+    throw new Error(
+      (data as { error?: string } | null)?.error ||
+        "Could not subscribe. Please try again."
+    );
   }
 }
 
