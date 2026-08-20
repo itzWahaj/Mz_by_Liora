@@ -283,72 +283,150 @@ export default function SplashScreen({
           {/* ── Brand Logo ─────────────────────────────────────────────── */}
           <motion.div
             className="relative flex items-center justify-center"
-            initial={{ opacity: 0, scale: 0.7, y: 24 }}
-            animate={{ opacity: 1, scale: 1, y: 0 }}
-            transition={{ duration: 1.1, ease: [0.16, 1, 0.3, 1], delay: 0.15 }}
           >
-            {/* Ambient glow halo behind logo */}
+            {/* ── Deep glow pool that lives behind the logo ── */}
             <motion.div
-              className="absolute rounded-full pointer-events-none"
+              className="absolute pointer-events-none"
               style={{
-                width: "110%",
-                height: "55%",
-                bottom: "5%",
-                left: "-5%",
+                width: "90%",
+                height: "60%",
+                bottom: "-5%",
+                left: "5%",
                 background:
-                  "radial-gradient(ellipse, rgba(20,184,166,0.35) 0%, rgba(30,95,191,0.25) 40%, transparent 70%)",
-                filter: "blur(24px)",
+                  "radial-gradient(ellipse, rgba(20,184,166,0.5) 0%, rgba(30,95,191,0.3) 40%, transparent 70%)",
+                filter: "blur(32px)",
+                borderRadius: "50%",
               }}
               animate={{
-                opacity: [0.6, 1, 0.6],
-                scale: [1, 1.08, 1],
+                opacity: [0.5, 1, 0.5],
+                scaleX: [1, 1.12, 1],
+                scaleY: [1, 1.06, 1],
               }}
-              transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
+              transition={{ duration: 3.5, repeat: Infinity, ease: "easeInOut" }}
             />
 
-            {/* Sweeping shimmer line that travels across the logo */}
+            {/* ── Coral accent glow (top-right) ── */}
             <motion.div
-              className="absolute inset-0 pointer-events-none overflow-hidden"
-              style={{ borderRadius: 8 }}
-            >
-              <motion.div
-                style={{
-                  position: "absolute",
-                  top: 0,
-                  bottom: 0,
-                  width: "30%",
-                  background:
-                    "linear-gradient(90deg, transparent, rgba(255,255,255,0.18), transparent)",
-                  transform: "skewX(-12deg)",
-                }}
-                initial={{ left: "-35%" }}
-                animate={{ left: ["120%"] }}
-                transition={{
-                  delay: 1.2,
-                  duration: 1.1,
-                  ease: "easeInOut",
-                  repeat: Infinity,
-                  repeatDelay: 3.5,
-                }}
-              />
-            </motion.div>
-
-            {/* The actual logo — mix-blend-mode: screen removes the white bg */}
-            <Image
-              src="/logo_2.png"
-              alt="MZ by LIORA"
-              width={420}
-              height={280}
-              priority
-              draggable={false}
+              className="absolute pointer-events-none"
               style={{
-                mixBlendMode: "screen",
-                width: "clamp(260px, 38vw, 420px)",
-                height: "auto",
-                userSelect: "none",
-                filter: "brightness(1.08) saturate(1.15)",
+                width: "40%",
+                height: "40%",
+                top: "5%",
+                right: "5%",
+                background:
+                  "radial-gradient(circle, rgba(232,115,74,0.35) 0%, transparent 70%)",
+                filter: "blur(20px)",
               }}
+              animate={{ opacity: [0.3, 0.7, 0.3], scale: [1, 1.15, 1] }}
+              transition={{ duration: 4, repeat: Infinity, ease: "easeInOut", delay: 0.8 }}
             />
+
+            {/* ── Teal accent glow (bottom-left) ── */}
+            <motion.div
+              className="absolute pointer-events-none"
+              style={{
+                width: "35%",
+                height: "35%",
+                bottom: "10%",
+                left: "8%",
+                background:
+                  "radial-gradient(circle, rgba(45,212,191,0.4) 0%, transparent 70%)",
+                filter: "blur(18px)",
+              }}
+              animate={{ opacity: [0.4, 0.8, 0.4], scale: [1, 1.2, 1] }}
+              transition={{ duration: 3, repeat: Infinity, ease: "easeInOut", delay: 1.4 }}
+            />
+
+            {/* ── The transparent logo itself ── */}
+            <motion.div
+              initial={{ opacity: 0, scale: 0.65, y: 30, filter: "blur(12px)" }}
+              animate={{ opacity: 1, scale: 1, y: 0, filter: "blur(0px)" }}
+              transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1], delay: 0.2 }}
+            >
+              {/* Continuous slow float */}
+              <motion.div
+                animate={{ y: [0, -10, 0] }}
+                transition={{ duration: 4.5, repeat: Infinity, ease: "easeInOut" }}
+              >
+                {/* Colour-shifting drop shadow */}
+                <motion.div
+                  animate={{
+                    filter: [
+                      "drop-shadow(0 0 18px rgba(20,184,166,0.7)) drop-shadow(0 0 40px rgba(30,95,191,0.4))",
+                      "drop-shadow(0 0 28px rgba(45,212,191,0.9)) drop-shadow(0 0 60px rgba(20,184,166,0.5))",
+                      "drop-shadow(0 0 18px rgba(232,115,74,0.6)) drop-shadow(0 0 40px rgba(124,58,237,0.3))",
+                      "drop-shadow(0 0 18px rgba(20,184,166,0.7)) drop-shadow(0 0 40px rgba(30,95,191,0.4))",
+                    ],
+                  }}
+                  transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
+                >
+                  <Image
+                    src="/logo_transparent.png"
+                    alt="MZ by LIORA"
+                    width={1254}
+                    height={836}
+                    priority
+                    draggable={false}
+                    style={{
+                      width: "clamp(280px, 40vw, 460px)",
+                      height: "auto",
+                      userSelect: "none",
+                    }}
+                  />
+                </motion.div>
+
+                {/* ── Shimmer sweep across the logo ── */}
+                <div
+                  className="absolute inset-0 overflow-hidden pointer-events-none"
+                  style={{ borderRadius: 8 }}
+                >
+                  <motion.div
+                    style={{
+                      position: "absolute",
+                      top: 0,
+                      bottom: 0,
+                      width: "25%",
+                      background:
+                        "linear-gradient(90deg, transparent, rgba(255,255,255,0.22), transparent)",
+                      transform: "skewX(-15deg)",
+                    }}
+                    initial={{ left: "-30%" }}
+                    animate={{ left: "120%" }}
+                    transition={{
+                      delay: 1.4,
+                      duration: 0.9,
+                      ease: "easeInOut",
+                      repeat: Infinity,
+                      repeatDelay: 4,
+                    }}
+                  />
+                </div>
+
+                {/* ── Sparkle on the 4-pointed star in the logo ── */}
+                <motion.div
+                  className="absolute pointer-events-none"
+                  style={{
+                    top: "6%",
+                    right: "30%",
+                    width: 12,
+                    height: 12,
+                    borderRadius: "50%",
+                    background: "rgba(255,200,150,0.95)",
+                    boxShadow: "0 0 8px 4px rgba(232,115,74,0.8)",
+                  }}
+                  animate={{
+                    opacity: [0, 1, 0],
+                    scale: [0.5, 1.4, 0.5],
+                  }}
+                  transition={{
+                    duration: 1.5,
+                    repeat: Infinity,
+                    repeatDelay: 2.5,
+                    ease: "easeInOut",
+                  }}
+                />
+              </motion.div>
+            </motion.div>
           </motion.div>
 
           {/* Tagline */}
