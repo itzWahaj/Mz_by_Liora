@@ -82,8 +82,12 @@ export function useUpdateURL() {
   return (state: ProductState) => {
     const newParams = new URLSearchParams(window.location.search);
     Object.entries(state).forEach(([key, value]) => {
-      newParams.set(key, value);
+      if (value === undefined || value === null || value === "") {
+        newParams.delete(key);
+      } else {
+        newParams.set(key, value);
+      }
     });
-    router.push(`?${newParams.toString()}`, { scroll: false });
+    router.replace(`?${newParams.toString()}`, { scroll: false });
   };
 }

@@ -15,7 +15,10 @@ function GridItem(props: React.ComponentProps<"li">) {
   return (
     <li
       {...props}
-      className={clsx("aspect-square transition-opacity", props.className)}
+      className={clsx(
+        "relative aspect-square w-full min-w-0 transition-opacity",
+        props.className
+      )}
     >
       {props.children}
     </li>

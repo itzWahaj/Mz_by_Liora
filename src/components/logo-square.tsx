@@ -1,22 +1,26 @@
 import clsx from "clsx";
-import LogoIcon from "./icons/logo";
+import Image from "next/image";
 
 export default function LogoSquare({ size }: { size?: "sm" | undefined }) {
+  const px = size === "sm" ? 36 : 48;
+
   return (
     <div
       className={clsx(
-        "flex flex-none items-center justify-center border border-neutral-200 bg-white",
+        "relative flex flex-none items-center justify-center overflow-hidden rounded-full bg-white shadow-[0_0_0_1px_rgba(30,95,191,0.12)]",
         {
-          "h-[40px] w-[40px] rounded-xl": !size,
-          "h-[30px] w-[30px] rounded-lg": size === "sm",
+          "h-12 w-12": !size,
+          "h-9 w-9": size === "sm",
         }
       )}
     >
-      <LogoIcon
-        className={clsx({
-          "h-[16px] w-[16px]": !size,
-          "h-[10px] w-[10px]": size === "sm",
-        })}
+      <Image
+        src="/logo.png"
+        alt="MZ by LIORA"
+        width={px}
+        height={px}
+        className="h-full w-full object-contain p-0.5"
+        priority
       />
     </div>
   );

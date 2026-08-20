@@ -6,6 +6,10 @@ export function ensureStartWith(stringToCheck: string, startsWith: string) {
     : `${startsWith}${stringToCheck}`;
 }
 
+export function getSiteUrl() {
+  return (process.env.SITE_URL || "http://localhost:3000").replace(/\/$/, "");
+}
+
 export function createUrl(
   pathname: string,
   params: URLSearchParams | ReadonlyURLSearchParams

@@ -1,16 +1,24 @@
 "use client";
-import { usePathname, useSearchParams } from "next/navigation";
-import { ListItem } from ".";
-import { useEffect, useRef, useState } from "react";
+
 import { ChevronDownIcon } from "@heroicons/react/24/outline";
+import { usePathname, useSearchParams } from "next/navigation";
+import { useEffect, useRef, useState } from "react";
+import { ListItem } from ".";
 import { FilterItem } from "./item";
+
+function formatLabel(title: string) {
+  if (title.includes(" ") || title !== title.toLowerCase()) return title;
+  return title
+    .split("-")
+    .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
+    .join(" ");
+}
 
 export default function FilterItemDropDown({ list }: { list: ListItem[] }) {
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const [active, setActive] = useState("");
   const [openSelect, setOpenSelect] = useState(false);
-
   const ref = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -21,40 +29,49 @@ export default function FilterItemDropDown({ list }: { list: ListItem[] }) {
     };
 
     window.addEventListener("click", handleClickOutside);
-
     return () => window.removeEventListener("click", handleClickOutside);
   }, []);
 
   useEffect(() => {
+    let nextActive = "";
     list.forEach((listItem: ListItem) => {
       if (
         ("path" in listItem && pathname === listItem.path) ||
         ("slug" in listItem && searchParams.get("sort") === listItem.slug)
       ) {
-        setActive(listItem.title);
+        nextActive = listItem.title;
       }
     });
+    setActive(nextActive || list[0]?.title || "");
   }, [pathname, list, searchParams]);
 
   return (
     <div className="relative" ref={ref}>
-      <div
+      <button
+        type="button"
         onClick={() => setOpenSelect(!openSelect)}
-        className="flex w-full items-center justify-between rounded border border-black/30 px-4 py-2 text-sm dark:border-white/30"
+        aria-expanded={openSelect}
+        className="flex w-full items-center justify-between rounded-2xl border border-neutral-200 bg-white px-4 py-3 text-left text-sm font-medium text-brand shadow-sm transition-brand hover:border-brand-teal/40 dark:border-neutral-800 dark:bg-neutral-950 dark:text-white"
       >
-        {active}
-        <ChevronDownIcon className="h-4" />
-      </div>
-      {openSelect && (
+        <span className="line-clamp-1">{formatLabel(active)}</span>
+        <ChevronDownIcon
+          className={`h-4 w-4 shrink-0 text-brand-teal transition-transform ${
+            openSelect ? "rotate-180" : ""
+          }`}
+        />
+      </button>
+      {openSelect ? (
         <div
           onClick={() => setOpenSelect(false)}
-          className="absolute z-40 w-full rounded-b-md bg-white p-4 shadow-md dark:bg-black"
+          className="absolute z-40 mt-2 w-full overflow-hidden rounded-2xl border border-neutral-200 bg-white p-2 shadow-[0_20px_50px_rgba(15,23,42,0.18)] dark:border-neutral-800 dark:bg-neutral-950"
         >
-          {list.map((item: ListItem, i) => (
-            <FilterItem item={item} key={i} />
-          ))}
+          <ul className="space-y-1">
+            {list.map((item: ListItem, i) => (
+              <FilterItem item={item} key={i} />
+            ))}
+          </ul>
         </div>
-      )}
+      ) : null}
     </div>
   );
 }

@@ -9,9 +9,9 @@ async function CollectionList() {
   return <FilterList list={collections} title="Collections" />;
 }
 
-const skeleton = "mb-3 h-4 w-5/6 animate-pulse rounded";
-const activeAndTitles = "bg-neutral-800 dark:bg-neutral-300";
-const items = "bg-neutral-400 dark:bg-neutral-700";
+const skeleton = "mb-3 h-4 w-5/6 rounded skeleton-shimmer";
+const activeAndTitles = "opacity-90";
+const items = "opacity-60";
 
 export default function Collections() {
   return (

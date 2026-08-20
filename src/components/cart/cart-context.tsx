@@ -116,7 +116,10 @@ function createOrUpdateCartItem(
         id: product.id,
         handle: product.handle,
         title: product.title,
-        featuredImage: product.featuredImage,
+        featuredImage:
+          product.featuredImage?.url
+            ? product.featuredImage
+            : product.images[0] || product.featuredImage,
       },
     },
   };

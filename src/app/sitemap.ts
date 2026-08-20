@@ -1,6 +1,7 @@
 export const runtime = "edge";
 
 import { getCollections, getPages, getProducts } from "@/lib/shopify";
+import { getSiteUrl } from "@/lib/utils";
 import { MetadataRoute } from "next";
 
 type Route = {
@@ -8,11 +9,7 @@ type Route = {
   lastModified: string;
 };
 
-// const baseUrl = process.env.NEXT_PUBLIC_VERCEL_URL
-//   ? `https://${process.env.NEXT_PUBLIC_VERCEL_URL}`
-//   : "http://localhost:3000";
-
-const baseUrl = "https://demo-next-store.pages.dev/";
+const baseUrl = getSiteUrl();
 export const dynamic = "force-dynamic";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
@@ -25,21 +22,21 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     collections.map((collection) => ({
       url: `${baseUrl}${collection.path}`,
       lastModified: collection.updatedAt,
-    })),
+    }))
   );
 
   const productsPromise = getProducts({}).then((products) =>
     products.map((product) => ({
       url: `${baseUrl}/product/${product.handle}`,
       lastModified: product.updatedAt,
-    })),
+    }))
   );
 
   const pagesPromise = getPages().then((pages) =>
     pages.map((page) => ({
       url: `${baseUrl}/${page.handle}`,
       lastModified: page.updatedAt,
-    })),
+    }))
   );
 
   let fetchedRoutes: Route[] = [];

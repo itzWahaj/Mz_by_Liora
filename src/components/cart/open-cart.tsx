@@ -1,5 +1,6 @@
 import { ShoppingCartIcon } from "@heroicons/react/24/outline";
 import clsx from "clsx";
+import { AnimatePresence, motion } from "framer-motion";
 
 export default function OpenCart({
   className,
@@ -9,19 +10,28 @@ export default function OpenCart({
   quantity?: number;
 }) {
   return (
-    <div className="relative flex h-11 w-11 items-center justify-center rounded-md border border-neutral-200 text-black transition-colors dark:border-neutral-700 dark:text-white">
+    <div className="group relative flex h-11 w-11 items-center justify-center rounded-full border border-neutral-300/90 bg-white/80 text-black shadow-sm transition-brand hover:border-brand-teal/50 hover:bg-brand-gradient hover:text-white hover:shadow-[0_8px_20px_rgba(30,95,191,0.28)] dark:border-neutral-700 dark:bg-neutral-900/70 dark:text-white dark:hover:border-transparent">
       <ShoppingCartIcon
         className={clsx(
-          "h-4 transition-all ease-in-out hover:scale-110",
+          "h-4 transition-transform duration-300 ease-out group-hover:scale-110",
           className
         )}
       />
 
-      {quantity ? (
-        <div className="absolute right-0 top-0 -mr-2 -mt-2 h-4 w-4 rounded bg-blue-600 text-[11px] font-medium text-white">
-          {quantity}
-        </div>
-      ) : null}
+      <AnimatePresence>
+        {quantity ? (
+          <motion.div
+            key={quantity}
+            initial={{ scale: 0.3, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            exit={{ scale: 0.3, opacity: 0 }}
+            transition={{ type: "spring", damping: 14, stiffness: 360 }}
+            className="absolute right-0 top-0 -mr-2 -mt-2 grid h-4 min-w-4 place-content-center rounded-full bg-gradient-to-br from-brand-coral to-brand-purple-pink px-1 text-[10px] font-semibold leading-none text-white shadow-[0_4px_12px_rgba(232,115,74,0.45)]"
+          >
+            {quantity}
+          </motion.div>
+        ) : null}
+      </AnimatePresence>
     </div>
   );
 }

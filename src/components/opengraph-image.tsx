@@ -1,5 +1,5 @@
 import { ImageResponse } from "next/og";
-import LogoIcon from "./icons/logo";
+import { BRAND } from "@/lib/constants";
 
 export type Props = {
   title?: string;
@@ -8,35 +8,67 @@ export type Props = {
 export default async function OpengraphImage(
   props?: Props
 ): Promise<ImageResponse> {
-  const { title } = {
-    ...{
-      title: process.env.SITE_NAME,
-    },
-    ...props,
-  };
+  const title = props?.title || process.env.SITE_NAME || "MZ by LIORA";
 
   return new ImageResponse(
     (
-      <div tw="flex h-full w-full flex-col items-center justify-center bg-black">
-        <div tw="flex flex-none items-center justify-center border border-neutral-700 h-[160px] w-[160px] rounded-3xl">
-          <LogoIcon width="64" height="58" fill="white" />
+      <div
+        style={{
+          display: "flex",
+          height: "100%",
+          width: "100%",
+          flexDirection: "column",
+          alignItems: "center",
+          justifyContent: "center",
+          background: "linear-gradient(160deg, #0F172A 0%, #1a2744 100%)",
+          color: "#FAFAF9",
+        }}
+      >
+        <div
+          style={{
+            display: "flex",
+            height: 140,
+            width: 140,
+            alignItems: "center",
+            justifyContent: "center",
+            borderRadius: 999,
+            border: "3px solid #14B8A6",
+            background: "#FAFAF9",
+            color: "#0F172A",
+            fontSize: 42,
+            fontFamily: "Georgia, serif",
+            fontWeight: 700,
+            letterSpacing: 4,
+          }}
+        >
+          MZ
         </div>
-        <p tw="mt-12 text-6xl font-bold text-white">{title}</p>
+        <p
+          style={{
+            marginTop: 40,
+            fontSize: 56,
+            fontWeight: 700,
+            fontFamily: "Georgia, serif",
+          }}
+        >
+          {title}
+        </p>
+        <p
+          style={{
+            marginTop: 12,
+            fontSize: 20,
+            letterSpacing: 6,
+            textTransform: "uppercase",
+            color: "#14B8A6",
+          }}
+        >
+          {BRAND.tagline}
+        </p>
       </div>
     ),
     {
       width: 1200,
       height: 630,
-      fonts: [
-        {
-          name: "Inter",
-          data: await fetch(
-            new URL("../fonts/Inter-Bold.ttf", import.meta.url)
-          ).then((res) => res.arrayBuffer()),
-          style: "normal",
-          weight: 700,
-        },
-      ],
     }
   );
 }

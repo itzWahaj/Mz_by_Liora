@@ -1,8 +1,44 @@
+export const BRAND = {
+  tagline: "Care Beyond Standards",
+  description:
+    "Premium skincare formulated for purity, calm, and lasting radiance.",
+  metaDescription:
+    "Care Beyond Standards. Premium skincare and beauty by MZ by LIORA.",
+} as const;
+
 export const TAGS = {
   collections: "collections",
   products: "products",
   cart: "cart",
 };
+
+export const HOMEPAGE_COLLECTIONS = [
+  {
+    handle: "featured",
+    title: "Featured",
+    href: "/search/featured",
+  },
+  {
+    handle: "best-sellers",
+    title: "Best Sellers",
+    href: "/search/best-sellers",
+  },
+  {
+    handle: "moisturizers",
+    title: "Moisturizers",
+    href: "/search/moisturizers",
+  },
+  {
+    handle: "cleansers-soaps",
+    title: "Cleansers & Soaps",
+    href: "/search/cleansers-soaps",
+  },
+  {
+    handle: "face-oils",
+    title: "Face Oils",
+    href: "/search/face-oils",
+  },
+] as const;
 
 export type SortFilterItem = {
   title: string;

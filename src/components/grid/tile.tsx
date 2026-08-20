@@ -17,24 +17,31 @@ export function GridTileImage({
     position?: "bottom" | "center";
   };
 } & React.ComponentProps<typeof Image>) {
+  const { alt: imageAlt, fill, ...imageProps } = props;
+  const alt = typeof imageAlt === "string" ? imageAlt : "";
+
   return (
     <div
       className={clsx(
-        "group flex h-full w-full items-center justify-center overflow-hidden border bg-[rgb(235,235,235)] hover:border-blue-600 dark:bg-black",
+        "group relative flex h-full w-full items-center justify-center overflow-hidden rounded-2xl border bg-neutral-100 transition-brand hover:border-brand-teal dark:bg-black",
         {
-          relative: label,
-          "border-2 border-blue-600": active,
+          "border-2 border-brand-teal": active,
           "border-neutral-200 dark:border-neutral-800": !active,
         }
       )}
     >
       {props.src ? (
         <Image
-          className={clsx("relative h-full w-full object-contain", {
-            "transition duration-300 ease-in-out group-hover:scale-105":
-              isInteractive,
-          })}
-          {...props}
+          className={clsx(
+            fill ? "object-cover" : "relative h-full w-full object-contain",
+            {
+              "transition duration-[400ms] ease-out group-hover:scale-105 motion-reduce:transition-none motion-reduce:group-hover:scale-100":
+                isInteractive,
+            }
+          )}
+          alt={alt}
+          fill={fill}
+          {...imageProps}
         />
       ) : null}
       {label ? (

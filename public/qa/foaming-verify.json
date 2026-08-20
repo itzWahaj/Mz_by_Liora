@@ -1,0 +1,118 @@
+{
+  "title": "Foaming Clay Cleanser",
+  "url": "http://localhost:3000/product/foaming-clay-cleanser",
+  "thumbCount": 3,
+  "gallery": {
+    "transitions": [
+      {
+        "index": 0,
+        "midOpacityDuringTransition": "1",
+        "imgSrc": "/_next/image?url=https%3A%2F%2Fcdn.shopify.com%2Fs%2Ffiles%2F1%2F1014%2F8904%2F9909%2Ffiles%2Fa-deep-cleansing-foaming-f",
+        "activeBackgroundImage": "linear-gradient(135deg, rgb(30, 95, 191) 0%, rgb(20, 184, 166) 50%, rgb(45, 212, 191) 100%)",
+        "activeHasGradient": true,
+        "inactiveStyles": [
+          {
+            "j": 1,
+            "backgroundImage": "none",
+            "opacityClass": "group relative flex h-full w-full items-center justify-center overflow-hidden rounded-2xl border bg-neutral-100 transition-brand hover:border-brand-teal dark:bg-black border-neutral-200 dark:border-neutral-800"
+          },
+          {
+            "j": 2,
+            "backgroundImage": "none",
+            "opacityClass": "group relative flex h-full w-full items-center justify-center overflow-hidden rounded-2xl border bg-neutral-100 transition-brand hover:border-brand-teal dark:bg-black border-neutral-200 dark:border-neutral-800"
+          }
+        ]
+      },
+      {
+        "index": 1,
+        "midOpacityDuringTransition": "0.563155",
+        "imgSrc": "/_next/image?url=https%3A%2F%2Fcdn.shopify.com%2Fs%2Ffiles%2F1%2F1014%2F8904%2F9909%2Ffiles%2Fa-10-niacinamide-serum-tha",
+        "activeBackgroundImage": "linear-gradient(135deg, rgb(30, 95, 191) 0%, rgb(20, 184, 166) 50%, rgb(45, 212, 191) 100%)",
+        "activeHasGradient": true,
+        "inactiveStyles": [
+          {
+            "j": 0,
+            "backgroundImage": "none",
+            "opacityClass": "group relative flex h-full w-full items-center justify-center overflow-hidden rounded-2xl border bg-neutral-100 transition-brand hover:border-brand-teal dark:bg-black border-neutral-200 dark:border-neutral-800"
+          },
+          {
+            "j": 2,
+            "backgroundImage": "none",
+            "opacityClass": "group relative flex h-full w-full items-center justify-center overflow-hidden rounded-2xl border bg-neutral-100 transition-brand hover:border-brand-teal dark:bg-black border-neutral-200 dark:border-neutral-800"
+          }
+        ]
+      },
+      {
+        "index": 2,
+        "midOpacityDuringTransition": "0.387209",
+        "imgSrc": "/_next/image?url=https%3A%2F%2Fcdn.shopify.com%2Fs%2Ffiles%2F1%2F1014%2F8904%2F9909%2Ffiles%2Fgenerate-the-imagea-ccordi",
+        "activeBackgroundImage": "linear-gradient(135deg, rgb(30, 95, 191) 0%, rgb(20, 184, 166) 50%, rgb(45, 212, 191) 100%)",
+        "activeHasGradient": true,
+        "inactiveStyles": [
+          {
+            "j": 0,
+            "backgroundImage": "none",
+            "opacityClass": "group relative flex h-full w-full items-center justify-center overflow-hidden rounded-2xl border bg-neutral-100 transition-brand hover:border-brand-teal dark:bg-black border-neutral-200 dark:border-neutral-800"
+          },
+          {
+            "j": 1,
+            "backgroundImage": "none",
+            "opacityClass": "group relative flex h-full w-full items-center justify-center overflow-hidden rounded-2xl border bg-neutral-100 transition-brand hover:border-brand-teal dark:bg-black border-neutral-200 dark:border-neutral-800"
+          }
+        ]
+      }
+    ]
+  },
+  "optionLabel": "Size",
+  "optionCount": 2,
+  "variantsInitial": [
+    {
+      "text": "150ml",
+      "disabled": false,
+      "ariaDisabled": "false",
+      "hasIndicator": 0,
+      "opacity": "1",
+      "cursor": "pointer",
+      "className": "relative flex min-w-[48px] items-center justify-center rounded-full border bg-neutral-100 px-2 py-1 text-sm transition-brand dark:border-neutral-800 dark:bg-neutral-900 ring-1 ring-transparent hover:ring-brand-accent"
+    },
+    {
+      "text": "300ml",
+      "disabled": true,
+      "ariaDisabled": "true",
+      "hasIndicator": 0,
+      "opacity": "0.5",
+      "cursor": "not-allowed",
+      "className": "relative flex min-w-[48px] items-center justify-center rounded-full border bg-neutral-100 px-2 py-1 text-sm transition-brand dark:border-neutral-800 dark:bg-neutral-900 cursor-not-allowed border-neutral-300 bg-neutral-100/70 text-neutral-400 opacity-50 dark:border-neutral-700 dark:bg-neutral-900/50 dark:text-neutral-500"
+    }
+  ],
+  "after150": {
+    "indicator150": 1,
+    "indicatorBox150": {
+      "x": 851.328125,
+      "y": 381,
+      "width": 38.5,
+      "height": 2
+    }
+  },
+  "after300Attempt": {
+    "wasDisabled": true,
+    "indicator300": 0,
+    "box300": {
+      "x": 910.828125,
+      "y": 354,
+      "width": 59.96875,
+      "height": 30
+    },
+    "styles300": {
+      "opacity": "0.5",
+      "cursor": "not-allowed"
+    }
+  },
+  "slide": {
+    "note": "Only one available variant — cannot observe slide between two in-stock options",
+    "availableIdx": [
+      0
+    ]
+  },
+  "indicatorOnAvailable": 1
+}

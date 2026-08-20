@@ -1,8 +1,10 @@
 "use client";
 
 import { ProductOption, ProductVariant } from "@/lib/shopify/types";
-import { useProduct, useUpdateURL } from "./product-context";
 import clsx from "clsx";
+import { motion, useReducedMotion } from "framer-motion";
+import { useEffect, useRef } from "react";
+import { useProduct, useUpdateURL } from "./product-context";
 
 type Combination = {
   id: string;
@@ -19,13 +21,11 @@ export default function VariantSelector({
 }) {
   const { state, updateOption } = useProduct();
   const updateURL = useUpdateURL();
+  const reduceMotion = Boolean(useReducedMotion());
+  const didInit = useRef(false);
   const hasNoOptionsOrJustOneOption =
     !options.length ||
     (options.length === 1 && options[0]?.values.length === 1);
-
-  if (hasNoOptionsOrJustOneOption) {
-    return null;
-  }
 
   const combinations: Combination[] = variants.map((variant) => ({
     id: variant.id,
@@ -39,64 +39,133 @@ export default function VariantSelector({
     ),
   }));
 
-  return options.map((option) => (
-    <form key={option.id}>
-      <dl className="mb-8">
-        <dt className="mb-4 text-sm uppercase tracking-wide">{option.name}</dt>
-        <dd className="flex flex-wrap gap-3">
-          {option.values.map((value) => {
-            const optionNameLowerCase = option.name.toLowerCase();
+  useEffect(() => {
+    if (didInit.current || hasNoOptionsOrJustOneOption) return;
+    didInit.current = true;
 
-            // Base option params on current selectedOptions so we can preserve any other param state
+    const available = combinations.find((item) => item.availableForSale);
+    if (!available) return;
+
+    let next = { ...state };
+    let changed = false;
+    for (const option of options) {
+      const key = option.name.toLowerCase();
+      if (next[key]) continue;
+      const value = available[key];
+      if (typeof value === "string") {
+        next = { ...next, [key]: value };
+        changed = true;
+        updateOption(key, value);
+      }
+    }
+    if (changed) updateURL(next);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  if (hasNoOptionsOrJustOneOption) {
+    return null;
+  }
+
+  return (
+    <>
+      {options.map((option) => {
+        const optionNameLowerCase = option.name.toLowerCase();
+        const defaultValue =
+          state[optionNameLowerCase] ||
+          option.values.find((value) => {
             const optionParams = { ...state, [optionNameLowerCase]: value };
-
-            // Filter out invalid options and check if the options combination is available for sale
-            const filtered = Object.entries(optionParams).filter(
-              ([key, value]) =>
-                options.find(
-                  (option) =>
-                    option.name.toLowerCase() === key &&
-                    option.values.includes(value)
-                )
-            );
-
-            const isAvailableForSale = combinations.find((combination) =>
-              filtered.every(
-                ([key, value]) =>
-                  combination[key] === value && combination.availableForSale
+            const filtered = Object.entries(optionParams).filter(([key, val]) =>
+              options.find(
+                (item) =>
+                  item.name.toLowerCase() === key && item.values.includes(val)
               )
             );
-
-            // The option is active if it's in the selected options
-            const isActive = state[optionNameLowerCase] === value;
-
-            return (
-              <button
-                formAction={() => {
-                  const newState = updateOption(optionNameLowerCase, value);
-                  updateURL(newState);
-                }}
-                key={value}
-                aria-disabled={!isAvailableForSale}
-                disabled={!isAvailableForSale}
-                title={`${option.name} ${value}${!isAvailableForSale ? " (Out of Stock)" : ""}`}
-                className={clsx(
-                  "flex min-w-[48px] items-center justify-center rounded-full border bg-neutral-100 px-2 py-1 text-sm dark:border-neutral-800 dark:bg-neutral-900",
-                  {
-                    "cursor-default ring-2 ring-blue-600": isActive,
-                    "ring-1 ring-transparent transition duration-300 ease-in-out hover:ring-blue-600":
-                      !isActive && isAvailableForSale,
-                    "relative z-10 cursor-not-allowed overflow-hidden bg-neutral-100 text-neutral-500 ring-1 ring-neutral-300 before:absolute before:inset-x-0 before:-z-10 before:h-px before:-rotate-45 before:bg-neutral-300 before:transition-transform dark:bg-neutral-900 dark:text-neutral-400 dark:ring-neutral-700 before:dark:bg-neutral-700":
-                      !isAvailableForSale,
-                  }
-                )}
-              >
-                {value}
-              </button>
+            return combinations.find((combination) =>
+              filtered.every(
+                ([key, val]) =>
+                  combination[key] === val && combination.availableForSale
+              )
             );
-          })}
-        </dd>
-      </dl>
-    </form>
-  ));
+          }) ||
+          option.values[0];
+
+        return (
+          <div key={option.id} className="mb-8">
+            <p className="mb-4 text-sm uppercase tracking-wide">{option.name}</p>
+            <div className="flex flex-wrap gap-3">
+              {option.values.map((value) => {
+                const optionParams = {
+                  ...state,
+                  [optionNameLowerCase]: value,
+                };
+
+                const filtered = Object.entries(optionParams).filter(
+                  ([key, val]) =>
+                    options.find(
+                      (item) =>
+                        item.name.toLowerCase() === key &&
+                        item.values.includes(val)
+                    )
+                );
+
+                const isAvailableForSale = Boolean(
+                  combinations.find((combination) =>
+                    filtered.every(
+                      ([key, val]) =>
+                        combination[key] === val && combination.availableForSale
+                    )
+                  )
+                );
+
+                const isActive =
+                  (state[optionNameLowerCase] || defaultValue) === value;
+
+                return (
+                  <motion.button
+                    key={value}
+                    type="button"
+                    disabled={!isAvailableForSale}
+                    aria-disabled={!isAvailableForSale}
+                    aria-pressed={isActive}
+                    title={`${option.name} ${value}${!isAvailableForSale ? " (Out of Stock)" : ""}`}
+                    whileHover={
+                      isAvailableForSale && !reduceMotion
+                        ? { y: -1, scale: 1.03 }
+                        : undefined
+                    }
+                    whileTap={
+                      isAvailableForSale && !reduceMotion
+                        ? { scale: 0.97 }
+                        : undefined
+                    }
+                    onClick={() => {
+                      if (!isAvailableForSale) return;
+                      const newState = updateOption(
+                        optionNameLowerCase,
+                        value
+                      );
+                      updateURL(newState);
+                    }}
+                    className={clsx(
+                      "relative flex min-w-[52px] items-center justify-center rounded-full border px-3.5 py-2 text-sm font-medium transition-brand",
+                      {
+                        "border-transparent bg-brand-gradient text-white shadow-[0_8px_20px_rgba(30,95,191,0.28)]":
+                          isActive && isAvailableForSale,
+                        "border-neutral-200 bg-neutral-100 text-brand hover:border-brand-teal/50 hover:bg-white hover:text-brand-blue-dark hover:shadow-[0_8px_20px_rgba(20,184,166,0.14)] dark:border-neutral-700 dark:bg-neutral-900 dark:text-neutral-200 dark:hover:border-brand-teal/40 dark:hover:bg-neutral-800":
+                          !isActive && isAvailableForSale,
+                        "cursor-not-allowed border-neutral-200 bg-neutral-100/70 text-neutral-400 opacity-45 dark:border-neutral-700 dark:bg-neutral-900/50 dark:text-neutral-500":
+                          !isAvailableForSale,
+                      }
+                    )}
+                  >
+                    {value}
+                  </motion.button>
+                );
+              })}
+            </div>
+          </div>
+        );
+      })}
+    </>
+  );
 }

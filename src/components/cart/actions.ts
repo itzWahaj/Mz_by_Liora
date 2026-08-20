@@ -16,13 +16,22 @@ export async function addItem(
   prevState: any,
   selectedVariantId: string | undefined
 ) {
-  let cartId = cookies().get("cartId")?.value;
-
-  if (!cartId || !selectedVariantId) {
+  if (!selectedVariantId) {
     return "Error adding item to cart";
   }
 
+  let cartId = cookies().get("cartId")?.value;
+
   try {
+    if (!cartId) {
+      const cart = await createCart();
+      if (!cart?.id) {
+        return "Error creating cart";
+      }
+      cartId = cart.id;
+      cookies().set("cartId", cartId);
+    }
+
     await addToCart(cartId, [
       { merchandiseId: selectedVariantId, quantity: 1 },
     ]);
@@ -125,6 +134,14 @@ export async function redirectToCheckout() {
 }
 
 export async function createCartAndSetCookie() {
-  let cart = await createCart();
-  cookies().set("cartId", cart.id!);
+  const cart = await createCart();
+
+  if (!cart?.id) {
+    console.error(
+      "Could not create a Shopify cart. Check SHOPIFY_STOREFRONT_ACCESS_TOKEN in .env.local."
+    );
+    return;
+  }
+
+  cookies().set("cartId", cart.id);
 }

@@ -1,15 +1,20 @@
 export type Menu = {
   title: string;
   path: string;
+  items?: Menu[];
+};
+
+export type ShopifyMenuItem = {
+  title: string;
+  url: string;
+  type?: string;
+  items?: ShopifyMenuItem[];
 };
 
 export type ShopifyMenuOperation = {
   data: {
     menu?: {
-      items: {
-        title: string;
-        url: string;
-      }[];
+      items: ShopifyMenuItem[];
     };
   };
   variables: {
@@ -248,6 +253,20 @@ export type Page = {
   updatedAt: string;
 };
 
+export type ShopPolicy = {
+  id: string;
+  title: string;
+  handle: string;
+  body: string;
+  url: string;
+};
+
+export type PolicyHandle =
+  | "privacy-policy"
+  | "refund-policy"
+  | "shipping-policy"
+  | "terms-of-service";
+
 export type ShopifyPageOperation = {
   data: { pageByHandle: Page };
   variables: { handle: string };
@@ -256,5 +275,16 @@ export type ShopifyPageOperation = {
 export type ShopifyPagesOperation = {
   data: {
     pages: Connection<Page>;
+  };
+};
+
+export type ShopifyShopPoliciesOperation = {
+  data: {
+    shop: {
+      privacyPolicy: ShopPolicy | null;
+      refundPolicy: ShopPolicy | null;
+      shippingPolicy: ShopPolicy | null;
+      termsOfService: ShopPolicy | null;
+    };
   };
 };

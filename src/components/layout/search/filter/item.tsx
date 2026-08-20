@@ -1,13 +1,21 @@
 "use client";
 
-import { usePathname, useSearchParams } from "next/navigation";
-import { ListItem, type PathFilterItem } from ".";
-import Link from "next/link";
+import type { SortFilterItem as SortFilterItemType } from "@/lib/constants";
 import { createUrl } from "@/lib/utils";
-import type { SortFilterItem } from "@/lib/constants";
 import clsx from "clsx";
+import Link from "next/link";
+import { usePathname, useSearchParams } from "next/navigation";
+import { ListItem, type PathFilterItem as PathItem } from ".";
 
-function PathFilterItem({ item }: { item: PathFilterItem }) {
+function formatLabel(title: string) {
+  if (title.includes(" ") || title !== title.toLowerCase()) return title;
+  return title
+    .split("-")
+    .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
+    .join(" ");
+}
+
+function PathFilterItem({ item }: { item: PathItem }) {
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const active = pathname === item.path;
@@ -17,23 +25,31 @@ function PathFilterItem({ item }: { item: PathFilterItem }) {
   newParams.delete("q");
 
   return (
-    <li className="mt-2 flex text-black dark:text-white" key={item.title}>
+    <li key={item.title}>
       <DynamicTag
         href={createUrl(item.path, newParams)}
         className={clsx(
-          "w-full text-sm underline-offset-4 hover:underline dark:hover:text-neutral-100",
-          {
-            "underline underline-offset-4": active,
-          }
+          "group relative flex w-full items-center rounded-xl px-3 py-2.5 text-sm transition-brand",
+          active
+            ? "bg-brand-gradient font-medium text-white shadow-[0_8px_24px_rgba(30,95,191,0.28)]"
+            : "text-neutral-700 hover:bg-brand-blue/5 hover:text-brand-blue-dark dark:text-neutral-300 dark:hover:bg-white/5 dark:hover:text-white"
         )}
       >
-        {item.title}
+        <span
+          className={clsx(
+            "mr-2.5 h-1.5 w-1.5 shrink-0 rounded-full transition-brand",
+            active
+              ? "bg-white"
+              : "bg-neutral-300 group-hover:bg-brand-teal dark:bg-neutral-600"
+          )}
+        />
+        <span className="line-clamp-1">{formatLabel(item.title)}</span>
       </DynamicTag>
     </li>
   );
 }
 
-function SortFilterItem({ item }: { item: SortFilterItem }) {
+function SortFilterItem({ item }: { item: SortFilterItemType }) {
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const active = searchParams.get("sort") === item.slug;
@@ -49,18 +65,26 @@ function SortFilterItem({ item }: { item: SortFilterItem }) {
   const DynamicTag = active ? "p" : Link;
 
   return (
-    <li
-      className="mt-2 flex text-sm text-black dark:text-white"
-      key={item.title}
-    >
+    <li key={item.title}>
       <DynamicTag
         prefetch={!active ? false : undefined}
         href={href}
-        className={clsx("w-full hover:underline hover:underline-offset-4", {
-          "underline underline-offset-4": active,
-        })}
+        className={clsx(
+          "group relative flex w-full items-center rounded-xl px-3 py-2.5 text-sm transition-brand",
+          active
+            ? "bg-brand-gradient font-medium text-white shadow-[0_8px_24px_rgba(20,184,166,0.25)]"
+            : "text-neutral-700 hover:bg-brand-teal/10 hover:text-brand-teal dark:text-neutral-300 dark:hover:bg-white/5 dark:hover:text-white"
+        )}
       >
-        {item.title}
+        <span
+          className={clsx(
+            "mr-2.5 h-1.5 w-1.5 shrink-0 rounded-full transition-brand",
+            active
+              ? "bg-white"
+              : "bg-neutral-300 group-hover:bg-brand-coral dark:bg-neutral-600"
+          )}
+        />
+        <span className="line-clamp-1">{item.title}</span>
       </DynamicTag>
     </li>
   );
