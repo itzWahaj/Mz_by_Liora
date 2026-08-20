@@ -203,7 +203,7 @@ export default function NavbarClient({
 }) {
   const { theme } = useTheme();
   const { scrollY } = useScroll();
-  const range = [SCROLL_START, SCROLL_END] as const;
+  const range = [SCROLL_START, SCROLL_END];
 
   const height = useTransform(scrollY, range, [80, 56]);
   const paddingY = useTransform(scrollY, range, [14, 6]);

@@ -45,7 +45,7 @@ export default async function Home() {
 
   const sale = collections.find(
     (collection) =>
-      collection.handle === "sale" && collection.products.length > 0
+      (collection.handle as string) === "sale" && collection.products.length > 0
   );
 
   const heroProduct =

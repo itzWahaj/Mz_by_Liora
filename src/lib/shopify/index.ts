@@ -38,6 +38,7 @@ import {
   ShopifyCollectionProductsOperation,
   ShopifyCollectionsOperation,
   ShopifyCreateCartOperation,
+  ShopifyMenuItem,
   ShopifyMenuOperation,
   ShopifyPageOperation,
   ShopifyPagesOperation,

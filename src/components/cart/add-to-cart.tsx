@@ -21,7 +21,7 @@ function SubmitButton({
   availableForSale: boolean;
   isAdded: boolean;
   selectedVariantId: string | undefined;
-  buttonRef?: React.RefObject<HTMLButtonElement | null>;
+  buttonRef?: React.Ref<HTMLButtonElement>;
 }) {
   const reduceMotion = Boolean(useReducedMotion());
   const buttonClasses =
