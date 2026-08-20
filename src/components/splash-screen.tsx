@@ -1,7 +1,8 @@
 "use client";
 
 import { useEffect, useRef, useState, useCallback } from "react";
-import { motion, AnimatePresence, useAnimate, stagger } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
+import Image from "next/image";
 
 // ─── Particle System ───────────────────────────────────────────────────────────
 type Particle = {
@@ -145,9 +146,7 @@ function FloatingOrb({
   );
 }
 
-// ─── Letter animation ─────────────────────────────────────────────────────────
-const BRAND_NAME_1 = "MZ";
-const BRAND_NAME_2 = "by LIORA";
+// (letter-by-letter animation removed — logo image is used instead)
 
 // ─── Main Splash Component ────────────────────────────────────────────────────
 interface SplashScreenProps {
@@ -163,9 +162,7 @@ export default function SplashScreen({
     "loading" | "reveal" | "tagline" | "exit"
   >("loading");
   const [progress, setProgress] = useState(0);
-  const [scope, animate] = useAnimate();
   const canvasRef = useParticles(phase !== "exit");
-  const startRef = useRef(Date.now());
 
   // ── Progress bar simulation ──────────────────────────────────────────────
   useEffect(() => {
@@ -205,16 +202,6 @@ export default function SplashScreen({
     const t4 = setTimeout(() => onComplete(), minDuration);
     return () => [t1, t2, t3, t4].forEach(clearTimeout);
   }, [minDuration, onComplete]);
-
-  // ── Letter stagger on reveal ─────────────────────────────────────────────
-  useEffect(() => {
-    if (phase !== "reveal") return;
-    animate(
-      ".brand-letter",
-      { opacity: [0, 1], y: [40, 0], filter: ["blur(8px)", "blur(0px)"] },
-      { delay: stagger(0.06), duration: 0.6, ease: [0.16, 1, 0.3, 1] }
-    );
-  }, [phase, animate]);
 
   return (
     <AnimatePresence>
@@ -292,132 +279,77 @@ export default function SplashScreen({
         />
 
         {/* Center content */}
-        <div
-          ref={scope}
-          className="relative z-10 flex flex-col items-center gap-6 px-8"
-        >
-          {/* Logo mark — animated ring */}
+        <div className="relative z-10 flex flex-col items-center gap-6 px-8">
+          {/* ── Brand Logo ─────────────────────────────────────────────── */}
           <motion.div
-            className="relative mb-2"
-            initial={{ scale: 0, rotate: -120 }}
-            animate={{ scale: 1, rotate: 0 }}
-            transition={{ duration: 1, ease: [0.16, 1, 0.3, 1], delay: 0.1 }}
+            className="relative flex items-center justify-center"
+            initial={{ opacity: 0, scale: 0.7, y: 24 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            transition={{ duration: 1.1, ease: [0.16, 1, 0.3, 1], delay: 0.15 }}
           >
-            {/* Outer rotating ring */}
+            {/* Ambient glow halo behind logo */}
             <motion.div
-              className="absolute inset-0 rounded-full"
+              className="absolute rounded-full pointer-events-none"
               style={{
+                width: "110%",
+                height: "55%",
+                bottom: "5%",
+                left: "-5%",
                 background:
-                  "conic-gradient(from 0deg, #1E5FBF, #14B8A6, #E8734A, #7C3AED, #1E5FBF)",
-                padding: 2,
-                borderRadius: "50%",
+                  "radial-gradient(ellipse, rgba(20,184,166,0.35) 0%, rgba(30,95,191,0.25) 40%, transparent 70%)",
+                filter: "blur(24px)",
               }}
-              animate={{ rotate: 360 }}
-              transition={{ duration: 4, ease: "linear", repeat: Infinity }}
+              animate={{
+                opacity: [0.6, 1, 0.6],
+                scale: [1, 1.08, 1],
+              }}
+              transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
+            />
+
+            {/* Sweeping shimmer line that travels across the logo */}
+            <motion.div
+              className="absolute inset-0 pointer-events-none overflow-hidden"
+              style={{ borderRadius: 8 }}
             >
-              <div
-                className="w-full h-full rounded-full"
-                style={{ background: "#04080F" }}
+              <motion.div
+                style={{
+                  position: "absolute",
+                  top: 0,
+                  bottom: 0,
+                  width: "30%",
+                  background:
+                    "linear-gradient(90deg, transparent, rgba(255,255,255,0.18), transparent)",
+                  transform: "skewX(-12deg)",
+                }}
+                initial={{ left: "-35%" }}
+                animate={{ left: ["120%"] }}
+                transition={{
+                  delay: 1.2,
+                  duration: 1.1,
+                  ease: "easeInOut",
+                  repeat: Infinity,
+                  repeatDelay: 3.5,
+                }}
               />
             </motion.div>
 
-            {/* Inner glowing circle */}
-            <motion.div
-              className="relative flex items-center justify-center"
+            {/* The actual logo — mix-blend-mode: screen removes the white bg */}
+            <Image
+              src="/logo_2.png"
+              alt="MZ by LIORA"
+              width={420}
+              height={280}
+              priority
+              draggable={false}
               style={{
-                width: 96,
-                height: 96,
-                borderRadius: "50%",
-                background:
-                  "radial-gradient(circle, rgba(20,184,166,0.15) 0%, transparent 70%)",
-                border: "2px solid rgba(20,184,166,0.3)",
-              }}
-              animate={{
-                boxShadow: [
-                  "0 0 20px rgba(20,184,166,0.2), 0 0 40px rgba(30,95,191,0.1)",
-                  "0 0 40px rgba(20,184,166,0.5), 0 0 80px rgba(30,95,191,0.3)",
-                  "0 0 20px rgba(20,184,166,0.2), 0 0 40px rgba(30,95,191,0.1)",
-                ],
-              }}
-              transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
-            >
-              {/* Monogram */}
-              <span
-                className="font-display font-bold text-white select-none"
-                style={{ fontSize: 28, letterSpacing: "-0.03em" }}
-              >
-                ML
-              </span>
-            </motion.div>
-          </motion.div>
-
-          {/* Brand name letters */}
-          <div className="flex flex-col items-center gap-1 select-none">
-            {/* "MZ" */}
-            <div className="flex gap-[0.06em] overflow-hidden">
-              {BRAND_NAME_1.split("").map((ch, i) => (
-                <span
-                  key={i}
-                  className="brand-letter font-display font-bold text-white"
-                  style={{
-                    fontSize: "clamp(52px, 9vw, 96px)",
-                    letterSpacing: "0.2em",
-                    opacity: 0,
-                    lineHeight: 1,
-                    textShadow:
-                      "0 0 40px rgba(20,184,166,0.4), 0 2px 4px rgba(0,0,0,0.5)",
-                  }}
-                >
-                  {ch}
-                </span>
-              ))}
-            </div>
-
-            {/* Separator line */}
-            <motion.div
-              className="my-1"
-              initial={{ scaleX: 0, opacity: 0 }}
-              animate={
-                phase === "reveal" || phase === "tagline" || phase === "exit"
-                  ? { scaleX: 1, opacity: 1 }
-                  : {}
-              }
-              transition={{ duration: 0.6, delay: 0.5, ease: [0.16, 1, 0.3, 1] }}
-              style={{
-                height: 1,
-                width: "clamp(120px, 20vw, 220px)",
-                background:
-                  "linear-gradient(90deg, transparent, #14B8A6, #1E5FBF, transparent)",
-                transformOrigin: "center",
+                mixBlendMode: "screen",
+                width: "clamp(260px, 38vw, 420px)",
+                height: "auto",
+                userSelect: "none",
+                filter: "brightness(1.08) saturate(1.15)",
               }}
             />
-
-            {/* "by LIORA" */}
-            <div className="flex gap-[0.05em] overflow-hidden items-baseline">
-              {BRAND_NAME_2.split("").map((ch, i) => (
-                <span
-                  key={i}
-                  className="brand-letter font-display text-white"
-                  style={{
-                    fontSize:
-                      ch === " "
-                        ? "clamp(12px, 2vw, 20px)"
-                        : "clamp(28px, 5vw, 52px)",
-                    letterSpacing: "0.35em",
-                    opacity: 0,
-                    fontWeight: ch === " " ? 300 : 400,
-                    lineHeight: 1,
-                    color:
-                      i < 3
-                        ? "rgba(255,255,255,0.55)"
-                        : "rgba(255,255,255,0.95)",
-                  }}
-                >
-                  {ch}
-                </span>
-              ))}
-            </div>
-          </div>
+          </motion.div>
 
           {/* Tagline */}
           <AnimatePresence>
