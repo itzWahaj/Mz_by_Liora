@@ -471,9 +471,13 @@ function reshapeCollection(
 ): Collection | undefined {
   if (!collection) return undefined;
 
+  const normalizedHandle =
+    collection.handle === "skincare" ? "skin-care" : collection.handle;
+
   return {
     ...collection,
-    path: `/collections/${collection.handle}`,
+    handle: normalizedHandle,
+    path: `/collections/${normalizedHandle}`,
   };
 }
 
@@ -493,6 +497,19 @@ function reshapeCollections(collections: ShopifyCollection[]) {
   return reshapedCollections;
 }
 
+const COLLECTION_HANDLE_ALIASES: Record<string, string> = {
+  "skin-care": "skincare",
+  "skincare": "skincare",
+  "hair-care": "hair-care",
+  "haircare": "hair-care",
+  "best-sellers": "best-sellers",
+  "bestsellers": "best-sellers",
+  "new-arrivals": "new-arrivals",
+  "newarrivals": "new-arrivals",
+  "faceoils": "face-oils",
+  "frontpage": "featured",
+};
+
 export async function getCollection(
   handle: string
 ): Promise<Collection | undefined> {
@@ -500,12 +517,14 @@ export async function getCollection(
     return undefined;
   }
 
+  const targetHandle = COLLECTION_HANDLE_ALIASES[handle] || handle;
+
   try {
     const res = await shopifyFetch<ShopifyCollectionOperation>({
       query: getCollectionQuery,
       tags: [TAGS.collections],
       variables: {
-        handle,
+        handle: targetHandle,
       },
     });
 
@@ -557,12 +576,8 @@ export async function getCollectionProducts({
   }
 
   try {
-    const collectionHandleMap: Record<string, string> = {
-      faceoils: "face-oils",
-      bestsellers: "best-sellers",
-      frontpage: "featured",
-    };
-    const targetCollection = collectionHandleMap[collection] || collection;
+    const targetCollection =
+      COLLECTION_HANDLE_ALIASES[collection] || collection;
 
     const normalizedSortKey =
       sortKey === "CREATED_AT" ? "CREATED" : sortKey;
