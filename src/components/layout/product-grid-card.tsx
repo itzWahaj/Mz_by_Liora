@@ -20,6 +20,7 @@ import PriceDisplay, {
   calculateDiscount,
   DiscountBadge,
 } from "../price-display";
+import { StarsRow } from "../product/star-rating";
 
 function firstAvailableVariant(product: Product): ProductVariant | undefined {
   return (
@@ -156,7 +157,11 @@ export default function ProductGridCard({ product }: { product: Product }) {
           <div className="absolute inset-0">
             {/* Primary / Active Image */}
             <Image
-              alt={product.title}
+              alt={
+                images[imageIndex]?.altText ||
+                product.featuredImage?.altText ||
+                product.title
+              }
               src={displayImageUrl}
               fill
               sizes="(min-width: 1024px) 25vw, (min-width: 640px) 50vw, 100vw"
@@ -177,7 +182,10 @@ export default function ProductGridCard({ product }: { product: Product }) {
             {/* Secondary Image on Hover */}
             {hoverUrl && !isFallback && (
               <Image
-                alt={`${product.title} - secondary view`}
+                alt={
+                  images[1]?.altText ||
+                  `${product.title} - secondary angle`
+                }
                 src={hoverUrl}
                 fill
                 sizes="(min-width: 1024px) 25vw, (min-width: 640px) 50vw, 100vw"
@@ -321,9 +329,31 @@ export default function ProductGridCard({ product }: { product: Product }) {
             className="min-w-0 flex-1"
             prefetch={true}
           >
-            <p className="text-sm font-medium leading-snug text-brand dark:text-white">
+            <p className="line-clamp-1 text-sm font-medium leading-snug text-brand dark:text-white">
               {product.title}
             </p>
+            <div className="mt-1 flex items-center gap-1.5">
+              <StarsRow
+                rating={
+                  product.reviews?.rating && product.reviews.rating > 0
+                    ? product.reviews.rating
+                    : 5
+                }
+                sizeClass="h-3 w-3"
+              />
+              <span className="text-[11px] font-semibold text-brand dark:text-white">
+                {(
+                  product.reviews?.rating && product.reviews.rating > 0
+                    ? product.reviews.rating
+                    : 5
+                ).toFixed(1)}
+              </span>
+              {product.reviews?.reviewCount && product.reviews.reviewCount > 0 ? (
+                <span className="text-[10px] text-neutral-400 dark:text-neutral-500">
+                  ({product.reviews.reviewCount})
+                </span>
+              ) : null}
+            </div>
           </Link>
 
           <form

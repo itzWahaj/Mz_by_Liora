@@ -9,6 +9,7 @@ import Link from "next/link";
 import { Product } from "@/lib/shopify/types";
 import clsx from "clsx";
 import PriceDisplay, { DiscountBadge, calculateDiscount } from "@/components/price-display";
+import { StarsRow } from "@/components/product/star-rating";
 
 const STORAGE_KEY = "exit_intent_dismissed";
 
@@ -244,7 +245,7 @@ export default function ExitIntentModal({ products }: ExitIntentModalProps) {
                         <h3 className="line-clamp-1 text-sm font-semibold text-brand group-hover:text-brand-teal dark:text-white">
                           {product.title}
                         </h3>
-                        <div className="mt-1">
+                        <div className="mt-1 flex items-center justify-between">
                           <PriceDisplay
                             amount={price}
                             compareAtAmount={comparePrice}
@@ -254,6 +255,23 @@ export default function ExitIntentModal({ products }: ExitIntentModalProps) {
                             compareAtClassName="text-neutral-400 text-[10px]"
                             showBadge={false}
                           />
+                          <div className="flex items-center gap-1">
+                            <StarsRow
+                              rating={
+                                product.reviews?.rating && product.reviews.rating > 0
+                                  ? product.reviews.rating
+                                  : 5
+                              }
+                              sizeClass="h-2.5 w-2.5"
+                            />
+                            <span className="text-[10px] font-medium text-neutral-500">
+                              {(
+                                product.reviews?.rating && product.reviews.rating > 0
+                                  ? product.reviews.rating
+                                  : 5
+                              ).toFixed(1)}
+                            </span>
+                          </div>
                         </div>
                       </div>
 

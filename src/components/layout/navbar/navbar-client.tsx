@@ -12,6 +12,7 @@ import {
   useScroll,
   useTransform,
 } from "framer-motion";
+import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useMemo, useRef, useState } from "react";
@@ -38,38 +39,43 @@ function NavLink({
     item.title.toLowerCase() === "shop" ||
     (item.items && item.items.length > 0);
 
-  // Build category links: combine menu items and collections cleanly
+  // Build category links: strictly use menu items configured in Shopify Admin
   const subCategories = useMemo(() => {
     if (!isShop) return [];
 
-    const categoryMap = new Map<string, { title: string; href: string }>();
+    const collectionMap = new Map(
+      collections.map((col) => [col.title.toLowerCase(), col])
+    );
 
-    // Add items from Shopify menu if available
+    // If sub-items are defined in the Shopify menu link under Shop, use ONLY those
     if (item.items && item.items.length > 0) {
-      item.items.forEach((child) => {
-        if (child.title && child.path) {
-          categoryMap.set(child.title.toLowerCase(), {
+      return item.items
+        .filter((child) => child.title && child.path)
+        .map((child) => {
+          const matchedCol = collectionMap.get(child.title.toLowerCase());
+          return {
             title: child.title,
             href: child.path,
-          });
-        }
-      });
+            image: matchedCol?.image?.url || null,
+          };
+        });
     }
 
-    // Add collections from Shopify store
-    collections.forEach((col) => {
-      if (col.title && col.path && col.handle && col.handle !== "hidden") {
-        const key = col.title.toLowerCase();
-        if (!categoryMap.has(key) && col.title.toLowerCase() !== "all") {
-          categoryMap.set(key, {
-            title: col.title,
-            href: col.path,
-          });
-        }
-      }
-    });
-
-    return Array.from(categoryMap.values());
+    // Fallback: If no sub-items were defined in Shopify menu, show collections
+    return collections
+      .filter(
+        (col) =>
+          col.title &&
+          col.path &&
+          col.handle &&
+          !col.handle.startsWith("hidden") &&
+          col.title.toLowerCase() !== "all"
+      )
+      .map((col) => ({
+        title: col.title,
+        href: col.path,
+        image: col.image?.url || null,
+      }));
   }, [item, collections, isShop]);
 
   const handleMouseEnter = () => {
@@ -162,9 +168,21 @@ function NavLink({
                             : "text-neutral-700 hover:bg-neutral-100 hover:text-brand dark:text-neutral-300 dark:hover:bg-neutral-800/80 dark:hover:text-white"
                         }`}
                       >
-                        <span className="flex items-center gap-2">
-                          <span className="h-1.5 w-1.5 rounded-full bg-brand-teal/40 transition-transform group-hover:scale-150 group-hover:bg-brand-teal" />
-                          {cat.title}
+                        <span className="flex items-center gap-2.5">
+                          {cat.image ? (
+                            <span className="relative h-6 w-6 shrink-0 overflow-hidden rounded-md border border-neutral-200/80 dark:border-neutral-700">
+                              <Image
+                                src={cat.image}
+                                alt={cat.title}
+                                fill
+                                sizes="24px"
+                                className="object-cover"
+                              />
+                            </span>
+                          ) : (
+                            <span className="h-1.5 w-1.5 rounded-full bg-brand-teal/40 transition-transform group-hover:scale-150 group-hover:bg-brand-teal" />
+                          )}
+                          <span>{cat.title}</span>
                         </span>
                         <ArrowRightIcon className="h-3.5 w-3.5 opacity-0 transition-all group-hover:translate-x-0.5 group-hover:opacity-100 text-brand-teal" />
                       </Link>

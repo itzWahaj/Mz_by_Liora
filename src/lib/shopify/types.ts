@@ -127,12 +127,22 @@ export type ShopifyCollection = {
   handle: string;
   title: string;
   description: string;
+  image?: Image;
   seo: SEO;
   updatedAt: string;
 };
 
 export type Collection = ShopifyCollection & {
   path: string;
+};
+
+export type ShopifyCollectionOperation = {
+  data: {
+    collection: ShopifyCollection;
+  };
+  variables: {
+    handle: string;
+  };
 };
 
 export type ShopifyCollectionsOperation = {

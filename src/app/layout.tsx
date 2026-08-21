@@ -98,10 +98,43 @@ export default async function RootLayout({
     bestsellers.length >= 3 ? bestsellers : fallbackProducts
   ).slice(0, 3);
 
+  const organizationJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    name: "MZ by LIORA",
+    url: siteUrl,
+    logo: `${siteUrl}/favicon-192.png`,
+    sameAs: ["https://wa.me/923170692214"],
+  };
+
+  const websiteJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    name: "MZ by LIORA",
+    url: siteUrl,
+    potentialAction: {
+      "@type": "SearchAction",
+      target: `${siteUrl}/search?q={search_term_string}`,
+      "query-input": "required name=search_term_string",
+    },
+  };
+
   return (
     <html lang="en" suppressHydrationWarning>
       <head>
         <script dangerouslySetInnerHTML={{ __html: themeInitScript }} />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify(organizationJsonLd),
+          }}
+        />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify(websiteJsonLd),
+          }}
+        />
       </head>
       <body className={`${inter.variable} ${display.variable} font-sans`}>
         <ThemeProvider>

@@ -1,10 +1,11 @@
 "use client";
 
 import BrandDivider from "@/components/ui/brand-divider";
-import GradientButton from "@/components/ui/gradient-button";
+import { ArrowRightIcon, SparklesIcon } from "@heroicons/react/24/outline";
 import { motion, useReducedMotion } from "framer-motion";
 import gsap from "gsap";
 import Image from "next/image";
+import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 
 type HeroCollection = {
@@ -157,8 +158,9 @@ export default function HomeHero({
             >
               {description}
             </motion.p>
+            {/* Primary and Secondary CTA Button Row */}
             <motion.div
-              className="mt-7 flex w-full flex-col gap-2.5 sm:flex-row sm:flex-wrap"
+              className="mt-8 flex flex-col gap-3 sm:flex-row sm:items-center"
               initial={reduceMotion || !motionReady ? false : { opacity: 0, y: 16 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{
@@ -167,16 +169,79 @@ export default function HomeHero({
                 ease: "easeOut",
               }}
             >
-              {collections.slice(0, 3).map((collection) => (
-                <GradientButton
-                  key={collection.handle}
-                  href={collection.href}
-                  prefetch={false}
-                  className="h-10 px-5 text-sm"
+              {/* Primary Call to Action */}
+              <Link
+                href="/search"
+                prefetch={true}
+                className="group relative inline-flex h-12 items-center justify-center gap-2 rounded-full bg-brand-gradient px-7 text-sm font-semibold text-white shadow-[0_8px_24px_rgba(30,95,191,0.3)] transition-all duration-300 hover:scale-[1.02] hover:shadow-[0_12px_32px_rgba(30,95,191,0.45)] active:scale-[0.98]"
+              >
+                <span>Shop All Products</span>
+                <ArrowRightIcon className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" />
+              </Link>
+
+              {/* Secondary Call to Action */}
+              <Link
+                href="/search/best-sellers"
+                prefetch={true}
+                className="inline-flex h-12 items-center justify-center gap-2 rounded-full border border-neutral-300/80 bg-white/80 px-6 text-sm font-semibold text-brand backdrop-blur-sm transition-all duration-300 hover:border-brand-teal hover:bg-white hover:shadow-md active:scale-[0.98] dark:border-neutral-700 dark:bg-neutral-900/80 dark:text-white dark:hover:bg-neutral-900"
+              >
+                <SparklesIcon className="h-4 w-4 text-brand-teal" />
+                <span>Best Sellers</span>
+              </Link>
+            </motion.div>
+
+            {/* Quick Explore Category Chips */}
+            <motion.div
+              className="mt-6 flex flex-wrap items-center gap-2"
+              initial={reduceMotion || !motionReady ? false : { opacity: 0, y: 12 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{
+                duration: reduceMotion ? 0 : 0.5,
+                delay: reduceMotion ? 0 : 0.6,
+                ease: "easeOut",
+              }}
+            >
+              <span className="text-[11px] font-semibold uppercase tracking-wider text-neutral-400 dark:text-neutral-500">
+                Explore:
+              </span>
+              {[
+                { title: "Skin Care", href: "/search/skin-care" },
+                { title: "Hair Care", href: "/search/hair-care" },
+                { title: "New Arrivals", href: "/search/new-arrivals" },
+              ].map((cat) => (
+                <Link
+                  key={cat.title}
+                  href={cat.href}
+                  prefetch={true}
+                  className="rounded-full border border-neutral-200/90 bg-neutral-50/80 px-3 py-1 text-xs font-medium text-neutral-600 transition-colors hover:border-brand-teal hover:bg-brand-teal/10 hover:text-brand-teal dark:border-neutral-800 dark:bg-neutral-900/60 dark:text-neutral-300 dark:hover:text-white"
                 >
-                  Shop {collection.title}
-                </GradientButton>
+                  {cat.title}
+                </Link>
               ))}
+            </motion.div>
+
+            {/* Trust / Quality Highlights */}
+            <motion.div
+              className="mt-6 flex flex-wrap items-center gap-4 text-xs text-neutral-500 dark:text-neutral-400"
+              initial={reduceMotion || !motionReady ? false : { opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{
+                duration: reduceMotion ? 0 : 0.5,
+                delay: reduceMotion ? 0 : 0.7,
+              }}
+            >
+              <span className="flex items-center gap-1.5">
+                <span className="h-1.5 w-1.5 rounded-full bg-brand-teal" />
+                100% Botanical Care
+              </span>
+              <span className="flex items-center gap-1.5">
+                <span className="h-1.5 w-1.5 rounded-full bg-brand-blue" />
+                Dermatologically Minded
+              </span>
+              <span className="flex items-center gap-1.5">
+                <span className="h-1.5 w-1.5 rounded-full bg-brand-coral" />
+                Nationwide Delivery
+              </span>
             </motion.div>
           </div>
 
@@ -198,7 +263,7 @@ export default function HomeHero({
               aria-hidden="true"
               className="absolute inset-6 rounded-full bg-brand-gradient opacity-30 blur-3xl dark:opacity-40"
             />
-            <div className="relative aspect-[4/5] w-full max-w-[420px] overflow-hidden rounded-[1.75rem] border border-white/80 shadow-[0_30px_80px_rgba(30,95,191,0.18)] dark:border-white/10">
+            <div className="relative aspect-[4/5] w-full max-w-[420px] overflow-hidden rounded-[1.75rem] border border-white/80 shadow-[0_30px_80px_rgba(30,95,191,0.22)] dark:border-white/10">
               {image?.url ? (
                 <Image
                   src={image.url}
@@ -211,7 +276,22 @@ export default function HomeHero({
               ) : (
                 <div className="absolute inset-0 bg-brand-gradient-full opacity-80" />
               )}
-              <div className="absolute inset-0 bg-gradient-to-t from-brand-navy/25 via-transparent to-white/10 dark:from-black/40" />
+              <div className="absolute inset-0 bg-gradient-to-t from-brand-navy/30 via-transparent to-white/10 dark:from-black/45" />
+
+              {/* Floating Hero Badge */}
+              <div className="absolute bottom-4 left-4 right-4 flex items-center justify-between rounded-xl border border-white/50 bg-white/75 p-3 shadow-lg backdrop-blur-md dark:border-white/10 dark:bg-black/65">
+                <div>
+                  <p className="text-xs font-semibold text-brand dark:text-white">
+                    Signature Botanical Rituals
+                  </p>
+                  <p className="text-[10px] text-neutral-600 dark:text-neutral-300">
+                    Formulated for lasting glow & calm
+                  </p>
+                </div>
+                <span className="rounded-full bg-brand-teal/15 px-2.5 py-0.5 text-[10px] font-semibold text-brand-teal dark:bg-brand-teal/25 dark:text-brand-teal-light">
+                  100% Pure
+                </span>
+              </div>
             </div>
           </motion.div>
         </div>

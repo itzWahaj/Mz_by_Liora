@@ -1,6 +1,6 @@
 import { AddToCart } from "../cart/add-to-cart";
-import Prose from "../prose";
 import { Product } from "@/lib/shopify/types";
+import ProductAccordion from "./product-accordion";
 import ProductPrice from "./product-price";
 import StarRating from "./star-rating";
 import VariantSelector from "./variant-selector";
@@ -20,14 +20,19 @@ export function ProductDescription({ product }: { product: Product }) {
         </div>
         <ProductPrice product={product} />
       </div>
+
       <VariantSelector options={product.options} variants={product.variants} />
-      {product.descriptionHtml ? (
-        <Prose
-          className="mb-6 text-sm leading-light dark:text-white/[60%]"
-          html={product.descriptionHtml}
-        />
-      ) : null}
-      <AddToCart product={product} />
+
+      {/* Prominent Add to Cart CTA */}
+      <div className="mt-4">
+        <AddToCart product={product} />
+      </div>
+
+      {/* Compact Collapsible Product Details Accordion */}
+      <ProductAccordion
+        descriptionHtml={product.descriptionHtml}
+        description={product.description}
+      />
     </>
   );
 }

@@ -10,8 +10,15 @@ import { getCollectionProducts } from "@/lib/shopify";
 import Link from "next/link";
 
 export const metadata = {
+  title: "MZ by LIORA | Care Beyond Standards",
   description: BRAND.metaDescription,
+  alternates: {
+    canonical: "/",
+  },
   openGraph: {
+    title: "MZ by LIORA | Care Beyond Standards",
+    description: BRAND.metaDescription,
+    url: "/",
     type: "website" as const,
   },
 };
@@ -48,18 +55,10 @@ export default async function Home() {
       (collection.handle as string) === "sale" && collection.products.length > 0
   );
 
-  const heroProduct =
-    collections.find((collection) => collection.products.length > 0)
-      ?.products[0] ?? null;
-  const heroImage = heroProduct
-    ? {
-        url:
-          heroProduct.featuredImage?.url ||
-          heroProduct.images[0]?.url ||
-          "",
-        alt: heroProduct.title,
-      }
-    : null;
+  const heroImage = {
+    url: "/images/hero-ritual.jpg",
+    alt: "MZ by LIORA Botanical Skincare & Hair Care Ritual",
+  };
 
   return (
     <main className="flex-1">
@@ -67,7 +66,7 @@ export default async function Home() {
         title={BRAND.tagline}
         description={`${BRAND.description} Discover rituals that treat the skin with care beyond standards.`}
         collections={HOMEPAGE_COLLECTIONS}
-        image={heroImage?.url ? heroImage : null}
+        image={heroImage}
       />
 
       {collections.map((collection) => {

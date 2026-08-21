@@ -6,8 +6,17 @@ import { defaultSort, sorting } from "@/lib/constants";
 import { getProducts } from "@/lib/shopify";
 
 export const metadata = {
-  title: "Search",
-  description: "Search for products in the store.",
+  title: "Search All Products",
+  description: "Browse and discover all MZ by LIORA botanical skincare and hair care rituals.",
+  alternates: {
+    canonical: "/search",
+  },
+  openGraph: {
+    title: "Search All Products | MZ by LIORA",
+    description: "Browse and discover all MZ by LIORA botanical skincare and hair care rituals.",
+    url: "/search",
+    type: "website",
+  },
 };
 
 export default async function SearchPage({

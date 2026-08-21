@@ -1,3 +1,4 @@
+import imageFragment from "./image";
 import seoFragment from "./seo";
 
 export const collectionFragment = /* GraphQL */ `
@@ -5,10 +6,14 @@ export const collectionFragment = /* GraphQL */ `
     handle
     title
     description
+    image {
+      ...image
+    }
     seo {
       ...seo
     }
     updatedAt
   }
+  ${imageFragment}
   ${seoFragment}
 `;

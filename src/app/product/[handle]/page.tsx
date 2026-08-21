@@ -6,10 +6,11 @@ import { ProductDescription } from "@/components/product/product-description";
 import RelatedProductsCarousel from "@/components/product/related-products-carousel";
 import ReviewsSection from "@/components/product/reviews-section";
 import Skeleton from "@/components/ui/skeleton";
-import { HIDDEN_PRODUCT_TAG } from "@/lib/constants";
+import { BRAND, HIDDEN_PRODUCT_TAG } from "@/lib/constants";
 import { getJudgeMeReviews } from "@/lib/judgeme";
 import { getProduct, getProductRecommendations } from "@/lib/shopify";
 import { Image } from "@/lib/shopify/types";
+import { getSiteUrl } from "@/lib/utils";
 import { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { Suspense } from "react";
@@ -26,9 +27,25 @@ export async function generateMetadata({
   const { url, width, height, altText: alt } = product.featuredImage || {};
   const indexable = !product.tags.includes(HIDDEN_PRODUCT_TAG);
 
+  // Clean HTML tags from description and truncate to ~155 characters for search engines
+  const rawDescription = product.seo.description || product.description || "";
+  const cleanDescription = rawDescription
+    .replace(/<[^>]*>/g, "")
+    .replace(/\s+/g, " ")
+    .trim();
+  const truncatedDescription =
+    cleanDescription.length > 158
+      ? `${cleanDescription.substring(0, 155)}...`
+      : cleanDescription || BRAND.metaDescription;
+
+  const title = product.seo.title || `${product.title} | MZ by LIORA`;
+
   return {
-    title: product.seo.title || product.title,
-    description: product.seo.description || product.description,
+    title,
+    description: truncatedDescription,
+    alternates: {
+      canonical: `/product/${product.handle}`,
+    },
     robots: {
       index: indexable,
       follow: indexable,
@@ -37,18 +54,28 @@ export async function generateMetadata({
         follow: indexable,
       },
     },
-    openGraph: url
-      ? {
-          images: [
+    openGraph: {
+      title,
+      description: truncatedDescription,
+      url: `/product/${product.handle}`,
+      type: "website",
+      images: url
+        ? [
             {
               url,
-              width,
-              height,
-              alt,
+              width: width || 800,
+              height: height || 800,
+              alt: alt || product.title,
             },
-          ],
-        }
-      : null,
+          ]
+        : [],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title,
+      description: truncatedDescription,
+      images: url ? [url] : [],
+    },
   };
 }
 
@@ -65,8 +92,60 @@ export default async function ProductPage({
     productId: product.id,
   });
 
+  const siteUrl = getSiteUrl();
+  const rawDescription = product.description || product.seo.description || "";
+  const cleanDescription = rawDescription.replace(/<[^>]*>/g, "").trim();
+
+  // Schema.org/Product structured data with Judge.me ratings
+  const productJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "Product",
+    name: product.title,
+    description: cleanDescription || product.title,
+    image: product.images?.length
+      ? product.images.map((img) => img.url)
+      : product.featuredImage?.url
+        ? [product.featuredImage.url]
+        : [],
+    brand: {
+      "@type": "Brand",
+      name: "MZ by LIORA",
+    },
+    offers: {
+      "@type": "Offer",
+      price: product.priceRange.minVariantPrice.amount,
+      priceCurrency: product.priceRange.minVariantPrice.currencyCode,
+      priceValidUntil: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000).toISOString().split("T")[0],
+      availability: product.availableForSale
+        ? "https://schema.org/InStock"
+        : "https://schema.org/OutOfStock",
+      url: `${siteUrl}/product/${product.handle}`,
+      seller: {
+        "@type": "Organization",
+        name: "MZ by LIORA",
+      },
+    },
+    ...(product.reviews?.reviewCount && product.reviews.reviewCount > 0
+      ? {
+          aggregateRating: {
+            "@type": "AggregateRating",
+            ratingValue: product.reviews.rating.toFixed(1),
+            reviewCount: product.reviews.reviewCount,
+            bestRating: "5",
+            worstRating: "1",
+          },
+        }
+      : {}),
+  };
+
   return (
     <ProductProvider>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(productJsonLd),
+        }}
+      />
       <div className="mx-auto max-w-screen-2xl px-4">
         <div className="flex flex-col rounded-lg border border-neutral-200 bg-white p-8 md:p-12 lg:flex-row lg:gap-8 dark:border-neutral-800 dark:bg-black">
           <div className="h-full w-full basis-full lg:basis-4/6">

@@ -14,29 +14,29 @@ export const TAGS = {
 
 export const HOMEPAGE_COLLECTIONS = [
   {
-    handle: "featured",
-    title: "Featured",
-    href: "/search/featured",
-  },
-  {
     handle: "best-sellers",
     title: "Best Sellers",
     href: "/search/best-sellers",
   },
   {
-    handle: "moisturizers",
-    title: "Moisturizers",
-    href: "/search/moisturizers",
+    handle: "skin-care",
+    title: "Skin Care",
+    href: "/search/skin-care",
   },
   {
-    handle: "cleansers-soaps",
-    title: "Cleansers & Soaps",
-    href: "/search/cleansers-soaps",
+    handle: "hair-care",
+    title: "Hair Care",
+    href: "/search/hair-care",
   },
   {
-    handle: "face-oils",
-    title: "Face Oils",
-    href: "/search/face-oils",
+    handle: "featured",
+    title: "Featured",
+    href: "/search/featured",
+  },
+  {
+    handle: "new-arrivals",
+    title: "New Arrivals",
+    href: "/search/new-arrivals",
   },
 ] as const;
 

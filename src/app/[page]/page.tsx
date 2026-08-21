@@ -14,10 +14,19 @@ export async function generateMetadata({
 
   if (!page) return notFound();
 
+  const title = page.seo?.title || `${page.title} | MZ by LIORA`;
+  const description = page.seo?.description || page.bodySummary;
+
   return {
-    title: page.seo?.title || page.title,
-    description: page.seo?.description || page.bodySummary,
+    title,
+    description,
+    alternates: {
+      canonical: `/${page.handle}`,
+    },
     openGraph: {
+      title,
+      description,
+      url: `/${page.handle}`,
       publishedTime: page.createdAt,
       modifiedTime: page.updatedAt,
       type: "article",
