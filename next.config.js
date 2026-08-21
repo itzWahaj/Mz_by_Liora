@@ -1,4 +1,4 @@
-/** srctype {import('next').NextConfig} */
+/** @type {import('next').NextConfig} */
 module.exports = {
   images: {
     formats: ["image/avif", "image/webp"],
@@ -6,7 +6,12 @@ module.exports = {
       {
         protocol: "https",
         hostname: "cdn.shopify.com",
-        pathname: "/s/files/**",
+        pathname: "/**",
+      },
+      {
+        protocol: "https",
+        hostname: "images.unsplash.com",
+        pathname: "/**",
       },
     ],
   },

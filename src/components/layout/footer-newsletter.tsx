@@ -83,8 +83,8 @@ export default function FooterNewsletter() {
               You&apos;re in. Welcome to the ritual.
             </p>
           ) : (
-            <form onSubmit={onSubmit} className="space-y-2">
-              <div className="flex w-full flex-col gap-2.5 sm:flex-row sm:items-center">
+            <form onSubmit={onSubmit} className="space-y-3">
+              <div className="flex w-full flex-col gap-3 sm:flex-row sm:items-center">
                 <label htmlFor="footer-email" className="sr-only">
                   Email address
                 </label>
@@ -104,21 +104,21 @@ export default function FooterNewsletter() {
                     }
                   }}
                   placeholder="you@email.com"
-                  className="h-10 min-w-0 w-full flex-1 rounded-full border border-neutral-300/90 bg-white/80 px-4 font-sans text-sm text-brand shadow-sm outline-none transition-brand placeholder:text-neutral-500 hover:border-brand-teal/50 hover:shadow-[0_8px_24px_rgba(20,184,166,0.12)] focus:border-brand-teal focus:shadow-[0_0_0_4px_rgba(20,184,166,0.18)] disabled:opacity-60 dark:border-neutral-700 dark:bg-neutral-900/70 dark:text-white dark:placeholder:text-neutral-400 dark:hover:border-brand-teal/40 dark:focus:shadow-[0_0_0_4px_rgba(20,184,166,0.2)]"
+                  className="h-12 min-w-0 w-full flex-1 rounded-full border border-neutral-300/90 bg-white/80 px-6 py-0 font-sans text-sm leading-[48px] text-brand shadow-sm outline-none transition-brand placeholder:text-neutral-400 hover:border-brand-teal/50 hover:shadow-[0_8px_24px_rgba(20,184,166,0.12)] focus:border-brand-teal focus:shadow-[0_0_0_4px_rgba(20,184,166,0.18)] disabled:opacity-60 sm:text-base dark:border-neutral-700 dark:bg-neutral-900/70 dark:text-white dark:placeholder:text-neutral-500 dark:hover:border-brand-teal/40 dark:focus:shadow-[0_0_0_4px_rgba(20,184,166,0.2)]"
                 />
                 <div className="w-full shrink-0 sm:w-auto">
                   <GradientButton
                     type="submit"
                     disabled={status === "submitting"}
                     fullWidth
-                    className="h-10 px-6 sm:w-auto"
+                    className="h-12 px-8 text-base font-semibold sm:w-auto"
                   >
                     {status === "submitting" ? "Subscribing…" : "Subscribe"}
                   </GradientButton>
                 </div>
               </div>
               {status === "error" ? (
-                <p className="font-sans text-xs text-brand-coral" role="alert">
+                <p className="px-2 font-sans text-xs text-brand-coral" role="alert">
                   {errorMessage || "Something went wrong. Please try again."}
                 </p>
               ) : null}

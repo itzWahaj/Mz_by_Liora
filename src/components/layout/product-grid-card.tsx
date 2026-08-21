@@ -111,6 +111,10 @@ export default function ProductGridCard({ product }: { product: Product }) {
     setImageIndex(next);
   }
 
+  const [imageError, setImageError] = useState(false);
+  const displayImageUrl = imageError || !activeImageUrl ? "/logo.png" : activeImageUrl;
+  const isFallback = imageError || !activeImageUrl;
+
   return (
     <motion.div
       className="group relative aspect-square h-full w-full overflow-hidden rounded-2xl"
@@ -130,31 +134,23 @@ export default function ProductGridCard({ product }: { product: Product }) {
         className="relative block aspect-square h-full w-full rounded-2xl"
         prefetch={true}
       >
-        <div className="relative h-full w-full overflow-hidden rounded-2xl border border-neutral-200 bg-neutral-100 transition-brand group-hover:border-brand-teal dark:border-neutral-800 dark:bg-black">
-          <AnimatePresence initial={false} mode="sync">
-            {activeImageUrl ? (
-              <motion.div
-                key={activeImageUrl}
-                initial={reduceMotion ? false : { opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={reduceMotion ? undefined : { opacity: 0 }}
-                transition={{ duration: reduceMotion ? 0 : 0.35 }}
-                className="absolute inset-0"
-              >
-                <Image
-                  alt={product.title}
-                  src={activeImageUrl}
-                  fill
-                  sizes="(min-width: 1024px) 25vw, (min-width: 640px) 50vw, 100vw"
-                  className={clsx(
-                    "object-cover",
-                    !reduceMotion &&
-                      "transition duration-[400ms] ease-out group-hover:scale-105 motion-reduce:transition-none motion-reduce:group-hover:scale-100"
-                  )}
-                />
-              </motion.div>
-            ) : null}
-          </AnimatePresence>
+        <div className="relative h-full w-full overflow-hidden rounded-2xl border border-neutral-200 bg-neutral-100 transition-brand group-hover:border-brand-teal dark:border-neutral-800 dark:bg-neutral-900">
+          <div className="absolute inset-0">
+            <Image
+              alt={product.title}
+              src={displayImageUrl}
+              fill
+              sizes="(min-width: 1024px) 25vw, (min-width: 640px) 50vw, 100vw"
+              onError={() => setImageError(true)}
+              className={clsx(
+                isFallback
+                  ? "object-contain p-10 opacity-70 bg-gradient-to-br from-brand-teal/5 via-white to-brand-blue/5 dark:from-neutral-900 dark:to-neutral-950"
+                  : "object-cover",
+                !reduceMotion &&
+                  "transition duration-[400ms] ease-out group-hover:scale-105 motion-reduce:transition-none motion-reduce:group-hover:scale-100"
+              )}
+            />
+          </div>
         </div>
       </Link>
 

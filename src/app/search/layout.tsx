@@ -9,7 +9,7 @@ export default function SearchLayout({
 }) {
   return (
     <div className="mx-auto flex max-w-screen-2xl flex-col gap-6 px-4 pb-10 pt-2 text-black md:flex-row md:gap-8 md:px-6 dark:text-white">
-      <aside className="order-first w-full flex-none md:sticky md:top-24 md:max-w-[220px] md:self-start">
+      <aside className="relative z-30 order-first w-full flex-none md:sticky md:top-24 md:max-w-[220px] md:self-start">
         <Collections />
       </aside>
 
@@ -17,7 +17,7 @@ export default function SearchLayout({
         {children}
       </div>
 
-      <aside className="order-none w-full flex-none md:sticky md:top-24 md:order-last md:w-[220px] md:self-start">
+      <aside className="relative z-20 order-none w-full flex-none md:sticky md:top-24 md:order-last md:w-[220px] md:self-start">
         <FilterList list={sorting} title="Sort by" />
       </aside>
     </div>

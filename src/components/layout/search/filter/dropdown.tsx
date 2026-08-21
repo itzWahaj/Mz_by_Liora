@@ -14,17 +14,36 @@ function formatLabel(title: string) {
     .join(" ");
 }
 
-export default function FilterItemDropDown({ list }: { list: ListItem[] }) {
+export default function FilterItemDropDown({
+  list,
+  onOpenChange,
+}: {
+  list: ListItem[];
+  onOpenChange?: (open: boolean) => void;
+}) {
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const [active, setActive] = useState("");
   const [openSelect, setOpenSelect] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
 
+  const toggleSelect = () => {
+    setOpenSelect((prev) => {
+      const next = !prev;
+      onOpenChange?.(next);
+      return next;
+    });
+  };
+
+  const closeSelect = () => {
+    setOpenSelect(false);
+    onOpenChange?.(false);
+  };
+
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (ref.current && !ref.current.contains(event.target as Node)) {
-        setOpenSelect(false);
+        closeSelect();
       }
     };
 
@@ -49,7 +68,7 @@ export default function FilterItemDropDown({ list }: { list: ListItem[] }) {
     <div className="relative" ref={ref}>
       <button
         type="button"
-        onClick={() => setOpenSelect(!openSelect)}
+        onClick={toggleSelect}
         aria-expanded={openSelect}
         className="flex w-full items-center justify-between rounded-2xl border border-neutral-200 bg-white px-4 py-3 text-left text-sm font-medium text-brand shadow-sm transition-brand hover:border-brand-teal/40 dark:border-neutral-800 dark:bg-neutral-950 dark:text-white"
       >
@@ -62,8 +81,8 @@ export default function FilterItemDropDown({ list }: { list: ListItem[] }) {
       </button>
       {openSelect ? (
         <div
-          onClick={() => setOpenSelect(false)}
-          className="absolute z-40 mt-2 w-full overflow-hidden rounded-2xl border border-neutral-200 bg-white p-2 shadow-[0_20px_50px_rgba(15,23,42,0.18)] dark:border-neutral-800 dark:bg-neutral-950"
+          onClick={closeSelect}
+          className="absolute left-0 top-full z-50 mt-2 max-h-72 w-full overflow-y-auto rounded-2xl border border-neutral-200/90 bg-white/95 p-2 shadow-[0_20px_50px_rgba(15,23,42,0.22)] backdrop-blur-xl dark:border-neutral-800 dark:bg-neutral-950/95"
         >
           <ul className="space-y-1">
             {list.map((item: ListItem, i) => (

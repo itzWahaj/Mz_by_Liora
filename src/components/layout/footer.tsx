@@ -156,14 +156,6 @@ export default async function Footer() {
             <p>© {year} {process.env.COMPANY_NAME || siteName}. All rights reserved.</p>
             <div className="flex items-center gap-4 text-neutral-400">
               <span>Care Beyond Standards</span>
-              <span>•</span>
-              <Link href="/policies/privacy-policy" className="transition-colors hover:text-brand-teal">
-                Privacy Policy
-              </Link>
-              <span>•</span>
-              <Link href="/policies/terms-of-service" className="transition-colors hover:text-brand-teal">
-                Terms of Service
-              </Link>
             </div>
           </div>
         </div>
