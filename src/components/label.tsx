@@ -1,14 +1,16 @@
 import clsx from "clsx";
-import Price from "./price";
+import PriceDisplay from "./price-display";
 
 export default function Label({
   title,
   amount,
+  compareAtAmount,
   currencyCode,
   position = "bottom",
 }: {
   title: string;
   amount: string;
+  compareAtAmount?: string | null;
   currencyCode: string;
   position?: "bottom" | "center";
 }) {
@@ -25,12 +27,18 @@ export default function Label({
         <h3 className="mr-4 line-clamp-2 flex-grow pl-2 leading-none tracking-tight">
           {title}
         </h3>
-        <Price
-          className="flex-none rounded-full bg-brand p-2 text-white"
-          amount={amount}
-          currencyCode={currencyCode}
-          currencyCodeClassName="hidden src[275px]/label:inline"
-        />
+        <div className="flex-none rounded-full bg-brand px-3 py-1.5 text-white">
+          <PriceDisplay
+            amount={amount}
+            compareAtAmount={compareAtAmount}
+            currencyCode={currencyCode}
+            size="xs"
+            priceClassName="text-white"
+            compareAtClassName="text-white/70"
+            badgeClassName="bg-white text-brand-coral"
+            currencyCodeClassName="hidden src[275px]/label:inline"
+          />
+        </div>
       </div>
     </div>
   );

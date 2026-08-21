@@ -50,6 +50,7 @@ export type ProductVariant = {
     value: string;
   }[];
   price: Money;
+  compareAtPrice?: Money | null;
 };
 
 export type Image = {
@@ -63,6 +64,18 @@ export type SEO = {
   title: string;
   description: string;
 };
+export type MetafieldValue = {
+  value: string;
+} | null;
+
+export type ReviewSummary = {
+  rating: number;
+  reviewCount: number;
+  badgeHtml?: string;
+  widgetHtml?: string;
+  widgetData?: string;
+};
+
 export type ShopifyProduct = {
   id: string;
   handle: string;
@@ -75,17 +88,28 @@ export type ShopifyProduct = {
     maxVariantPrice: Money;
     minVariantPrice: Money;
   };
+  compareAtPriceRange?: {
+    maxVariantPrice: Money;
+    minVariantPrice: Money;
+  } | null;
   variants: Connection<ProductVariant>;
   featuredImage: Image;
   images: Connection<Image>;
   seo: SEO;
   tags: string[];
   updatedAt: string;
+  ratingMetafield?: MetafieldValue;
+  ratingCountMetafield?: MetafieldValue;
+  judgemeBadgeMetafield?: MetafieldValue;
+  judgemeReviewsMetafield?: MetafieldValue;
+  judgemeWidgetMetafield?: MetafieldValue;
+  judgemeWidgetDataMetafield?: MetafieldValue;
 };
 
 export type Product = Omit<ShopifyProduct, "variants" | "images"> & {
   variants: ProductVariant[];
   images: Image[];
+  reviews?: ReviewSummary;
 };
 
 export type ShopifyProductsOperation = {

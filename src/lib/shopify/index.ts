@@ -31,6 +31,7 @@ import {
   Menu,
   Page,
   Product,
+  ReviewSummary,
   ShopifyAddToCartOperation,
   ShopifyCart,
   ShopifyCartOperation,
@@ -214,6 +215,49 @@ function reshapeImages(images: Connection<Image>, productTitle: string) {
     };
   });
 }
+function parseReviewSummary(product: ShopifyProduct): ReviewSummary {
+  let rating = 0;
+  let reviewCount = 0;
+  const badgeHtml = product.judgemeBadgeMetafield?.value || undefined;
+
+  if (product.ratingMetafield?.value) {
+    try {
+      const parsed = JSON.parse(product.ratingMetafield.value);
+      if (typeof parsed === "object" && parsed !== null && "value" in parsed) {
+        rating = parseFloat(parsed.value) || 0;
+      } else if (typeof parsed === "number") {
+        rating = parsed;
+      }
+    } catch {
+      rating = parseFloat(product.ratingMetafield.value) || 0;
+    }
+  }
+
+  if (product.ratingCountMetafield?.value) {
+    reviewCount = parseInt(product.ratingCountMetafield.value, 10) || 0;
+  }
+
+  if ((!rating || !reviewCount) && badgeHtml) {
+    const avgMatch = badgeHtml.match(/data-average-rating=['"]([^'"]+)['"]/);
+    const countMatch = badgeHtml.match(/data-number-of-reviews=['"]([^'"]+)['"]/);
+
+    if (avgMatch && avgMatch[1] && !rating) {
+      rating = parseFloat(avgMatch[1]) || 0;
+    }
+    if (countMatch && countMatch[1] && !reviewCount) {
+      reviewCount = parseInt(countMatch[1], 10) || 0;
+    }
+  }
+
+  return {
+    rating: Number(rating.toFixed(1)),
+    reviewCount,
+    badgeHtml,
+    widgetHtml: product.judgemeWidgetMetafield?.value || undefined,
+    widgetData: product.judgemeWidgetDataMetafield?.value || undefined,
+  };
+}
+
 function reshapeProduct(
   product: ShopifyProduct,
   filterHiddenProducts: boolean = true
@@ -245,6 +289,7 @@ function reshapeProduct(
     ...rest,
     images: galleryImages,
     variants: removeEdgesAndNodes(variants),
+    reviews: parseReviewSummary(product),
   };
 }
 function reshapeProducts(products: ShopifyProduct[]) {

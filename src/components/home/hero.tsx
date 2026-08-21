@@ -106,35 +106,27 @@ export default function HomeHero({
       <div
         ref={ambientRef}
         aria-hidden="true"
-        className="pointer-events-none absolute inset-[-10%] bg-brand-radial opacity-35 dark:opacity-45"
+        className="pointer-events-none absolute inset-[-10%] transform-gpu will-change-transform bg-brand-radial opacity-35 dark:opacity-45"
         style={{ backgroundSize: "160% 160%", backgroundPosition: "35% 50%" }}
       />
       <div
         ref={blobARef}
         aria-hidden="true"
-        className="pointer-events-none absolute -left-24 top-8 h-72 w-72 rounded-full bg-brand-teal/30 blur-3xl dark:bg-brand-teal/25"
+        className="pointer-events-none absolute -left-24 top-8 h-72 w-72 transform-gpu will-change-transform rounded-full bg-brand-teal/30 blur-3xl dark:bg-brand-teal/25"
       />
       <div
         ref={blobBRef}
         aria-hidden="true"
-        className="pointer-events-none absolute -right-16 top-24 h-80 w-80 rounded-full bg-brand-blue/25 blur-3xl dark:bg-brand-blue/30"
+        className="pointer-events-none absolute -right-16 top-24 h-80 w-80 transform-gpu will-change-transform rounded-full bg-brand-blue/25 blur-3xl dark:bg-brand-blue/30"
       />
       <div
         ref={blobCRef}
         aria-hidden="true"
-        className="pointer-events-none absolute bottom-0 left-1/3 h-64 w-64 rounded-full bg-brand-coral/20 blur-3xl dark:bg-brand-coral/25"
+        className="pointer-events-none absolute bottom-0 left-1/3 h-64 w-64 transform-gpu will-change-transform rounded-full bg-brand-coral/20 blur-3xl dark:bg-brand-coral/25"
       />
       <div
         aria-hidden="true"
         className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_top,_rgba(250,250,249,0.35),_transparent_60%)] dark:bg-[radial-gradient(ellipse_at_top,_rgba(15,23,42,0.35),_transparent_60%)]"
-      />
-      <div
-        aria-hidden="true"
-        className="pointer-events-none absolute inset-0 opacity-[0.035] mix-blend-multiply dark:opacity-[0.06] dark:mix-blend-soft-light"
-        style={{
-          backgroundImage:
-            "url(\"data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E\")",
-        }}
       />
 
       <div className="relative px-4 pb-10 md:px-6 md:pb-14 lg:pb-16">

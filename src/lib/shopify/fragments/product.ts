@@ -24,6 +24,16 @@ export const productFragment = /* GraphQl */ `
         currencyCode
       }
     }
+    compareAtPriceRange {
+      maxVariantPrice {
+        amount
+        currencyCode
+      }
+      minVariantPrice {
+        amount
+        currencyCode
+      }
+    }
     variants(first: 250) {
       edges {
         node {
@@ -35,6 +45,10 @@ export const productFragment = /* GraphQl */ `
             value
           }
           price {
+            amount
+            currencyCode
+          }
+          compareAtPrice {
             amount
             currencyCode
           }
@@ -56,6 +70,24 @@ export const productFragment = /* GraphQl */ `
     }
     tags
     updatedAt
+    ratingMetafield: metafield(namespace: "reviews", key: "rating") {
+      value
+    }
+    ratingCountMetafield: metafield(namespace: "reviews", key: "rating_count") {
+      value
+    }
+    judgemeBadgeMetafield: metafield(namespace: "judgeme", key: "badge") {
+      value
+    }
+    judgemeReviewsMetafield: metafield(namespace: "judgeme", key: "reviews") {
+      value
+    }
+    judgemeWidgetMetafield: metafield(namespace: "judgeme", key: "widget") {
+      value
+    }
+    judgemeWidgetDataMetafield: metafield(namespace: "judgeme", key: "review_widget_data") {
+      value
+    }
     }
     ${imageFragment}
     ${seoFragment}

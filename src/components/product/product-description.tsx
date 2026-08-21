@@ -2,13 +2,22 @@ import { AddToCart } from "../cart/add-to-cart";
 import Prose from "../prose";
 import { Product } from "@/lib/shopify/types";
 import ProductPrice from "./product-price";
+import StarRating from "./star-rating";
 import VariantSelector from "./variant-selector";
 
 export function ProductDescription({ product }: { product: Product }) {
+  const rating = product.reviews?.rating || 0;
+  const reviewCount = product.reviews?.reviewCount || 0;
+
   return (
     <>
-      <div className="mb-6 flex flex-col border-b pb-6 dark:border-neutral-700">
-        <h1 className="mb-2 font-display text-5xl font-medium">{product.title}</h1>
+      <div className="mb-6 flex flex-col gap-2.5 border-b pb-6 dark:border-neutral-700">
+        <h1 className="font-display text-4xl font-semibold tracking-tight text-brand md:text-5xl dark:text-white">
+          {product.title}
+        </h1>
+        <div className="py-0.5">
+          <StarRating rating={rating} reviewCount={reviewCount} size="md" />
+        </div>
         <ProductPrice product={product} />
       </div>
       <VariantSelector options={product.options} variants={product.variants} />

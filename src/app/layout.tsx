@@ -4,12 +4,14 @@ import { Cormorant_Garamond, Inter } from "next/font/google";
 import "./globals.css";
 import { Navbar } from "@/components/layout/navbar";
 import Footer from "@/components/layout/footer";
+import WhatsAppButton from "@/components/whatsapp-button";
+import ExitIntentModal from "@/components/modal/exit-intent-modal";
 import { CartProvider } from "@/components/cart/cart-context";
 import LenisProvider from "@/components/providers/lenis-provider";
 import { ThemeProvider } from "@/components/providers/theme-provider";
 import SplashWrapper from "@/components/splash-wrapper";
 import { cookies } from "next/headers";
-import { getCart } from "@/lib/shopify";
+import { getCart, getCollectionProducts, getProducts } from "@/lib/shopify";
 import { BRAND } from "@/lib/constants";
 import { getSiteUrl } from "@/lib/utils";
 import Script from "next/script";
@@ -38,11 +40,11 @@ export const metadata: Metadata = {
   description,
   icons: {
     icon: [
-      { url: "/favicon.ico", sizes: "any" },
+      { url: "/favicon-192.png", type: "image/png", sizes: "192x192" },
       { url: "/icon-64.png", type: "image/png", sizes: "64x64" },
-      { url: "/logo.png", type: "image/png" },
+      { url: "/favicon.ico", sizes: "any" },
     ],
-    shortcut: "/favicon.ico",
+    shortcut: "/favicon-192.png",
     apple: [{ url: "/apple-touch-icon.png", sizes: "180x180", type: "image/png" }],
   },
   openGraph: {
@@ -84,6 +86,18 @@ export default async function RootLayout({
 }>) {
   const cartId = cookies().get("cartId")?.value;
   const cart = getCart(cartId);
+
+  const bestsellers = await getCollectionProducts({
+    collection: "best-sellers",
+  }).catch(() => []);
+  const fallbackProducts =
+    bestsellers.length >= 3
+      ? bestsellers
+      : await getProducts({}).catch(() => []);
+  const recommendedProducts = (
+    bestsellers.length >= 3 ? bestsellers : fallbackProducts
+  ).slice(0, 3);
+
   return (
     <html lang="en" suppressHydrationWarning>
       <head>
@@ -97,6 +111,8 @@ export default async function RootLayout({
                 <Navbar />
                 {children}
                 <Footer />
+                <WhatsAppButton />
+                <ExitIntentModal products={recommendedProducts} />
               </LenisProvider>
             </CartProvider>
           </SplashWrapper>

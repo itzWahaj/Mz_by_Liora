@@ -16,7 +16,10 @@ import { useFormState } from "react-dom";
 import { addItem } from "../cart/actions";
 import { useCart } from "../cart/cart-context";
 import { flyToCart } from "../cart/fly-to-cart";
-import Price from "../price";
+import PriceDisplay, {
+  calculateDiscount,
+  DiscountBadge,
+} from "../price-display";
 
 function firstAvailableVariant(product: Product): ProductVariant | undefined {
   return (
@@ -82,9 +85,16 @@ export default function ProductGridCard({ product }: { product: Product }) {
   const priceAmount =
     selectedVariant?.price.amount ||
     product.priceRange.maxVariantPrice.amount;
+  const compareAtPriceAmount =
+    selectedVariant?.compareAtPrice?.amount || null;
   const priceCurrency =
     selectedVariant?.price.currencyCode ||
     product.priceRange.maxVariantPrice.currencyCode;
+
+  const { hasDiscount, discountPercentage } = calculateDiscount(
+    priceAmount,
+    compareAtPriceAmount
+  );
 
   const activeImageUrl = useMemo(() => {
     if (images.length > 1) {
@@ -92,6 +102,14 @@ export default function ProductGridCard({ product }: { product: Product }) {
     }
     return primaryUrl;
   }, [imageIndex, images, primaryUrl]);
+
+  const hoverUrl = useMemo(() => {
+    if (images.length > 1) {
+      const nextIdx = imageIndex === 0 ? 1 : 0;
+      return images[nextIdx]?.url;
+    }
+    return null;
+  }, [images, imageIndex]);
 
   const hasGallery = images.length > 1;
   const prevImageIndex =
@@ -117,7 +135,7 @@ export default function ProductGridCard({ product }: { product: Product }) {
 
   return (
     <motion.div
-      className="group relative aspect-square h-full w-full overflow-hidden rounded-2xl"
+      className="group relative aspect-square h-full w-full transform-gpu overflow-hidden rounded-2xl"
       initial="rest"
       animate="rest"
       whileHover={reduceMotion ? undefined : "hover"}
@@ -127,7 +145,7 @@ export default function ProductGridCard({ product }: { product: Product }) {
         hover: { y: -4 },
       }}
     >
-      <div className="pointer-events-none absolute inset-0 -z-10 rounded-2xl bg-brand-gradient opacity-0 blur-2xl transition-brand group-hover:opacity-30" />
+      <div className="pointer-events-none absolute inset-0 -z-10 transform-gpu rounded-2xl bg-brand-gradient opacity-0 blur-xl transition-brand group-hover:opacity-30" />
 
       <Link
         href={`/product/${product.handle}`}
@@ -136,6 +154,7 @@ export default function ProductGridCard({ product }: { product: Product }) {
       >
         <div className="relative h-full w-full overflow-hidden rounded-2xl border border-neutral-200 bg-neutral-100 transition-brand group-hover:border-brand-teal dark:border-neutral-800 dark:bg-neutral-900">
           <div className="absolute inset-0">
+            {/* Primary / Active Image */}
             <Image
               alt={product.title}
               src={displayImageUrl}
@@ -146,13 +165,38 @@ export default function ProductGridCard({ product }: { product: Product }) {
                 isFallback
                   ? "object-contain p-10 opacity-70 bg-gradient-to-br from-brand-teal/5 via-white to-brand-blue/5 dark:from-neutral-900 dark:to-neutral-950"
                   : "object-cover",
-                !reduceMotion &&
-                  "transition duration-[400ms] ease-out group-hover:scale-105 motion-reduce:transition-none motion-reduce:group-hover:scale-100"
+                !reduceMotion && [
+                  "transition-all duration-500 ease-out motion-reduce:transition-none",
+                  hoverUrl && !isFallback
+                    ? "group-hover:opacity-0 group-hover:scale-105"
+                    : "group-hover:scale-105",
+                ]
               )}
             />
+
+            {/* Secondary Image on Hover */}
+            {hoverUrl && !isFallback && (
+              <Image
+                alt={`${product.title} - secondary view`}
+                src={hoverUrl}
+                fill
+                sizes="(min-width: 1024px) 25vw, (min-width: 640px) 50vw, 100vw"
+                className={clsx(
+                  "object-cover opacity-0 transition-all duration-500 ease-out motion-reduce:transition-none",
+                  !reduceMotion &&
+                    "group-hover:opacity-100 group-hover:scale-105"
+                )}
+              />
+            )}
           </div>
         </div>
       </Link>
+
+      {hasDiscount && (
+        <div className="pointer-events-none absolute right-3 top-3 z-10">
+          <DiscountBadge percentage={discountPercentage} />
+        </div>
+      )}
 
       {hasGallery ? (
         <>
@@ -172,7 +216,12 @@ export default function ProductGridCard({ product }: { product: Product }) {
           >
             <ChevronRightIcon className="h-4 w-4" />
           </button>
-          <div className="pointer-events-auto absolute right-3 top-3 z-10 flex gap-1">
+          <div
+            className={clsx(
+              "pointer-events-auto absolute right-3 z-10 flex gap-1",
+              hasDiscount ? "top-9" : "top-3"
+            )}
+          >
             {images.slice(0, 4).map((image, index) => (
               <button
                 key={`${image.url}-${index}`}
@@ -194,17 +243,23 @@ export default function ProductGridCard({ product }: { product: Product }) {
       <div className="pointer-events-none absolute left-3 top-3 z-10">
         <AnimatePresence mode="wait" initial={false}>
           <motion.div
-            key={`${selectedVariant?.id ?? "price"}-${priceAmount}`}
+            key={`${selectedVariant?.id ?? "price"}-${priceAmount}-${compareAtPriceAmount ?? ""}`}
             initial={{ opacity: 0, y: 4 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -4 }}
             transition={{ duration: 0.18 }}
           >
-            <Price
-              className="rounded-full border border-brand-navy/10 bg-white/85 px-2.5 py-1 text-xs font-medium text-brand shadow-sm backdrop-blur-md dark:border-white/15 dark:bg-black/60 dark:text-white"
-              amount={priceAmount}
-              currencyCode={priceCurrency}
-            />
+            <div className="rounded-full border border-brand-navy/10 bg-white/85 px-2.5 py-1 text-xs font-medium shadow-sm backdrop-blur-md dark:border-white/15 dark:bg-black/60">
+              <PriceDisplay
+                amount={priceAmount}
+                compareAtAmount={compareAtPriceAmount}
+                currencyCode={priceCurrency}
+                showBadge={false}
+                size="xs"
+                priceClassName="text-brand dark:text-white"
+                compareAtClassName="text-neutral-400 dark:text-neutral-400"
+              />
+            </div>
           </motion.div>
         </AnimatePresence>
       </div>

@@ -4,8 +4,10 @@ import Gallery from "@/components/product/gallery";
 import { ProductProvider } from "@/components/product/product-context";
 import { ProductDescription } from "@/components/product/product-description";
 import RelatedProductsCarousel from "@/components/product/related-products-carousel";
+import ReviewsSection from "@/components/product/reviews-section";
 import Skeleton from "@/components/ui/skeleton";
 import { HIDDEN_PRODUCT_TAG } from "@/lib/constants";
+import { getJudgeMeReviews } from "@/lib/judgeme";
 import { getProduct, getProductRecommendations } from "@/lib/shopify";
 import { Image } from "@/lib/shopify/types";
 import { Metadata } from "next";
@@ -57,6 +59,12 @@ export default async function ProductPage({
 }) {
   const product = await getProduct(params.handle);
   if (!product) return notFound();
+
+  const judgeMeData = await getJudgeMeReviews({
+    productHandle: product.handle,
+    productId: product.id,
+  });
+
   return (
     <ProductProvider>
       <div className="mx-auto max-w-screen-2xl px-4">
@@ -91,23 +99,26 @@ export default async function ProductPage({
             </Suspense>
           </div>
         </div>
-        <RelatedPRoducts id={product.id} />
+
+        {/* Judge.me Reviews Section */}
+        <ReviewsSection
+          productId={product.id}
+          productHandle={product.handle}
+          productTitle={product.title}
+          initialReviews={judgeMeData.reviews}
+          reviewSummary={product.reviews}
+        />
+
+        <RelatedProducts id={product.id} />
       </div>
     </ProductProvider>
   );
 }
 
-async function RelatedPRoducts({ id }: { id: string }) {
+async function RelatedProducts({ id }: { id: string }) {
   const relatedProducts = await getProductRecommendations(id);
 
   if (!relatedProducts?.length) return null;
 
-  return (
-    <div className="py-8">
-      <h2 className="mb-4 font-display text-2xl font-bold tracking-tight">
-        Related Products
-      </h2>
-      <RelatedProductsCarousel products={relatedProducts} />
-    </div>
-  );
+  return <RelatedProductsCarousel products={relatedProducts} />;
 }

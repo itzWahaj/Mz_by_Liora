@@ -12,6 +12,9 @@ const envSchema = z.object({
   NEXT_PUBLIC_KLAVIYO_PUBLIC_KEY: z.string().optional(),
   KLAVIYO_PRIVATE_API_KEY: z.string().optional(),
   KLAVIYO_LIST_ID: z.string().optional(),
+  NEXT_PUBLIC_JUDGEME_PUBLIC_TOKEN: z.string().optional(),
+  JUDGEME_PRIVATE_TOKEN: z.string().optional(),
+  NEXT_PUBLIC_JUDGEME_SHOP_DOMAIN: z.string().optional(),
 });
 
 envSchema.parse(process.env);
