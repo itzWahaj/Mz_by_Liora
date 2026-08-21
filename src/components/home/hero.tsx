@@ -181,7 +181,7 @@ export default function HomeHero({
 
               {/* Secondary Call to Action */}
               <Link
-                href="/search/best-sellers"
+                href="/collections/best-sellers"
                 prefetch={true}
                 className="inline-flex h-12 items-center justify-center gap-2 rounded-full border border-neutral-300/80 bg-white/80 px-6 text-sm font-semibold text-brand backdrop-blur-sm transition-all duration-300 hover:border-brand-teal hover:bg-white hover:shadow-md active:scale-[0.98] dark:border-neutral-700 dark:bg-neutral-900/80 dark:text-white dark:hover:bg-neutral-900"
               >
@@ -205,9 +205,9 @@ export default function HomeHero({
                 Explore:
               </span>
               {[
-                { title: "Skin Care", href: "/search/skin-care" },
-                { title: "Hair Care", href: "/search/hair-care" },
-                { title: "New Arrivals", href: "/search/new-arrivals" },
+                { title: "Skin Care", href: "/collections/skin-care" },
+                { title: "Hair Care", href: "/collections/hair-care" },
+                { title: "New Arrivals", href: "/collections/new-arrivals" },
               ].map((cat) => (
                 <Link
                   key={cat.title}

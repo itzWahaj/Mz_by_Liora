@@ -16,27 +16,27 @@ export const HOMEPAGE_COLLECTIONS = [
   {
     handle: "best-sellers",
     title: "Best Sellers",
-    href: "/search/best-sellers",
+    href: "/collections/best-sellers",
   },
   {
     handle: "skin-care",
     title: "Skin Care",
-    href: "/search/skin-care",
+    href: "/collections/skin-care",
   },
   {
     handle: "hair-care",
     title: "Hair Care",
-    href: "/search/hair-care",
+    href: "/collections/hair-care",
   },
   {
     handle: "featured",
     title: "Featured",
-    href: "/search/featured",
+    href: "/collections/featured",
   },
   {
     handle: "new-arrivals",
     title: "New Arrivals",
-    href: "/search/new-arrivals",
+    href: "/collections/new-arrivals",
   },
 ] as const;
 

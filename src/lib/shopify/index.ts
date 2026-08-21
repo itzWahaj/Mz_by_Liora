@@ -291,6 +291,9 @@ function reshapeProduct(
     ...rest,
     images: galleryImages,
     variants: removeEdgesAndNodes(variants),
+    collections: product.collections
+      ? removeEdgesAndNodes(product.collections)
+      : [],
     reviews: parseReviewSummary(product),
   };
 }
@@ -470,7 +473,7 @@ function reshapeCollection(
 
   return {
     ...collection,
-    path: `/search/${collection.handle}`,
+    path: `/collections/${collection.handle}`,
   };
 }
 

@@ -5,6 +5,7 @@ import { ProductProvider } from "@/components/product/product-context";
 import { ProductDescription } from "@/components/product/product-description";
 import RelatedProductsCarousel from "@/components/product/related-products-carousel";
 import ReviewsSection from "@/components/product/reviews-section";
+import Breadcrumbs from "@/components/ui/breadcrumbs";
 import Skeleton from "@/components/ui/skeleton";
 import { BRAND, HIDDEN_PRODUCT_TAG } from "@/lib/constants";
 import { getJudgeMeReviews } from "@/lib/judgeme";
@@ -96,7 +97,25 @@ export default async function ProductPage({
   const rawDescription = product.description || product.seo.description || "";
   const cleanDescription = rawDescription.replace(/<[^>]*>/g, "").trim();
 
-  // Schema.org/Product structured data with Judge.me ratings
+  // Calculate genuine visible review stats from live Judge.me reviews or Shopify metadata
+  const liveReviews = judgeMeData.reviews || [];
+  const liveReviewCount = liveReviews.length;
+  const liveRating =
+    liveReviewCount > 0
+      ? liveReviews.reduce((sum, r) => sum + r.rating, 0) / liveReviewCount
+      : 0;
+
+  const effectiveReviewCount =
+    liveReviewCount > 0
+      ? liveReviewCount
+      : product.reviews?.reviewCount || 0;
+  const effectiveRating =
+    liveReviewCount > 0
+      ? liveRating
+      : product.reviews?.rating || 0;
+  const hasGenuineReviews = effectiveReviewCount > 0 && effectiveRating > 0;
+
+  // Schema.org/Product structured data adhering strictly to Google Search Central guidelines
   const productJsonLd = {
     "@context": "https://schema.org",
     "@type": "Product",
@@ -125,17 +144,80 @@ export default async function ProductPage({
         name: "MZ by LIORA",
       },
     },
-    ...(product.reviews?.reviewCount && product.reviews.reviewCount > 0
+    // Only include aggregateRating if genuine reviews actually exist and are visible on the page
+    ...(hasGenuineReviews
       ? {
           aggregateRating: {
             "@type": "AggregateRating",
-            ratingValue: product.reviews.rating.toFixed(1),
-            reviewCount: product.reviews.reviewCount,
+            ratingValue: effectiveRating.toFixed(1),
+            reviewCount: effectiveReviewCount,
             bestRating: "5",
             worstRating: "1",
           },
+          ...(judgeMeData.reviews?.length > 0
+            ? {
+                review: judgeMeData.reviews.slice(0, 5).map((rev) => ({
+                  "@type": "Review",
+                  reviewRating: {
+                    "@type": "Rating",
+                    ratingValue: rev.rating,
+                    bestRating: "5",
+                    worstRating: "1",
+                  },
+                  author: {
+                    "@type": "Person",
+                    name: rev.reviewer?.name || "Verified Buyer",
+                  },
+                  datePublished: rev.created_at,
+                  reviewBody: rev.body,
+                })),
+              }
+            : {}),
         }
       : {}),
+  };
+
+  // Identify primary collection for breadcrumb hierarchy
+  const primaryCollection =
+    product.collections?.find(
+      (c) =>
+        c.handle !== "hidden" &&
+        c.handle !== "new-arrivals" &&
+        c.handle !== "featured" &&
+        c.handle !== "best-sellers"
+    ) ||
+    product.collections?.find((c) => c.handle !== "hidden") ||
+    null;
+
+  const breadcrumbCategoryName = primaryCollection?.title || "Shop";
+  const breadcrumbCategoryPath = primaryCollection
+    ? `/collections/${primaryCollection.handle}`
+    : "/search";
+
+  // BreadcrumbList JSON-LD Schema
+  const breadcrumbJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      {
+        "@type": "ListItem",
+        position: 1,
+        name: "Home",
+        item: siteUrl,
+      },
+      {
+        "@type": "ListItem",
+        position: 2,
+        name: breadcrumbCategoryName,
+        item: `${siteUrl}${breadcrumbCategoryPath}`,
+      },
+      {
+        "@type": "ListItem",
+        position: 3,
+        name: product.title,
+        item: `${siteUrl}/product/${product.handle}`,
+      },
+    ],
   };
 
   return (
@@ -146,7 +228,23 @@ export default async function ProductPage({
           __html: JSON.stringify(productJsonLd),
         }}
       />
-      <div className="mx-auto max-w-screen-2xl px-4">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(breadcrumbJsonLd),
+        }}
+      />
+      <div className="mx-auto max-w-screen-2xl px-4 py-4">
+        {/* Visual Breadcrumb Navigation */}
+        <Breadcrumbs
+          items={[
+            { name: "Home", href: "/" },
+            { name: breadcrumbCategoryName, href: breadcrumbCategoryPath },
+            { name: product.title },
+          ]}
+          className="mb-4"
+        />
+
         <div className="flex flex-col rounded-lg border border-neutral-200 bg-white p-8 md:p-12 lg:flex-row lg:gap-8 dark:border-neutral-800 dark:bg-black">
           <div className="h-full w-full basis-full lg:basis-4/6">
             <Suspense

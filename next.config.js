@@ -15,4 +15,21 @@ module.exports = {
       },
     ],
   },
+  async redirects() {
+    return [
+      {
+        source: "/search/:collection((?!$|page).+)",
+        destination: "/collections/:collection",
+        permanent: true,
+      },
+    ];
+  },
+  async rewrites() {
+    return [
+      {
+        source: "/shop",
+        destination: "/search",
+      },
+    ];
+  },
 };

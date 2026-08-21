@@ -70,6 +70,14 @@ export const productFragment = /* GraphQl */ `
     }
     tags
     updatedAt
+    collections(first: 5) {
+      edges {
+        node {
+          handle
+          title
+        }
+      }
+    }
     ratingMetafield: metafield(namespace: "reviews", key: "rating") {
       value
     }

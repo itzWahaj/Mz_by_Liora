@@ -332,28 +332,22 @@ export default function ProductGridCard({ product }: { product: Product }) {
             <p className="line-clamp-1 text-sm font-medium leading-snug text-brand dark:text-white">
               {product.title}
             </p>
-            <div className="mt-1 flex items-center gap-1.5">
-              <StarsRow
-                rating={
-                  product.reviews?.rating && product.reviews.rating > 0
-                    ? product.reviews.rating
-                    : 5
-                }
-                sizeClass="h-3 w-3"
-              />
-              <span className="text-[11px] font-semibold text-brand dark:text-white">
-                {(
-                  product.reviews?.rating && product.reviews.rating > 0
-                    ? product.reviews.rating
-                    : 5
-                ).toFixed(1)}
-              </span>
-              {product.reviews?.reviewCount && product.reviews.reviewCount > 0 ? (
+            {product.reviews &&
+            product.reviews.reviewCount > 0 &&
+            product.reviews.rating > 0 ? (
+              <div className="mt-1 flex items-center gap-1.5">
+                <StarsRow
+                  rating={product.reviews.rating}
+                  sizeClass="h-3 w-3"
+                />
+                <span className="text-[11px] font-semibold text-brand dark:text-white">
+                  {product.reviews.rating.toFixed(1)}
+                </span>
                 <span className="text-[10px] text-neutral-400 dark:text-neutral-500">
                   ({product.reviews.reviewCount})
                 </span>
-              ) : null}
-            </div>
+              </div>
+            ) : null}
           </Link>
 
           <form

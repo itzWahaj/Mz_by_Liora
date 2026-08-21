@@ -98,6 +98,7 @@ export type ShopifyProduct = {
   seo: SEO;
   tags: string[];
   updatedAt: string;
+  collections?: Connection<{ handle: string; title: string }>;
   ratingMetafield?: MetafieldValue;
   ratingCountMetafield?: MetafieldValue;
   judgemeBadgeMetafield?: MetafieldValue;
@@ -106,9 +107,10 @@ export type ShopifyProduct = {
   judgemeWidgetDataMetafield?: MetafieldValue;
 };
 
-export type Product = Omit<ShopifyProduct, "variants" | "images"> & {
+export type Product = Omit<ShopifyProduct, "variants" | "images" | "collections"> & {
   variants: ProductVariant[];
   images: Image[];
+  collections?: { handle: string; title: string }[];
   reviews?: ReviewSummary;
 };
 

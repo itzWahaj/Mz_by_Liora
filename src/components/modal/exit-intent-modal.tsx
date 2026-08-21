@@ -255,23 +255,19 @@ export default function ExitIntentModal({ products }: ExitIntentModalProps) {
                             compareAtClassName="text-neutral-400 text-[10px]"
                             showBadge={false}
                           />
-                          <div className="flex items-center gap-1">
-                            <StarsRow
-                              rating={
-                                product.reviews?.rating && product.reviews.rating > 0
-                                  ? product.reviews.rating
-                                  : 5
-                              }
-                              sizeClass="h-2.5 w-2.5"
-                            />
-                            <span className="text-[10px] font-medium text-neutral-500">
-                              {(
-                                product.reviews?.rating && product.reviews.rating > 0
-                                  ? product.reviews.rating
-                                  : 5
-                              ).toFixed(1)}
-                            </span>
-                          </div>
+                          {product.reviews &&
+                          product.reviews.reviewCount > 0 &&
+                          product.reviews.rating > 0 ? (
+                            <div className="flex items-center gap-1">
+                              <StarsRow
+                                rating={product.reviews.rating}
+                                sizeClass="h-2.5 w-2.5"
+                              />
+                              <span className="text-[10px] font-medium text-neutral-500">
+                                {product.reviews.rating.toFixed(1)}
+                              </span>
+                            </div>
+                          ) : null}
                         </div>
                       </div>
 
