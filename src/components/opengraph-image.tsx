@@ -1,5 +1,6 @@
 import { ImageResponse } from "next/og";
 import { BRAND } from "@/lib/constants";
+import { LOGO_OG_BASE64 } from "@/lib/logo-base64";
 
 export type Props = {
   title?: string;
@@ -8,7 +9,8 @@ export type Props = {
 export default async function OpengraphImage(
   props?: Props
 ): Promise<ImageResponse> {
-  const title = props?.title || process.env.SITE_NAME || "MZ by LIORA";
+  const isDefaultTitle = !props?.title || props.title === "MZ by LIORA";
+  const title = props?.title || "MZ by LIORA";
 
   return new ImageResponse(
     (
@@ -20,49 +22,108 @@ export default async function OpengraphImage(
           flexDirection: "column",
           alignItems: "center",
           justifyContent: "center",
-          background: "linear-gradient(160deg, #0F172A 0%, #1a2744 100%)",
+          position: "relative",
+          background: "linear-gradient(145deg, #0B1120 0%, #0F172A 40%, #162444 100%)",
           color: "#FAFAF9",
+          padding: "40px",
         }}
       >
+        {/* Subtle decorative background glow */}
+        <div
+          style={{
+            position: "absolute",
+            top: "20%",
+            left: "50%",
+            transform: "translate(-50%, -50%)",
+            width: "500px",
+            height: "300px",
+            borderRadius: "999px",
+            background: "radial-gradient(circle, rgba(20, 184, 166, 0.18) 0%, rgba(30, 95, 191, 0.08) 50%, transparent 80%)",
+          }}
+        />
+
+        {/* Decorative inner frame */}
+        <div
+          style={{
+            position: "absolute",
+            top: "24px",
+            left: "24px",
+            right: "24px",
+            bottom: "24px",
+            border: "1px solid rgba(255, 255, 255, 0.08)",
+            borderRadius: "24px",
+          }}
+        />
+
+        {/* Real Brand Logo Image */}
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
+          src={LOGO_OG_BASE64}
+          alt="MZ by LIORA"
+          width={340}
+          height={227}
+          style={{
+            objectFit: "contain",
+          }}
+        />
+
+        {/* Page Title (if dynamic page) */}
+        {!isDefaultTitle && (
+          <p
+            style={{
+              marginTop: 16,
+              fontSize: 42,
+              fontWeight: 700,
+              fontFamily: "Georgia, serif",
+              color: "#FFFFFF",
+              textAlign: "center",
+              maxWidth: "900px",
+            }}
+          >
+            {title}
+          </p>
+        )}
+
+        {/* Tagline / Subtitle Badge */}
         <div
           style={{
             display: "flex",
-            height: 140,
-            width: 140,
             alignItems: "center",
-            justifyContent: "center",
+            gap: 12,
+            marginTop: isDefaultTitle ? 22 : 12,
+            padding: "8px 26px",
             borderRadius: 999,
-            border: "3px solid #14B8A6",
-            background: "#FAFAF9",
-            color: "#0F172A",
-            fontSize: 42,
-            fontFamily: "Georgia, serif",
-            fontWeight: 700,
-            letterSpacing: 4,
+            background: "rgba(20, 184, 166, 0.12)",
+            border: "1px solid rgba(20, 184, 166, 0.35)",
           }}
         >
-          MZ
+          <p
+            style={{
+              fontSize: 20,
+              fontWeight: 600,
+              letterSpacing: 4,
+              textTransform: "uppercase",
+              color: "#2DD4BF",
+              margin: 0,
+            }}
+          >
+            {BRAND.tagline}
+          </p>
         </div>
+
+        {/* Bottom Domain Branding */}
         <p
           style={{
-            marginTop: 40,
-            fontSize: 56,
-            fontWeight: 700,
-            fontFamily: "Georgia, serif",
-          }}
-        >
-          {title}
-        </p>
-        <p
-          style={{
-            marginTop: 12,
-            fontSize: 20,
-            letterSpacing: 6,
+            position: "absolute",
+            bottom: "36px",
+            fontSize: 15,
+            letterSpacing: 3,
             textTransform: "uppercase",
-            color: "#14B8A6",
+            color: "rgba(255, 255, 255, 0.4)",
+            margin: 0,
           }}
         >
-          {BRAND.tagline}
+          mzbyliora.com
         </p>
       </div>
     ),
