@@ -1,5 +1,3 @@
-export const runtime = "edge";
-
 import clsx from "clsx";
 import Grid from "@/components/grid";
 import HomeHero from "@/components/home/hero";

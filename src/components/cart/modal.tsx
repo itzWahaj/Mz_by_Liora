@@ -19,6 +19,7 @@ import CloseCart from "./close-cart";
 import { DeleteItemButton } from "./delete-item-button";
 import { EditItemQuantityButton } from "./edit-item-quantity-button";
 import OpenCart from "./open-cart";
+import { TagIcon } from "@heroicons/react/24/outline";
 
 type MerchandiseSearchParams = {
   [key: string]: string;
@@ -28,7 +29,6 @@ export default function CartModal() {
   const { cart, updateCartItem } = useCart();
   const [isOpen, setIsOpen] = useState(false);
   const [mounted, setMounted] = useState(false);
-  const quantityRef = useRef(cart?.totalQuantity);
   const reduceMotion = Boolean(useReducedMotion());
   const openCart = () => setIsOpen(true);
   const closeCart = () => setIsOpen(false);
@@ -38,32 +38,43 @@ export default function CartModal() {
   }, []);
 
   useEffect(() => {
-    if (!cart) {
-      createCartAndSetCookie();
+    if (isOpen) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "";
     }
-  }, [cart]);
-
-  useEffect(() => {
-    // Keep quantity ref in sync without auto-opening the drawer on add.
-    quantityRef.current = cart?.totalQuantity;
-  }, [cart?.totalQuantity]);
-
-  useEffect(() => {
-    if (!isOpen) return;
-
-    const previousOverflow = document.body.style.overflow;
-    document.body.style.overflow = "hidden";
-
-    const onKeyDown = (event: KeyboardEvent) => {
-      if (event.key === "Escape") closeCart();
-    };
-
-    window.addEventListener("keydown", onKeyDown);
     return () => {
-      document.body.style.overflow = previousOverflow;
-      window.removeEventListener("keydown", onKeyDown);
+      document.body.style.overflow = "";
     };
   }, [isOpen]);
+
+  useEffect(() => {
+    createCartAndSetCookie();
+  }, []);
+
+  const currencyCode = cart?.cost?.totalAmount?.currencyCode || "PKR";
+
+  // Calculate original subtotal & savings
+  const originalSubtotal = (cart?.lines || []).reduce((acc, item) => {
+    const unitPrice = Number(
+      item.merchandise.price?.amount ||
+      item.cost.amountPerQuantity?.amount ||
+      Number(item.cost.totalAmount.amount) / Math.max(item.quantity, 1)
+    );
+    const unitComparePrice = Number(
+      item.merchandise.compareAtPrice?.amount ||
+      item.cost.compareAtAmountPerQuantity?.amount ||
+      item.merchandise.product.compareAtPriceRange?.minVariantPrice?.amount ||
+      0
+    );
+    const effectiveCompare = unitComparePrice > unitPrice ? unitComparePrice : unitPrice;
+    return acc + effectiveCompare * item.quantity;
+  }, 0);
+
+  const currentTotal = Number(cart?.cost?.totalAmount?.amount || 0);
+  const totalSavings = Math.max(0, originalSubtotal - currentTotal);
+  const totalSavingsPercent =
+    originalSubtotal > 0 ? Math.round((totalSavings / originalSubtotal) * 100) : 0;
 
   const drawer =
     mounted &&
@@ -71,11 +82,10 @@ export default function CartModal() {
       <AnimatePresence>
         {isOpen ? (
           <motion.div
-            className="fixed inset-0 z-[1000]"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            transition={{ duration: reduceMotion ? 0 : 0.2 }}
+            className="fixed inset-0 z-[1000]"
           >
             <motion.button
               aria-label="Close cart overlay"
@@ -84,7 +94,7 @@ export default function CartModal() {
             />
             <motion.aside
               data-lenis-prevent
-              className="fixed bottom-0 right-0 top-0 z-[1001] flex h-dvh w-full max-w-[100vw] flex-col border-l border-neutral-200 bg-white p-4 text-black shadow-2xl sm:p-6 md:w-[390px] dark:border-neutral-700 dark:bg-neutral-950 dark:text-white"
+              className="fixed bottom-0 right-0 top-0 z-[1001] flex h-dvh w-full max-w-[100vw] flex-col border-l border-neutral-200 bg-white p-4 text-black shadow-2xl sm:p-6 md:w-[410px] dark:border-neutral-700 dark:bg-neutral-950 dark:text-white"
               initial={{ x: "100%" }}
               animate={{ x: 0 }}
               exit={{ x: "100%" }}
@@ -124,8 +134,8 @@ export default function CartModal() {
                   </p>
                 </div>
               ) : (
-                <div className="flex min-h-0 flex-1 flex-col pt-4">
-                  <ul className="min-h-0 flex-1 overflow-y-auto overscroll-contain py-2">
+                <div className="flex min-h-0 flex-1 flex-col pt-3">
+                  <ul className="min-h-0 flex-1 overflow-y-auto overscroll-contain py-2 pr-1">
                     <AnimatePresence initial={false}>
                       {cart.lines
                         .sort((a, b) =>
@@ -146,6 +156,7 @@ export default function CartModal() {
                               }
                             }
                           );
+
                           const merchandiseUrl = createUrl(
                             `/product/${item.merchandise.product.handle}`,
                             new URLSearchParams(merchandiseSearchParams)
@@ -155,6 +166,27 @@ export default function CartModal() {
                               ? item.merchandise.product.featuredImage
                               : null;
 
+                          const unitPrice = Number(
+                            item.merchandise.price?.amount ||
+                            item.cost.amountPerQuantity?.amount ||
+                            Number(item.cost.totalAmount.amount) / Math.max(item.quantity, 1)
+                          );
+
+                          const unitComparePrice = Number(
+                            item.merchandise.compareAtPrice?.amount ||
+                            item.cost.compareAtAmountPerQuantity?.amount ||
+                            item.merchandise.product.compareAtPriceRange?.minVariantPrice?.amount ||
+                            0
+                          );
+
+                          const hasLineDiscount = unitComparePrice > unitPrice;
+                          const lineCompareTotal = hasLineDiscount
+                            ? unitComparePrice * item.quantity
+                            : Number(item.cost.totalAmount.amount);
+                          const lineDiscountPercent = hasLineDiscount
+                            ? Math.round(((unitComparePrice - unitPrice) / unitComparePrice) * 100)
+                            : 0;
+
                           return (
                             <motion.li
                               layout
@@ -163,70 +195,95 @@ export default function CartModal() {
                               exit={{ opacity: 0, y: -12 }}
                               transition={{ duration: 0.2 }}
                               key={item.merchandise.id}
-                              className="flex w-full flex-col border-b border-neutral-200 dark:border-neutral-800"
+                              className="flex w-full flex-col border-b border-neutral-200/80 px-2 py-4 dark:border-neutral-800"
                             >
-                              <div className="relative flex w-full flex-row justify-between px-1 py-4">
-                                <div className="absolute z-40 -ml-1 -mt-2">
-                                  <DeleteItemButton
-                                    item={item}
-                                    optimisticUpdate={updateCartItem}
-                                  />
-                                </div>
-                                <Link
-                                  href={merchandiseUrl}
-                                  onClick={closeCart}
-                                  className="z-30 flex flex-row space-x-4"
-                                >
-                                  <div className="relative flex h-16 w-16 cursor-pointer items-center justify-center overflow-hidden rounded-xl border border-neutral-200 bg-neutral-100 shadow-[0_8px_24px_rgba(15,23,42,0.08)] transition-brand hover:border-brand-teal dark:border-neutral-700 dark:bg-neutral-900 dark:shadow-none">
-                                    {image?.url ? (
-                                      <Image
-                                        className="h-full w-full object-cover"
-                                        width={64}
-                                        height={64}
-                                        alt={
-                                          image.altText ||
-                                          item.merchandise.product.title
-                                        }
-                                        src={image.url}
+                              <div className="relative flex w-full flex-row items-start justify-between gap-3">
+                                <div className="z-30 flex flex-1 flex-row space-x-3.5">
+                                  <div className="relative flex h-16 w-16 shrink-0 items-center justify-center rounded-xl border border-neutral-200 bg-neutral-100 shadow-[0_8px_24px_rgba(15,23,42,0.08)] transition-brand hover:border-brand-teal dark:border-neutral-700 dark:bg-neutral-900 dark:shadow-none">
+                                    <div className="absolute -left-2 -top-2 z-40">
+                                      <DeleteItemButton
+                                        item={item}
+                                        optimisticUpdate={updateCartItem}
                                       />
-                                    ) : (
-                                      <Image
-                                        src="/logo.png"
-                                        alt="MZ by LIORA"
-                                        width={40}
-                                        height={40}
-                                        className="h-10 w-10 object-contain opacity-80"
-                                      />
-                                    )}
+                                    </div>
+                                    <Link
+                                      href={merchandiseUrl}
+                                      onClick={closeCart}
+                                      className="flex h-full w-full items-center justify-center overflow-hidden rounded-xl"
+                                    >
+                                      {image?.url ? (
+                                        <Image
+                                          className="h-full w-full object-cover"
+                                          width={64}
+                                          height={64}
+                                          alt={
+                                            image.altText ||
+                                            item.merchandise.product.title
+                                          }
+                                          src={image.url}
+                                        />
+                                      ) : (
+                                        <Image
+                                          src="/logo.png"
+                                          alt="MZ by LIORA"
+                                          width={40}
+                                          height={40}
+                                          className="h-10 w-10 object-contain opacity-80"
+                                        />
+                                      )}
+                                    </Link>
                                   </div>
-                                  <div className="flex flex-1 flex-col text-base">
-                                    <span className="leading-tight">
+                                  <Link
+                                    href={merchandiseUrl}
+                                    onClick={closeCart}
+                                    className="flex min-w-0 flex-1 flex-col pr-1"
+                                  >
+                                    <span className="line-clamp-2 text-sm font-semibold leading-snug text-brand transition-colors hover:text-brand-teal dark:text-white dark:hover:text-brand-teal">
                                       {item.merchandise.product.title}
                                     </span>
-                                    {item.merchandise.title !==
-                                    DEFAULT_OPTION ? (
-                                      <p className="text-sm text-neutral-500 dark:text-neutral-400">
+                                    {item.merchandise.title !== DEFAULT_OPTION ? (
+                                      <p className="mt-0.5 text-xs text-neutral-500 dark:text-neutral-400">
                                         {item.merchandise.title}
                                       </p>
                                     ) : null}
+
+                                    {/* Line item discount badge if on sale */}
+                                    {hasLineDiscount && (
+                                      <div className="mt-1 flex items-center gap-1">
+                                        <span className="rounded bg-emerald-500/10 px-1.5 py-0.5 text-[10px] font-bold text-emerald-600 dark:bg-emerald-500/20 dark:text-emerald-400">
+                                          {lineDiscountPercent}% OFF
+                                        </span>
+                                      </div>
+                                    )}
+                                  </Link>
+                                </div>
+
+                                <div className="flex shrink-0 flex-col items-end justify-between self-stretch">
+                                  <div className="text-right">
+                                    <div className="flex flex-col items-end">
+                                      {hasLineDiscount && (
+                                        <Price
+                                          className="text-xs text-neutral-400 line-through dark:text-neutral-500"
+                                          amount={String(lineCompareTotal)}
+                                          currencyCode={item.cost.totalAmount.currencyCode}
+                                        />
+                                      )}
+                                      <Price
+                                        className="text-sm font-bold text-brand dark:text-white"
+                                        amount={item.cost.totalAmount.amount}
+                                        currencyCode={item.cost.totalAmount.currencyCode}
+                                      />
+                                    </div>
                                   </div>
-                                </Link>
-                                <div className="flex h-16 flex-col justify-between">
-                                  <Price
-                                    className="flex justify-end space-y-2 text-right text-sm"
-                                    amount={item.cost.totalAmount.amount}
-                                    currencyCode={
-                                      item.cost.totalAmount.currencyCode
-                                    }
-                                  />
-                                  <div className="ml-auto flex h-9 flex-row items-center rounded-full border border-brand-teal/35 bg-white shadow-sm transition-brand hover:border-brand-teal dark:border-brand-teal/40 dark:bg-neutral-900">
+
+                                  <div className="ml-auto mt-2 flex h-8 flex-row items-center rounded-full border border-brand-teal/35 bg-white shadow-sm transition-brand hover:border-brand-teal dark:border-brand-teal/40 dark:bg-neutral-900">
                                     <EditItemQuantityButton
                                       item={item}
                                       type="minus"
                                       optimisticUpdate={updateCartItem}
                                     />
                                     <p className="w-6 text-center">
-                                      <span className="w-full text-sm font-medium">
+                                      <span className="w-full text-xs font-semibold">
                                         {item.quantity}
                                       </span>
                                     </p>
@@ -243,33 +300,65 @@ export default function CartModal() {
                         })}
                     </AnimatePresence>
                   </ul>
-                  <div className="shrink-0 py-4 text-sm text-neutral-500 dark:text-neutral-400">
-                    <div className="mb-3 flex items-center justify-between border-b border-neutral-200 pb-1 dark:border-neutral-800">
-                      <p>Taxes</p>
+
+                  {/* Pricing Breakdown & Checkout */}
+                  <div className="shrink-0 border-t border-neutral-200/80 bg-neutral-50/50 p-4 text-sm dark:border-neutral-800 dark:bg-neutral-900/40">
+                    {/* Subtotal */}
+                    <div className="mb-2 flex items-center justify-between">
+                      <p className="text-neutral-600 dark:text-neutral-400">Subtotal</p>
                       <Price
-                        className="text-right text-base text-black dark:text-white"
-                        amount={cart.cost.totalTaxAmount.amount}
-                        currencyCode={cart.cost.totalTaxAmount.currencyCode}
+                        className="text-right font-medium text-black dark:text-white"
+                        amount={String(originalSubtotal > 0 ? originalSubtotal : cart.cost.subtotalAmount.amount)}
+                        currencyCode={currencyCode}
                       />
                     </div>
-                    <div className="mb-3 flex items-center justify-between border-b border-neutral-200 pb-1 pt-1 dark:border-neutral-800">
+
+                    {/* Total Savings / Discount */}
+                    {totalSavings > 0 && (
+                      <div className="mb-2 flex items-center justify-between text-emerald-600 dark:text-emerald-400">
+                        <div className="flex items-center gap-1.5">
+                          <TagIcon className="h-3.5 w-3.5 shrink-0" />
+                          <span className="font-medium">Total Savings</span>
+                          {totalSavingsPercent > 0 && (
+                            <span className="rounded-full bg-emerald-100 px-2 py-0.5 text-[10px] font-bold text-emerald-700 dark:bg-emerald-950/80 dark:text-emerald-300">
+                              {totalSavingsPercent}% OFF
+                            </span>
+                          )}
+                        </div>
+                        <span className="font-semibold">
+                          - <Price amount={String(totalSavings)} currencyCode={currencyCode} />
+                        </span>
+                      </div>
+                    )}
+
+                    {/* Shipping */}
+                    <div className="mb-3 flex items-center justify-between text-neutral-600 dark:text-neutral-400">
                       <p>Shipping</p>
-                      <p className="text-right">Calculated at checkout</p>
+                      <p className="text-right text-xs">Calculated at checkout</p>
                     </div>
-                    <div className="mb-3 flex items-center justify-between border-b border-neutral-200 pb-2 pt-2 dark:border-neutral-800">
-                      <p className="text-base font-semibold text-black dark:text-white">
-                        Total
-                      </p>
+
+                    {/* Total */}
+                    <div className="mb-4 flex items-center justify-between border-t border-neutral-200/80 pt-3 dark:border-neutral-800">
+                      <div>
+                        <p className="text-base font-bold text-brand dark:text-white">
+                          Total
+                        </p>
+                        <p className="text-[11px] text-neutral-500 dark:text-neutral-400">
+                          Inclusive of all applicable taxes
+                        </p>
+                      </div>
                       <Price
-                        className="text-right text-lg font-semibold text-black dark:text-white"
+                        className="text-right text-xl font-bold text-brand dark:text-white"
                         amount={cart.cost.totalAmount.amount}
-                        currencyCode={cart.cost.totalAmount.currencyCode}
+                        currencyCode={currencyCode}
                       />
                     </div>
+
+                    {/* Checkout CTA */}
+                    <form action={redirectToCheckout} className="shrink-0">
+                      <CheckoutButton />
+                    </form>
                   </div>
-                  <form action={redirectToCheckout} className="shrink-0">
-                    <CheckoutButton />
-                  </form>
                 </div>
               )}
             </motion.aside>
@@ -300,9 +389,9 @@ function CheckoutButton() {
   return (
     <GradientButton
       type="submit"
-      disabled={pending}
       fullWidth
-      className="h-11 px-6"
+      className="h-12 w-full text-base font-semibold"
+      disabled={pending}
     >
       {pending ? <LoadingDots className="bg-white" /> : "Proceed to Checkout"}
     </GradientButton>

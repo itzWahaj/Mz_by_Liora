@@ -1,5 +1,3 @@
-export const runtime = "edge";
-
 import Grid from "@/components/grid";
 import ProductGridItems from "@/components/layout/product-grid-items";
 import Breadcrumbs from "@/components/ui/breadcrumbs";

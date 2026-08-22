@@ -178,6 +178,14 @@ export type CartProduct = {
   handle: string;
   title: string;
   featuredImage: Image;
+  priceRange?: {
+    maxVariantPrice: Money;
+    minVariantPrice: Money;
+  };
+  compareAtPriceRange?: {
+    maxVariantPrice: Money;
+    minVariantPrice: Money;
+  } | null;
 };
 
 export type CartItem = {
@@ -185,10 +193,15 @@ export type CartItem = {
   quantity: number;
   cost: {
     totalAmount: Money;
+    subtotalAmount?: Money;
+    amountPerQuantity?: Money;
+    compareAtAmountPerQuantity?: Money;
   };
   merchandise: {
     id: string;
     title: string;
+    price?: Money;
+    compareAtPrice?: Money;
     selectedOptions: {
       name: string;
       value: string;
@@ -203,8 +216,12 @@ export type ShopifyCart = {
   cost: {
     subtotalAmount: Money;
     totalAmount: Money;
-    totalTaxAmount: Money;
+    totalTaxAmount?: Money;
+    totalDutyAmount?: Money;
   };
+  discountAllocations?: {
+    discountedAmount: Money;
+  }[];
   lines: Connection<CartItem>;
   totalQuantity: number;
 };

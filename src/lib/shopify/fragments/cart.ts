@@ -18,6 +18,12 @@ const cartFragment = /* GraphQL */ `
         currencyCode
       }
     }
+    discountAllocations {
+      discountedAmount {
+        amount
+        currencyCode
+      }
+    }
     lines(first: 100) {
       edges {
         node {
@@ -28,11 +34,31 @@ const cartFragment = /* GraphQL */ `
               amount
               currencyCode
             }
+            subtotalAmount {
+              amount
+              currencyCode
+            }
+            amountPerQuantity {
+              amount
+              currencyCode
+            }
+            compareAtAmountPerQuantity {
+              amount
+              currencyCode
+            }
           }
           merchandise {
             ... on ProductVariant {
               id
               title
+              price {
+                amount
+                currencyCode
+              }
+              compareAtPrice {
+                amount
+                currencyCode
+              }
               selectedOptions {
                 name
                 value

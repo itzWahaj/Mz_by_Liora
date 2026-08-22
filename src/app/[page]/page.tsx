@@ -1,5 +1,3 @@
-export const runtime = "edge";
-
 import Prose from "@/components/prose";
 import { getPage } from "@/lib/shopify";
 import { Metadata } from "next";
