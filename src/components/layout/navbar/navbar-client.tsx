@@ -5,14 +5,24 @@ import LogoSquare from "@/components/logo-square";
 import { useTheme } from "@/components/providers/theme-provider";
 import { Collection, Menu } from "@/lib/shopify/types";
 import { ArrowRightIcon, ChevronDownIcon } from "@heroicons/react/24/outline";
-import { AnimatePresence, motion } from "framer-motion";
+import {
+  AnimatePresence,
+  motion,
+  useMotionTemplate,
+  useScroll,
+  useTransform,
+} from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 import MobileMenu from "./mobile-menu";
 import Search from "./search";
 import ThemeToggle from "./theme-toggle";
+
+/** Scroll distance (px) over which the navbar fully settles. */
+const SCROLL_START = 0;
+const SCROLL_END = 140;
 
 function NavLink({
   item,
@@ -51,22 +61,15 @@ function NavLink({
         });
     }
 
-    // Fallback: If no sub-items were defined in Shopify menu, show collections
+    // Otherwise fallback to valid public collections
     return collections
-      .filter(
-        (col) =>
-          col.title &&
-          col.path &&
-          col.handle &&
-          !col.handle.startsWith("hidden") &&
-          col.title.toLowerCase() !== "all"
-      )
+      .filter((col) => !col.handle.startsWith("hidden"))
       .map((col) => ({
         title: col.title,
         href: col.path,
         image: col.image?.url || null,
       }));
-  }, [item, collections, isShop]);
+  }, [collections, isShop, item.items]);
 
   const handleMouseEnter = () => {
     if (timeoutRef.current) clearTimeout(timeoutRef.current);
@@ -76,13 +79,13 @@ function NavLink({
   const handleMouseLeave = () => {
     timeoutRef.current = setTimeout(() => {
       setIsOpen(false);
-    }, 180);
+    }, 150);
   };
 
-  const active =
-    item.path === "/"
-      ? pathname === "/"
-      : pathname === item.path || pathname.startsWith(`${item.path}/`);
+  const isActive =
+    pathname === item.path ||
+    (isShop &&
+      subCategories.some((sub) => pathname === sub.href));
 
   return (
     <div
@@ -91,30 +94,28 @@ function NavLink({
       onMouseLeave={handleMouseLeave}
     >
       <motion.div
-        whileHover={{ scale: 1.02 }}
-        whileTap={{ scale: 0.97 }}
-        transition={{ type: "spring", stiffness: 400, damping: 22 }}
+        whileHover={{ scale: 1.04 }}
+        whileTap={{ scale: 0.96 }}
+        transition={{ type: "spring", stiffness: 400, damping: 25 }}
       >
         <Link
           href={item.path}
           prefetch={true}
-          className={`group relative inline-flex items-center gap-1.5 overflow-hidden rounded-full px-4 py-2 text-sm font-medium transition-brand ${
-            active
-              ? "bg-brand-gradient text-white shadow-[0_8px_24px_rgba(30,95,191,0.28)]"
-              : "text-neutral-700 hover:text-white dark:text-neutral-300 dark:hover:text-white"
+          onClick={() => setIsOpen(false)}
+          className={`group relative flex items-center gap-1.5 rounded-full px-4 py-2 text-sm font-semibold transition-all duration-200 ${
+            isActive
+              ? "bg-brand-teal/15 text-brand shadow-sm ring-1 ring-brand-teal/30 dark:bg-brand-teal/20 dark:text-white dark:ring-brand-teal/40"
+              : "text-neutral-700 hover:bg-neutral-100/80 hover:text-brand dark:text-neutral-300 dark:hover:bg-neutral-800/80 dark:hover:text-white"
           }`}
         >
-          {!active ? (
-            <span
-              aria-hidden
-              className="absolute inset-0 origin-left scale-x-0 rounded-full bg-brand-gradient opacity-0 transition-all duration-300 ease-out group-hover:scale-x-100 group-hover:opacity-100"
+          {isActive ? (
+            <motion.span
+              layoutId="navActivePill"
+              className="absolute inset-0 -z-10 rounded-full bg-brand-gradient opacity-15 dark:opacity-25"
+              transition={{ type: "spring", stiffness: 380, damping: 30 }}
             />
-          ) : (
-            <span
-              aria-hidden
-              className="absolute inset-0 bg-white/0 transition-colors duration-300 group-hover:bg-white/15"
-            />
-          )}
+          ) : null}
+
           <span className="relative z-10 flex items-center gap-1.5">
             {item.title}
             {isShop ? (
@@ -209,51 +210,82 @@ export default function NavbarClient({
   collections?: Collection[];
   siteName: string;
 }) {
-  const [isScrolled, setIsScrolled] = useState(false);
+  const { theme } = useTheme();
+  const { scrollY } = useScroll();
+  const range = [SCROLL_START, SCROLL_END];
 
-  useEffect(() => {
-    const handleScroll = () => {
-      const scrolled = window.scrollY > 20;
-      setIsScrolled((prev) => (prev !== scrolled ? scrolled : prev));
-    };
+  const height = useTransform(scrollY, range, [80, 56]);
+  const paddingY = useTransform(scrollY, range, [14, 6]);
+  const blur = useTransform(scrollY, range, [0, 18]);
+  const bgAlpha = useTransform(scrollY, range, [0.78, 0.94]);
+  const borderOpacity = useTransform(scrollY, range, [0.08, 0.35]);
+  const shadowAlpha = useTransform(
+    scrollY,
+    range,
+    theme === "dark" ? [0, 0.45] : [0, 0.08]
+  );
+  const logoScale = useTransform(scrollY, range, [1, 0.88]);
 
-    window.addEventListener("scroll", handleScroll, { passive: true });
-    handleScroll();
-
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
+  const backdropFilter = useMotionTemplate`blur(${blur}px)`;
+  const backgroundColor = useTransform(bgAlpha, (alpha) =>
+    theme === "dark"
+      ? `rgba(0, 0, 0, ${alpha})`
+      : `rgba(250, 250, 249, ${alpha})`
+  );
+  const borderColor = useMotionTemplate`rgba(148, 163, 184, ${borderOpacity})`;
+  const boxShadow = useTransform(shadowAlpha, (alpha) =>
+    theme === "dark"
+      ? `0 10px 40px rgba(0, 0, 0, ${alpha})`
+      : `0 10px 40px rgba(15, 23, 42, ${alpha})`
+  );
 
   return (
-    <nav
-      className={`sticky top-0 z-[100] w-full border-b transition-all duration-300 transform-gpu ${
-        isScrolled
-          ? "border-neutral-200/80 bg-white/95 shadow-sm backdrop-blur-md dark:border-neutral-800 dark:bg-black/90"
-          : "border-transparent bg-white/80 backdrop-blur-sm dark:border-transparent dark:bg-black/75"
-      }`}
+    <motion.nav
+      style={{
+        height,
+        borderColor,
+        backgroundColor,
+        boxShadow,
+        backdropFilter,
+        // Safari
+        WebkitBackdropFilter: backdropFilter,
+      }}
+      className="sticky top-0 z-[100] overflow-visible border-b will-change-[height,backdrop-filter]"
     >
-      <div className="mx-auto flex h-16 max-w-screen-2xl items-center gap-3 px-4 md:h-20 lg:gap-6 lg:px-6">
+      <motion.div
+        style={{ paddingTop: paddingY, paddingBottom: paddingY }}
+        className="relative z-10 mx-auto flex h-full max-w-screen-2xl items-center gap-3 overflow-visible px-4 lg:gap-6 lg:px-6"
+      >
         <div className="flex flex-none items-center gap-2 md:hidden">
           <MobileMenu menu={menu} collections={collections} />
         </div>
 
         <div className="flex min-w-0 flex-1 items-center gap-4 lg:gap-8">
-          <Link
-            href="/"
-            prefetch={true}
-            className="group flex items-center gap-2.5 rounded-full pr-1 transition-transform duration-200 active:scale-95"
-          >
-            <span className="rounded-full ring-0 transition-brand group-hover:ring-2 group-hover:ring-brand-teal/40 group-hover:ring-offset-2 group-hover:ring-offset-brand-cream dark:group-hover:ring-offset-black">
-              <LogoSquare />
-            </span>
-            <div className="hidden min-w-0 flex-col sm:flex">
-              <span className="font-display text-lg font-semibold leading-none tracking-tight text-brand transition-colors group-hover:text-brand-blue-dark dark:text-white dark:group-hover:text-brand-teal-light">
-                {siteName}
-              </span>
-              <span className="mt-1 text-[10px] font-medium uppercase tracking-[0.2em] text-neutral-500 transition-colors group-hover:text-brand-teal">
-                Skincare
-              </span>
-            </div>
-          </Link>
+          <motion.div style={{ scale: logoScale }} className="origin-left shrink-0">
+            <motion.div
+              whileHover={{ scale: 1.03 }}
+              whileTap={{ scale: 0.98 }}
+              transition={{ type: "spring", stiffness: 350, damping: 22 }}
+            >
+              <Link
+                href="/"
+                prefetch={true}
+                className="group flex items-center gap-2.5 rounded-full pr-1 transition-brand"
+              >
+                <span className="rounded-full ring-0 transition-brand group-hover:ring-2 group-hover:ring-brand-teal/40 group-hover:ring-offset-2 group-hover:ring-offset-brand-cream dark:group-hover:ring-offset-black">
+                  <LogoSquare />
+                </span>
+                <div className="hidden min-w-0 flex-col sm:flex">
+                  <span className="font-display text-lg font-semibold leading-none tracking-tight text-brand transition-colors group-hover:text-brand-blue-dark dark:text-white dark:group-hover:text-brand-teal-light">
+                    {siteName}
+                  </span>
+                  <span className="mt-1 text-[10px] font-medium uppercase tracking-[0.2em] text-neutral-500 transition-colors group-hover:text-brand-teal">
+                    Skincare
+                  </span>
+                </div>
+              </Link>
+            </motion.div>
+          </motion.div>
 
           {menu.length > 0 ? (
             <ul className="hidden items-center gap-1 md:flex">
@@ -266,19 +298,24 @@ export default function NavbarClient({
           ) : null}
         </div>
 
-        <div className="hidden min-w-0 flex-1 justify-center md:flex">
-          <div className="relative z-50 w-full max-w-md">
+        <div className="hidden min-w-0 flex-1 justify-center overflow-visible md:flex">
+          <div className="relative z-50 w-full max-w-md overflow-visible">
             <Search />
           </div>
         </div>
 
         <div className="flex shrink-0 items-center justify-end gap-2">
           <ThemeToggle />
-          <div className="rounded-full border border-neutral-200/80 bg-white/70 p-1 shadow-sm backdrop-blur-sm transition-brand hover:border-brand-teal/50 hover:shadow-[0_8px_24px_rgba(20,184,166,0.2)] dark:border-neutral-800 dark:bg-neutral-950/70 dark:hover:border-brand-teal/40">
+          <motion.div
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.96 }}
+            transition={{ type: "spring", stiffness: 380, damping: 20 }}
+            className="rounded-full border border-neutral-200/80 bg-white/70 p-1 shadow-sm backdrop-blur-sm transition-brand hover:border-brand-teal/50 hover:shadow-[0_8px_24px_rgba(20,184,166,0.2)] dark:border-neutral-800 dark:bg-neutral-950/70 dark:hover:border-brand-teal/40"
+          >
             <CartModal />
-          </div>
+          </motion.div>
         </div>
-      </div>
-    </nav>
+      </motion.div>
+    </motion.nav>
   );
 }

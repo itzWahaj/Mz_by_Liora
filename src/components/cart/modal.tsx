@@ -79,31 +79,27 @@ export default function CartModal() {
   const drawer =
     mounted &&
     createPortal(
-      <AnimatePresence>
-        {isOpen ? (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="fixed inset-0 z-[1000]"
-          >
-            <motion.button
-              aria-label="Close cart overlay"
-              className="absolute inset-0 bg-black/60"
-              onClick={closeCart}
-            />
-            <motion.aside
-              className="fixed bottom-0 right-0 top-0 z-[1001] flex h-dvh w-full max-w-[100vw] flex-col border-l border-neutral-200 bg-white p-4 text-black shadow-2xl sm:p-6 md:w-[410px] transform-gpu dark:border-neutral-700 dark:bg-neutral-950 dark:text-white"
-              initial={{ x: "100%" }}
-              animate={{ x: 0 }}
-              exit={{ x: "100%" }}
-              transition={
-                reduceMotion
-                  ? { duration: 0 }
-                  : { duration: 0.25, ease: [0.16, 1, 0.3, 1] }
-              }
-            >
-              <div className="shrink-0">
+      <div
+        className={`fixed inset-0 z-[1000] transition-[visibility] duration-300 ${
+          isOpen ? "visible" : "invisible pointer-events-none delay-300"
+        }`}
+      >
+        {/* Backdrop overlay */}
+        <div
+          aria-label="Close cart overlay"
+          role="button"
+          tabIndex={-1}
+          className={`absolute inset-0 bg-black/60 transition-opacity duration-300 ease-out ${
+            isOpen ? "opacity-100" : "opacity-0 pointer-events-none"
+          }`}
+          onClick={closeCart}
+        />
+        <aside
+          className={`fixed bottom-0 right-0 top-0 z-[1001] flex h-dvh w-full max-w-[100vw] flex-col border-l border-neutral-200 bg-white p-4 text-black shadow-2xl sm:p-6 md:w-[410px] transform-gpu dark:border-neutral-700 dark:bg-neutral-950 dark:text-white transition-transform duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] ${
+            isOpen ? "translate-x-0" : "translate-x-full"
+          }`}
+        >
+          <div className="shrink-0">
                 <div className="flex items-center justify-between gap-3">
                   <div className="flex min-w-0 items-center gap-3">
                     <LogoSquare size="sm" />
@@ -359,10 +355,8 @@ export default function CartModal() {
                   </div>
                 </div>
               )}
-            </motion.aside>
-          </motion.div>
-        ) : null}
-      </AnimatePresence>,
+        </aside>
+      </div>,
       document.body
     );
 
