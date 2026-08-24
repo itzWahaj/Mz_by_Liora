@@ -409,6 +409,15 @@ export default function ReviewsSection({
                     {submitStatus.success ? "Review Submitted!" : "Submission Failed"}
                   </p>
                   <p className="mt-1 text-sm">{submitStatus.message}</p>
+                  {!submitStatus.success && (
+                    <button
+                      type="button"
+                      onClick={() => setSubmitStatus(null)}
+                      className="mt-3 rounded-full bg-rose-600 px-4 py-1.5 text-xs font-semibold text-white transition-opacity hover:opacity-90"
+                    >
+                      Try Again
+                    </button>
+                  )}
                 </div>
               ) : (
                 <form onSubmit={handleReviewSubmit} className="mt-6 space-y-4">

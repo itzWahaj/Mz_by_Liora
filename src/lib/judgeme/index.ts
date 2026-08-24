@@ -147,7 +147,8 @@ export async function getJudgeMeReviews({
 }
 
 /**
- * Post a new review to Judge.me REST API
+ * Post a new review via our server-side API route (/api/reviews/submit)
+ * to avoid browser CORS restrictions and keep private tokens secure.
  */
 export async function submitJudgeMeReview({
   productId,
@@ -166,64 +167,45 @@ export async function submitJudgeMeReview({
   title?: string;
   body: string;
 }): Promise<{ success: boolean; message?: string }> {
-  const { publicToken, apiToken, shopDomain } = getJudgeMeConfig();
-  const tokenToUse = publicToken || apiToken;
-
-  if (!tokenToUse) {
-    return {
-      success: false,
-      message: "Judge.me public token is not configured in environment variables.",
-    };
-  }
-
-  const numericId = productId ? extractNumericShopifyId(productId) : "";
-
   try {
-    const payload: Record<string, unknown> = {
-      api_token: tokenToUse,
-      shop_domain: shopDomain,
-      platform: "shopify",
-      name,
-      email,
-      rating,
-      title: title || "",
-      body,
-    };
-
-    if (productHandle) {
-      payload.handle = productHandle;
-    } else if (numericId && numericId.length < 12) {
-      payload.id = numericId;
-    }
-
-    const res = await fetch(`${JUDGEME_API_BASE}/reviews`, {
+    const res = await fetch("/api/reviews/submit", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        Accept: "application/json",
       },
-      body: JSON.stringify(payload),
+      body: JSON.stringify({
+        productId,
+        productHandle,
+        name,
+        email,
+        rating,
+        title,
+        body,
+      }),
     });
 
-    if (!res.ok) {
-      const data = await res.json().catch(() => null);
-      const errMsg =
-        (data as { message?: string; errors?: Record<string, string[]> })?.message ||
-        "Could not submit review. Please try again.";
-      return { success: false, message: errMsg };
+    const data = await res.json().catch(() => null);
+
+    if (!res.ok || !data?.success) {
+      return {
+        success: false,
+        message:
+          data?.message ||
+          "Something went wrong submitting your review, please try again.",
+      };
     }
 
     return {
       success: true,
-      message: "Thank you! Your review has been submitted for moderation.",
+      message:
+        data.message ||
+        "Thank you! Your review has been submitted for moderation.",
     };
   } catch (error) {
+    console.error("Failed to submit review via /api/reviews/submit:", error);
     return {
       success: false,
-      message:
-        error instanceof Error
-          ? error.message
-          : "An unexpected error occurred. Please try again.",
+      message: "Something went wrong submitting your review, please try again.",
     };
   }
 }
