@@ -104,14 +104,14 @@ function NavLink({
           onClick={() => setIsOpen(false)}
           className={`group relative flex items-center gap-1.5 rounded-full px-4 py-2 text-sm font-semibold transition-all duration-200 ${
             isActive
-              ? "bg-brand-teal/15 text-brand shadow-sm ring-1 ring-brand-teal/30 dark:bg-brand-teal/20 dark:text-white dark:ring-brand-teal/40"
+              ? "bg-brand-gradient text-white shadow-[0_4px_14px_rgba(20,184,166,0.35)]"
               : "text-neutral-700 hover:bg-neutral-100/80 hover:text-brand dark:text-neutral-300 dark:hover:bg-neutral-800/80 dark:hover:text-white"
           }`}
         >
           {isActive ? (
             <motion.span
               layoutId="navActivePill"
-              className="absolute inset-0 -z-10 rounded-full bg-brand-gradient opacity-15 dark:opacity-25"
+              className="absolute inset-0 -z-10 rounded-full bg-brand-gradient"
               transition={{ type: "spring", stiffness: 380, damping: 30 }}
             />
           ) : null}
