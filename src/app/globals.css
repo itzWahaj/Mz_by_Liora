@@ -7,10 +7,13 @@
     color-scheme: light;
     scrollbar-width: thin;
     scrollbar-color: #14b8a6 #e8f4f2;
+    -webkit-overflow-scrolling: touch;
+    touch-action: manipulation;
   }
 
   body {
     @apply bg-brand-surface text-brand antialiased transition-colors duration-300;
+    -webkit-tap-highlight-color: transparent;
   }
 
   h1,

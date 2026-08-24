@@ -44,6 +44,14 @@ export default function HomeHero({
 
   useEffect(() => {
     if (prefersReducedMotion) return;
+    if (typeof window === "undefined") return;
+
+    // Skip continuous infinite GSAP background repaints on mobile to free GPU for 120Hz smooth scrolling
+    const isMobile =
+      window.innerWidth < 768 ||
+      window.matchMedia("(pointer: coarse)").matches;
+
+    if (isMobile) return;
 
     const ctx = gsap.context(() => {
       if (ambientRef.current) {

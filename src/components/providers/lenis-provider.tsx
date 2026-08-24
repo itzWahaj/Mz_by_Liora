@@ -31,7 +31,20 @@ export default function LenisProvider({
   const lenisRef = useRef<Lenis | null>(null);
 
   useEffect(() => {
+    if (typeof window === "undefined") return;
+
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      return;
+    }
+
+    // Disable Lenis on touch/mobile devices to preserve native hardware 120Hz/60Hz inertial scrolling
+    const isTouchDevice =
+      "ontouchstart" in window ||
+      navigator.maxTouchPoints > 0 ||
+      window.matchMedia("(pointer: coarse)").matches ||
+      window.innerWidth < 768;
+
+    if (isTouchDevice) {
       return;
     }
 
@@ -42,7 +55,7 @@ export default function LenisProvider({
       gestureOrientation: "vertical",
       smoothWheel: true,
       wheelMultiplier: 1.1,
-      touchMultiplier: 1.5,
+      touchMultiplier: 1.0,
       syncTouch: false,
       stopInertiaOnNavigate: true,
     });
