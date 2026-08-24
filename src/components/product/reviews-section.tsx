@@ -1,12 +1,13 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   CheckBadgeIcon,
   PencilSquareIcon,
   XMarkIcon,
   ChatBubbleLeftEllipsisIcon,
+  PhotoIcon,
 } from "@heroicons/react/24/outline";
 import { StarIcon, StarsRow } from "./star-rating";
 import {
@@ -37,6 +38,7 @@ export default function ReviewsSection({
   }, [initialReviews]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [activeFilter, setActiveFilter] = useState<number | "all">("all");
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   // Form State
   const [formRating, setFormRating] = useState(5);
@@ -45,11 +47,50 @@ export default function ReviewsSection({
   const [formEmail, setFormEmail] = useState("");
   const [formTitle, setFormTitle] = useState("");
   const [formBody, setFormBody] = useState("");
+  const [selectedImages, setSelectedImages] = useState<string[]>([]);
+  const [lightboxImage, setLightboxImage] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitStatus, setSubmitStatus] = useState<{
     success?: boolean;
     message?: string;
   } | null>(null);
+
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = Array.from(e.target.files || []);
+    if (!files.length) return;
+
+    const validFiles = files.filter((file) => {
+      if (!file.type.startsWith("image/")) return false;
+      if (file.size > 5 * 1024 * 1024) {
+        alert(`"${file.name}" is larger than 5MB.`);
+        return false;
+      }
+      return true;
+    });
+
+    const availableSlots = 3 - selectedImages.length;
+    const filesToProcess = validFiles.slice(0, availableSlots);
+
+    filesToProcess.forEach((file) => {
+      const reader = new FileReader();
+      reader.onload = () => {
+        if (typeof reader.result === "string") {
+          setSelectedImages((prev) =>
+            prev.length < 3 ? [...prev, reader.result as string] : prev
+          );
+        }
+      };
+      reader.readAsDataURL(file);
+    });
+
+    if (fileInputRef.current) {
+      fileInputRef.current.value = "";
+    }
+  };
+
+  const handleRemoveImage = (indexToRemove: number) => {
+    setSelectedImages((prev) => prev.filter((_, idx) => idx !== indexToRemove));
+  };
 
   // Compute stats: prioritize live reviews if available, else metafield summary
   const totalCount = reviews.length > 0
@@ -97,12 +138,20 @@ export default function ReviewsSection({
       rating: formRating,
       title: formTitle.trim(),
       body: formBody.trim(),
+      pictures: selectedImages,
     });
 
     setIsSubmitting(false);
     setSubmitStatus(res);
 
     if (res.success) {
+      const picturesArray =
+        res.uploadedPictures && res.uploadedPictures.length > 0
+          ? res.uploadedPictures
+          : selectedImages.map((img) => ({
+              urls: { small: img, original: img },
+            }));
+
       // Optimistic addition for immediate client feedback
       const newReview: JudgeMeReview = {
         id: Date.now(),
@@ -114,7 +163,8 @@ export default function ReviewsSection({
           email: formEmail.trim(),
         },
         created_at: new Date().toISOString(),
-        verified: "buyer",
+        verified: "confirmed-buyer",
+        pictures: picturesArray,
       };
       setReviews((prev) => [newReview, ...prev]);
 
@@ -125,6 +175,7 @@ export default function ReviewsSection({
         setFormEmail("");
         setFormTitle("");
         setFormBody("");
+        setSelectedImages([]);
       }, 2400);
     }
   };
@@ -323,18 +374,38 @@ export default function ReviewsSection({
                     <p className="mt-2.5 font-sans text-sm leading-relaxed text-[#334155] dark:text-[#CBD5E1]">
                       {review.body}
                     </p>
-
                     {/* Review Images if present */}
                     {review.pictures && review.pictures.length > 0 && (
-                      <div className="mt-4 flex flex-wrap gap-2">
-                        {review.pictures.map((pic, idx) => (
-                          <img
-                            key={idx}
-                            src={pic.urls.small || pic.urls.original}
-                            alt="Customer photo"
-                            className="h-16 w-16 rounded-xl object-cover ring-1 ring-black/5"
-                          />
-                        ))}
+                      <div className="mt-4 flex flex-wrap gap-2.5">
+                        {review.pictures.map((pic, idx) => {
+                          const imgUrl =
+                            pic.urls?.small ||
+                            pic.urls?.original ||
+                            (typeof pic === "string" ? pic : "");
+                          const fullUrl =
+                            pic.urls?.original || pic.urls?.small || imgUrl;
+                          if (!imgUrl) return null;
+                          return (
+                            <button
+                              key={idx}
+                              type="button"
+                              onClick={() => setLightboxImage(fullUrl)}
+                              className="group/img relative h-24 w-24 overflow-hidden rounded-2xl border-2 border-[#E5E2DA] bg-neutral-100 shadow-xs transition-all duration-200 hover:scale-105 hover:border-brand-teal hover:shadow-md sm:h-28 sm:w-28 dark:border-[#2A3241] dark:bg-neutral-900"
+                              title="Click to view full photo"
+                            >
+                              <img
+                                src={imgUrl}
+                                alt="Customer review photo"
+                                className="h-full w-full object-cover transition-transform duration-300 group-hover/img:scale-110"
+                              />
+                              <div className="absolute inset-0 flex items-center justify-center bg-black/0 opacity-0 transition-all duration-200 group-hover/img:bg-black/25 group-hover/img:opacity-100">
+                                <span className="rounded-full bg-black/60 p-1.5 text-white backdrop-blur-xs">
+                                  <PhotoIcon className="h-4 w-4" />
+                                </span>
+                              </div>
+                            </button>
+                          );
+                        })}
                       </div>
                     )}
                   </div>
@@ -350,8 +421,10 @@ export default function ReviewsSection({
                           <p className="text-xs font-semibold text-[#1E2A3A] dark:text-white">
                             {review.reviewer.name}
                           </p>
-                          {review.verified === "buyer" && (
-                            <span className="inline-flex items-center gap-1 rounded-full bg-[#14B8A6]/10 px-2 py-0.5 text-[10px] font-semibold text-[#0F766E] dark:bg-[#14B8A6]/20 dark:text-[#2DD4BF]">
+                          {review.verified &&
+                          review.verified !== "nothing" &&
+                          review.verified !== "unverified" && (
+                            <span className="mt-0.5 inline-flex items-center gap-1 rounded-full bg-[#14B8A6]/10 px-2 py-0.5 text-[10px] font-semibold text-[#0F766E] dark:bg-[#14B8A6]/20 dark:text-[#2DD4BF]">
                               <CheckBadgeIcon className="h-3.5 w-3.5 text-[#14B8A6]" />
                               Verified Buyer
                             </span>
@@ -382,8 +455,7 @@ export default function ReviewsSection({
       {/* Write a Review Modal */}
       <AnimatePresence>
         {isModalOpen && (
-          <div className="fixed inset-0 z-[1000] flex items-center justify-center p-4">
-            {/* Backdrop */}
+          <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4">
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
@@ -392,42 +464,39 @@ export default function ReviewsSection({
               className="absolute inset-0 bg-black/60 backdrop-blur-sm"
             />
 
-            {/* Modal Dialog */}
             <motion.div
-              initial={{ opacity: 0, scale: 0.95, y: 10 }}
+              initial={{ opacity: 0, scale: 0.95, y: 20 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
-              exit={{ opacity: 0, scale: 0.95, y: 10 }}
-              className="relative z-10 w-full max-w-lg overflow-hidden rounded-3xl border border-[#E5E2DA] bg-[#FBFAF7] p-6 shadow-2xl sm:p-8 dark:border-[#2A3241] dark:bg-[#12161F]"
+              exit={{ opacity: 0, scale: 0.95, y: 20 }}
+              className="relative max-h-[92vh] w-full max-w-lg overflow-y-auto rounded-3xl border border-[#E5E2DA] bg-[#FBFAF7] p-6 shadow-2xl [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden sm:p-7 dark:border-[#2A3241] dark:bg-[#12161F]"
             >
-              {/* 2px Gradient Top Accent */}
-              <div className="absolute left-0 right-0 top-0 h-[2px] bg-brand-gradient" />
-
-              {/* Close Button */}
               <button
                 type="button"
                 onClick={() => setIsModalOpen(false)}
-                className="absolute right-5 top-5 rounded-full p-1 text-neutral-400 transition-colors hover:bg-neutral-200/60 hover:text-neutral-700 dark:hover:bg-neutral-800 dark:hover:text-white"
+                className="absolute right-4 top-4 rounded-full p-2 text-neutral-400 transition-colors hover:bg-neutral-200 hover:text-neutral-600 dark:hover:bg-neutral-800 dark:hover:text-neutral-200"
               >
-                <XMarkIcon className="h-6 w-6" />
+                <XMarkIcon className="h-5 w-5" />
               </button>
 
-              <h3 className="font-display text-2xl font-bold text-[#1E2A3A] dark:text-white">
-                Write a Review
+              <h3 className="font-display text-xl font-bold text-[#1E2A3A] sm:text-2xl dark:text-white">
+                Review {productTitle}
               </h3>
-              <p className="mt-1 text-xs text-neutral-500">
-                Sharing your experience for {productTitle}
+              <p className="mt-1 text-xs text-neutral-500 dark:text-neutral-400">
+                Share your authentic ritual experience to help others in our community.
               </p>
 
               {submitStatus ? (
                 <div
-                  className={`mt-6 rounded-2xl p-6 text-center ${
+                  className={`mt-5 rounded-2xl p-6 text-center ${
                     submitStatus.success
                       ? "bg-emerald-50 text-emerald-800 dark:bg-emerald-950/40 dark:text-emerald-300"
                       : "bg-rose-50 text-rose-800 dark:bg-rose-950/40 dark:text-rose-300"
                   }`}
                 >
                   <p className="font-semibold">
-                    {submitStatus.success ? "Review Submitted!" : "Submission Failed"}
+                    {submitStatus.success
+                      ? "Review Submitted!"
+                      : "Submission Failed"}
                   </p>
                   <p className="mt-1 text-sm">{submitStatus.message}</p>
                   {!submitStatus.success && (
@@ -441,13 +510,13 @@ export default function ReviewsSection({
                   )}
                 </div>
               ) : (
-                <form onSubmit={handleReviewSubmit} className="mt-6 space-y-4">
+                <form onSubmit={handleReviewSubmit} className="mt-5 space-y-3.5">
                   {/* Star Rating Select */}
                   <div>
                     <label className="block text-xs font-semibold uppercase tracking-wider text-neutral-600 dark:text-neutral-400">
-                      Overall Rating
+                      Overall Rating *
                     </label>
-                    <div className="mt-2 flex items-center gap-1.5">
+                    <div className="mt-1.5 flex items-center gap-1">
                       {[1, 2, 3, 4, 5].map((star) => (
                         <button
                           key={star}
@@ -461,7 +530,7 @@ export default function ReviewsSection({
                             fillPercent={
                               (formHoverRating || formRating) >= star ? 100 : 0
                             }
-                            sizeClass="h-7 w-7"
+                            sizeClass="h-6 w-6"
                           />
                         </button>
                       ))}
@@ -473,7 +542,7 @@ export default function ReviewsSection({
                   </div>
 
                   {/* Name & Email */}
-                  <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                  <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
                     <div>
                       <label
                         htmlFor="rev-name"
@@ -488,7 +557,7 @@ export default function ReviewsSection({
                         value={formName}
                         onChange={(e) => setFormName(e.target.value)}
                         placeholder="e.g. Ayesha Khan"
-                        className="mt-1 w-full rounded-xl border border-[#E5E2DA] bg-white px-3.5 py-2.5 text-sm text-[#1E2A3A] shadow-sm outline-none transition-brand focus:border-brand-teal focus:ring-2 focus:ring-brand-teal/20 dark:border-neutral-700 dark:bg-neutral-800 dark:text-white"
+                        className="mt-1 w-full rounded-xl border border-[#E5E2DA] bg-white px-3 py-2 text-sm text-[#1E2A3A] shadow-sm outline-none transition-brand focus:border-brand-teal focus:ring-2 focus:ring-brand-teal/20 dark:border-neutral-700 dark:bg-neutral-800 dark:text-white"
                       />
                     </div>
 
@@ -506,7 +575,7 @@ export default function ReviewsSection({
                         value={formEmail}
                         onChange={(e) => setFormEmail(e.target.value)}
                         placeholder="you@email.com"
-                        className="mt-1 w-full rounded-xl border border-[#E5E2DA] bg-white px-3.5 py-2.5 text-sm text-[#1E2A3A] shadow-sm outline-none transition-brand focus:border-brand-teal focus:ring-2 focus:ring-brand-teal/20 dark:border-neutral-700 dark:bg-neutral-800 dark:text-white"
+                        className="mt-1 w-full rounded-xl border border-[#E5E2DA] bg-white px-3 py-2 text-sm text-[#1E2A3A] shadow-sm outline-none transition-brand focus:border-brand-teal focus:ring-2 focus:ring-brand-teal/20 dark:border-neutral-700 dark:bg-neutral-800 dark:text-white"
                       />
                     </div>
                   </div>
@@ -525,7 +594,7 @@ export default function ReviewsSection({
                       value={formTitle}
                       onChange={(e) => setFormTitle(e.target.value)}
                       placeholder="e.g. Transformed my skin texture!"
-                      className="mt-1 w-full rounded-xl border border-[#E5E2DA] bg-white px-3.5 py-2.5 text-sm text-[#1E2A3A] shadow-sm outline-none transition-brand focus:border-brand-teal focus:ring-2 focus:ring-brand-teal/20 dark:border-neutral-700 dark:bg-neutral-800 dark:text-white"
+                      className="mt-1 w-full rounded-xl border border-[#E5E2DA] bg-white px-3 py-2 text-sm text-[#1E2A3A] shadow-sm outline-none transition-brand focus:border-brand-teal focus:ring-2 focus:ring-brand-teal/20 dark:border-neutral-700 dark:bg-neutral-800 dark:text-white"
                     />
                   </div>
 
@@ -539,27 +608,118 @@ export default function ReviewsSection({
                     </label>
                     <textarea
                       id="rev-body"
-                      rows={4}
+                      rows={3}
                       required
                       value={formBody}
                       onChange={(e) => setFormBody(e.target.value)}
                       placeholder="Write your honest thoughts about the formula, scent, and results..."
-                      className="mt-1 w-full rounded-xl border border-[#E5E2DA] bg-white px-3.5 py-2.5 text-sm text-[#1E2A3A] shadow-sm outline-none transition-brand focus:border-brand-teal focus:ring-2 focus:ring-brand-teal/20 dark:border-neutral-700 dark:bg-neutral-800 dark:text-white"
+                      className="mt-1 w-full rounded-xl border border-[#E5E2DA] bg-white px-3 py-2 text-sm text-[#1E2A3A] shadow-sm outline-none transition-brand focus:border-brand-teal focus:ring-2 focus:ring-brand-teal/20 dark:border-neutral-700 dark:bg-neutral-800 dark:text-white"
                     />
                   </div>
 
+                  {/* Photo Upload Section */}
+                  <div>
+                    <label className="block text-xs font-semibold uppercase tracking-wider text-neutral-600 dark:text-neutral-400">
+                      Attach Photos (Optional)
+                    </label>
+                    
+                    <div className="mt-1.5 space-y-2">
+                      {selectedImages.length > 0 && (
+                        <div className="flex flex-wrap gap-2">
+                          {selectedImages.map((imgData, idx) => (
+                            <div
+                              key={idx}
+                              className="group relative h-16 w-16 overflow-hidden rounded-xl border-2 border-brand-teal/50 bg-neutral-100 shadow-xs dark:bg-neutral-800"
+                            >
+                              <img
+                                src={imgData}
+                                alt={`Upload preview ${idx + 1}`}
+                                className="h-full w-full object-cover"
+                              />
+                              <button
+                                type="button"
+                                onClick={() => handleRemoveImage(idx)}
+                                className="absolute right-1 top-1 flex h-5 w-5 items-center justify-center rounded-full bg-black/70 text-white transition-transform hover:scale-110 hover:bg-rose-600"
+                                aria-label="Remove image"
+                              >
+                                <XMarkIcon className="h-3.5 w-3.5" />
+                              </button>
+                            </div>
+                          ))}
+                        </div>
+                      )}
+
+                      {selectedImages.length < 3 && (
+                        <div>
+                          <input
+                            ref={fileInputRef}
+                            type="file"
+                            accept="image/png, image/jpeg, image/webp"
+                            multiple
+                            onChange={handleImageChange}
+                            className="hidden"
+                            id="product-review-photo-upload"
+                          />
+                          <label
+                            htmlFor="product-review-photo-upload"
+                            className="flex cursor-pointer items-center justify-center gap-2 rounded-xl border border-dashed border-[#E5E2DA] bg-neutral-50/80 px-3.5 py-2.5 text-xs font-medium text-neutral-600 transition-colors hover:border-brand-teal hover:bg-brand-teal/5 dark:border-neutral-700 dark:bg-neutral-800/40 dark:text-neutral-300 dark:hover:border-brand-teal"
+                          >
+                            <PhotoIcon className="h-4 w-4 text-brand-teal" />
+                            <span>Add Photos (up to 3, max 5MB each)</span>
+                          </label>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+
                   {/* Submit Button */}
-                  <div className="pt-2">
+                  <div className="pt-1">
                     <button
                       type="submit"
                       disabled={isSubmitting}
-                      className="w-full rounded-full bg-brand-gradient py-3 text-sm font-semibold text-white shadow-md transition-all hover:brightness-110 disabled:opacity-60"
+                      className="w-full rounded-full bg-brand-gradient py-2.5 text-sm font-semibold text-white shadow-md transition-all hover:brightness-110 disabled:opacity-60"
                     >
                       {isSubmitting ? "Submitting Review…" : "Submit Review"}
                     </button>
                   </div>
                 </form>
               )}
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
+
+      {/* Full Screen Image Lightbox */}
+      <AnimatePresence>
+        {lightboxImage && (
+          <div className="fixed inset-0 z-[99999] flex items-center justify-center p-4 sm:p-6 md:p-10">
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setLightboxImage(null)}
+              className="fixed inset-0 bg-black/90 backdrop-blur-md"
+            />
+            <motion.div
+              initial={{ scale: 0.92, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.92, opacity: 0 }}
+              transition={{ type: "spring", damping: 25, stiffness: 300 }}
+              className="relative z-10 flex max-h-[88vh] max-w-[92vw] flex-col items-center justify-center overflow-hidden rounded-3xl border border-white/10 bg-black/40 shadow-2xl backdrop-blur-sm"
+            >
+              <button
+                type="button"
+                onClick={() => setLightboxImage(null)}
+                className="absolute right-4 top-4 z-20 flex h-10 w-10 items-center justify-center rounded-full bg-black/70 text-white shadow-lg backdrop-blur-md transition-all hover:scale-110 hover:bg-rose-600 focus:outline-none"
+                aria-label="Close image"
+              >
+                <XMarkIcon className="h-5 w-5" />
+              </button>
+              <img
+                src={lightboxImage}
+                alt="Enlarged customer review photo"
+                className="max-h-[82vh] max-w-[88vw] rounded-2xl object-contain shadow-2xl"
+              />
             </motion.div>
           </div>
         )}

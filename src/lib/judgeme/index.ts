@@ -19,9 +19,9 @@ export type JudgeMeReview = {
   pictures?: {
     urls: {
       original: string;
-      small: string;
-      compact: string;
-      huge: string;
+      small?: string;
+      compact?: string;
+      huge?: string;
     };
   }[];
   reply?: {
@@ -422,6 +422,42 @@ export async function getAllJudgeMeReviews({
 }
 
 /**
+ * Fetch a mapping of product handle -> review rating and count for product card enrichment.
+ */
+export async function getJudgeMeProductStatsMap(): Promise<
+  Record<string, { rating: number; reviewCount: number }>
+> {
+  try {
+    const { reviews, products } = await getAllJudgeMeReviews();
+    const map: Record<string, { rating: number; reviewCount: number }> = {};
+
+    for (const prod of products) {
+      if (!prod.handle) continue;
+      const prodReviews = reviews.filter(
+        (r) => !r.is_shop_review && r.product_handle === prod.handle
+      );
+      const count = prodReviews.length;
+      const rating =
+        count > 0
+          ? Number(
+              (
+                prodReviews.reduce((sum, r) => sum + r.rating, 0) / count
+              ).toFixed(1)
+            )
+          : 0;
+
+      if (count > 0 && rating > 0) {
+        map[prod.handle] = { rating, reviewCount: count };
+      }
+    }
+
+    return map;
+  } catch {
+    return {};
+  }
+}
+
+/**
  * Post a new review via our server-side API route (/api/reviews/submit)
  * to avoid browser CORS restrictions and keep private tokens secure.
  */
@@ -433,6 +469,7 @@ export async function submitJudgeMeReview({
   rating,
   title,
   body,
+  pictures,
 }: {
   productId?: string;
   productHandle?: string;
@@ -441,7 +478,12 @@ export async function submitJudgeMeReview({
   rating: number;
   title?: string;
   body: string;
-}): Promise<{ success: boolean; message?: string }> {
+  pictures?: string[];
+}): Promise<{
+  success: boolean;
+  message?: string;
+  uploadedPictures?: { urls: { small: string; original: string } }[];
+}> {
   try {
     const res = await fetch("/api/reviews/submit", {
       method: "POST",
@@ -456,6 +498,7 @@ export async function submitJudgeMeReview({
         rating,
         title,
         body,
+        pictures,
       }),
     });
 
@@ -475,6 +518,7 @@ export async function submitJudgeMeReview({
       message:
         data.message ||
         "Thank you! Your review has been submitted for moderation.",
+      uploadedPictures: data.uploadedPictures || [],
     };
   } catch (error) {
     console.error("Failed to submit review via /api/reviews/submit:", error);

@@ -6,6 +6,7 @@ import {
 } from "../constants";
 import { isShopifyError } from "../type-guards";
 import { ensureStartWith } from "../utils";
+import { getJudgeMeProductStatsMap } from "../judgeme";
 import {
   addToCartMutation,
   createCartMutation,
@@ -312,6 +313,54 @@ function reshapeProducts(products: ShopifyProduct[]) {
 
   return reshapedProducts;
 }
+
+export async function enrichProductsWithJudgeMeReviews(
+  products: Product[]
+): Promise<Product[]> {
+  try {
+    const statsMap = await getJudgeMeProductStatsMap();
+    return products.map((product) => {
+      const stats = statsMap[product.handle];
+      if (stats && stats.reviewCount > 0 && stats.rating > 0) {
+        return {
+          ...product,
+          reviews: {
+            ...product.reviews,
+            rating: stats.rating,
+            reviewCount: stats.reviewCount,
+          },
+        };
+      }
+      return product;
+    });
+  } catch {
+    return products;
+  }
+}
+
+export async function enrichProductWithJudgeMeReviews(
+  product: Product | undefined
+): Promise<Product | undefined> {
+  if (!product) return undefined;
+  try {
+    const statsMap = await getJudgeMeProductStatsMap();
+    const stats = statsMap[product.handle];
+    if (stats && stats.reviewCount > 0 && stats.rating > 0) {
+      return {
+        ...product,
+        reviews: {
+          ...product.reviews,
+          rating: stats.rating,
+          reviewCount: stats.reviewCount,
+        },
+      };
+    }
+    return product;
+  } catch {
+    return product;
+  }
+}
+
 export async function getMenu(handle: string): Promise<Menu[]> {
   if (!isShopifyConfigured()) {
     console.warn(
@@ -463,7 +512,9 @@ export async function getProducts({
     },
   });
 
-  return reshapeProducts(removeEdgesAndNodes(res.body.data.products));
+    return await enrichProductsWithJudgeMeReviews(
+      reshapeProducts(removeEdgesAndNodes(res.body.data.products))
+    );
 }
 
 function reshapeCollection(
@@ -606,8 +657,8 @@ export async function getCollectionProducts({
       return [];
     }
 
-    return reshapeProducts(
-      removeEdgesAndNodes(res.body.data.collection.products)
+    return await enrichProductsWithJudgeMeReviews(
+      reshapeProducts(removeEdgesAndNodes(res.body.data.collection.products))
     );
   } catch (error) {
     console.error(`Failed to load collection \`${collection}\``, error);
@@ -624,7 +675,9 @@ export async function getProduct(handle: string): Promise<Product | undefined> {
       handle,
     },
   });
-  return reshapeProduct(res.body.data.product, false);
+  return await enrichProductWithJudgeMeReviews(
+    reshapeProduct(res.body.data.product, false)
+  );
 }
 
 export async function getProductRecommendations(
@@ -639,7 +692,9 @@ export async function getProductRecommendations(
     },
   });
 
-  return reshapeProducts(res.body.data.productRecommendations);
+  return await enrichProductsWithJudgeMeReviews(
+    reshapeProducts(res.body.data.productRecommendations)
+  );
 }
 
 function reshapeCart(cart: ShopifyCart): Cart {

@@ -1,5 +1,7 @@
 import { NextResponse } from "next/server";
 import { getJudgeMeConfig, getJudgeMeProducts } from "@/lib/judgeme";
+import fs from "fs";
+import path from "path";
 
 const JUDGEME_API_BASE = "https://judge.me/api/v1";
 
@@ -22,6 +24,7 @@ export async function POST(req: Request) {
       rating,
       title,
       body: reviewBody,
+      pictures = [],
     } = body;
 
     if (!name?.trim() || !email?.trim() || !reviewBody?.trim() || !rating) {
@@ -42,6 +45,51 @@ export async function POST(req: Request) {
         },
         { status: 500 }
       );
+    }
+
+    // Process user-uploaded base64 images
+    const uploadedPictures: { urls: { small: string; original: string } }[] = [];
+    const pictureUrlsForJudgeMe: string[] = [];
+
+    if (Array.isArray(pictures) && pictures.length > 0) {
+      try {
+        const uploadDir = path.join(process.cwd(), "public", "uploads", "reviews");
+        if (!fs.existsSync(uploadDir)) {
+          fs.mkdirSync(uploadDir, { recursive: true });
+        }
+
+        for (let i = 0; i < Math.min(pictures.length, 5); i++) {
+          const picStr = pictures[i];
+          if (typeof picStr === "string" && picStr.startsWith("data:image")) {
+            const matches = picStr.match(/^data:image\/([a-zA-Z0-9+]+);base64,(.+)$/);
+            if (matches && matches[2]) {
+              const ext = matches[1].toLowerCase().replace("jpeg", "jpg");
+              const fileName = `review-${Date.now()}-${i + 1}.${ext}`;
+              const filePath = path.join(uploadDir, fileName);
+              const buffer = Buffer.from(matches[2], "base64");
+              fs.writeFileSync(filePath, buffer);
+
+              const publicUrl = `/uploads/reviews/${fileName}`;
+              uploadedPictures.push({
+                urls: {
+                  small: publicUrl,
+                  original: publicUrl,
+                },
+              });
+            }
+          } else if (typeof picStr === "string" && picStr.startsWith("http")) {
+            uploadedPictures.push({
+              urls: {
+                small: picStr,
+                original: picStr,
+              },
+            });
+            pictureUrlsForJudgeMe.push(picStr);
+          }
+        }
+      } catch (err) {
+        console.error("Error saving review images:", err);
+      }
     }
 
     const products = await getJudgeMeProducts();
@@ -83,6 +131,9 @@ export async function POST(req: Request) {
     if (productHandle) {
       payload.handle = productHandle;
     }
+    if (pictureUrlsForJudgeMe.length > 0) {
+      payload.picture_urls = pictureUrlsForJudgeMe;
+    }
 
     const res = await fetch(`${JUDGEME_API_BASE}/reviews`, {
       method: "POST",
@@ -114,6 +165,7 @@ export async function POST(req: Request) {
     return NextResponse.json({
       success: true,
       message: "Thank you! Your review has been submitted for moderation.",
+      uploadedPictures,
     });
   } catch (error) {
     console.error("Error in /api/reviews/submit:", error);

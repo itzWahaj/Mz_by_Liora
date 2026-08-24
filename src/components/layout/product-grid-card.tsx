@@ -318,12 +318,12 @@ export default function ProductGridCard({ product }: { product: Product }) {
               <div className="mt-1 flex items-center gap-1.5">
                 <StarsRow
                   rating={product.reviews.rating}
-                  sizeClass="h-3 w-3"
+                  sizeClass="h-3.5 w-3.5"
                 />
-                <span className="text-[11px] font-semibold text-brand dark:text-white">
+                <span className="text-xs font-semibold text-[#1E2A3A] dark:text-white">
                   {product.reviews.rating.toFixed(1)}
                 </span>
-                <span className="text-[10px] text-neutral-400 dark:text-neutral-500">
+                <span className="text-[11px] font-medium text-neutral-400 dark:text-neutral-500">
                   ({product.reviews.reviewCount})
                 </span>
               </div>
