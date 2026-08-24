@@ -90,7 +90,9 @@ export default function StarRating({
     e.preventDefault();
     const reviewsEl = document.getElementById("reviews");
     if (reviewsEl) {
-      reviewsEl.scrollIntoView({ behavior: "smooth", block: "start" });
+      const topOffset =
+        reviewsEl.getBoundingClientRect().top + window.pageYOffset - 90;
+      window.scrollTo({ top: topOffset, behavior: "smooth" });
     }
   };
 

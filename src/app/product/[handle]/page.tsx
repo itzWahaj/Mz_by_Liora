@@ -270,7 +270,13 @@ export default async function ProductPage({
                 </div>
               }
             >
-              <ProductDescription product={product} />
+              <ProductDescription
+                product={product}
+                reviews={{
+                  rating: effectiveRating,
+                  reviewCount: effectiveReviewCount,
+                }}
+              />
             </Suspense>
           </div>
         </div>

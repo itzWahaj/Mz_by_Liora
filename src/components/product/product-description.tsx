@@ -5,9 +5,15 @@ import ProductPrice from "./product-price";
 import StarRating from "./star-rating";
 import VariantSelector from "./variant-selector";
 
-export function ProductDescription({ product }: { product: Product }) {
-  const rating = product.reviews?.rating || 0;
-  const reviewCount = product.reviews?.reviewCount || 0;
+export function ProductDescription({
+  product,
+  reviews,
+}: {
+  product: Product;
+  reviews?: { rating: number; reviewCount: number };
+}) {
+  const rating = reviews?.rating ?? product.reviews?.rating ?? 0;
+  const reviewCount = reviews?.reviewCount ?? product.reviews?.reviewCount ?? 0;
 
   return (
     <>

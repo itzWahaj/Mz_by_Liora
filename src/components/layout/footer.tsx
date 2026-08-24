@@ -48,6 +48,7 @@ export default async function Footer() {
 
   // Fallback links for Customer Care if Shopify menu is minimal
   const customerCareLinks = [
+    { title: "Customer Reviews", href: "/reviews" },
     { title: "Shipping & Returns", href: "/policies/shipping-policy" },
     { title: "FAQ", href: "/faq" },
     { title: "Contact Us", href: "/contact" },

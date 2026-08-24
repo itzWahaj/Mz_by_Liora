@@ -101,7 +101,16 @@ export async function getJudgeMeProducts(): Promise<JudgeMeProduct[]> {
     if (!res.ok) return [];
 
     const data = (await res.json()) as { products?: JudgeMeProduct[] };
-    return data.products || [];
+    const allProducts = data.products || [];
+    // Only return live, active products in the store
+    const activeProducts = allProducts.filter(
+      (p) =>
+        (p as { in_store?: boolean }).in_store !== false &&
+        (p.handle === "anti-acne-medicated-soap" ||
+          p.handle === "nourish-grow-hair-oil" ||
+          (p as { in_store?: boolean }).in_store === true)
+    );
+    return activeProducts;
   } catch (error) {
     console.error("Error fetching Judge.me products:", error);
     return [];
@@ -147,7 +156,10 @@ export async function getJudgeMeReviews({
     // Resolve the internal Judge.me product ID
     const products = await getJudgeMeProducts();
     const matchedProduct = products.find((p) => {
-      if (productHandle && p.handle?.toLowerCase() === productHandle.toLowerCase()) {
+      if (
+        productHandle &&
+        p.handle?.toLowerCase() === productHandle.toLowerCase()
+      ) {
         return true;
       }
       if (numericId && String(p.external_id) === String(numericId)) {
@@ -179,7 +191,7 @@ export async function getJudgeMeReviews({
         Accept: "application/json",
       },
       next: {
-        revalidate: 60, // Next.js cache 60s
+        revalidate: 0,
         tags: [
           "judgeme-reviews",
           productHandle || numericId || String(matchedProduct.id),
@@ -195,18 +207,33 @@ export async function getJudgeMeReviews({
     const data = (await res.json()) as {
       current_page?: number;
       per_page?: number;
-      reviews?: (JudgeMeReview & { product_id?: number; product_handle?: string })[];
+      reviews?: (JudgeMeReview & {
+        product_id?: number;
+        product_handle?: string;
+      })[];
     };
 
-    const allReviews = data.reviews ?? [];
+    const allReviews = (data.reviews ?? []).filter(
+      (r) =>
+        (r as { hidden?: boolean }).hidden !== true &&
+        (r as { curated?: string }).curated !== "archived"
+    );
 
     // Filter to ensure only reviews for this specific product are returned
     const productReviews = allReviews.filter((r) => {
-      if (r.product_id && r.product_id === matchedProduct.id) return true;
-      if (productHandle && r.product_handle === productHandle) return true;
-      // Exclude generic shop reviews (product_external_id === 0 or product_handle === "judgeme-shop-reviews")
       if (r.product_handle === "judgeme-shop-reviews") return false;
-      return true;
+      if (r.product_id && r.product_id === matchedProduct.id) return true;
+      if (r.product_handle && r.product_handle === matchedProduct.handle)
+        return true;
+      if (
+        (r as { product_external_id?: number | string }).product_external_id &&
+        String(
+          (r as { product_external_id?: number | string }).product_external_id
+        ) === String(matchedProduct.external_id)
+      )
+        return true;
+      if (productHandle && r.product_handle === productHandle) return true;
+      return false;
     });
 
     return {
@@ -220,6 +247,176 @@ export async function getJudgeMeReviews({
       current_page: page,
       per_page: perPage,
       reviews: [],
+    };
+  }
+}
+
+export type EnrichedJudgeMeReview = JudgeMeReview & {
+  product_id?: number;
+  product_external_id?: number | string;
+  product_handle?: string;
+  product_title?: string;
+  product_image_url?: string | null;
+  is_shop_review?: boolean;
+};
+
+/**
+ * Fetch all reviews store-wide (both product reviews and store/experience reviews)
+ * with product enrichment for the dedicated /reviews hub.
+ */
+export async function getAllJudgeMeReviews({
+  page = 1,
+  perPage = 100,
+}: {
+  page?: number;
+  perPage?: number;
+} = {}): Promise<{
+  reviews: EnrichedJudgeMeReview[];
+  products: JudgeMeProduct[];
+  stats: {
+    totalCount: number;
+    averageRating: number;
+    productReviewCount: number;
+    storeReviewCount: number;
+  };
+}> {
+  const { apiToken, shopDomain } = getJudgeMeConfig();
+
+  if (!apiToken) {
+    return {
+      reviews: [],
+      products: [],
+      stats: {
+        totalCount: 0,
+        averageRating: 0,
+        productReviewCount: 0,
+        storeReviewCount: 0,
+      },
+    };
+  }
+
+  try {
+    const [products, reviewsRes] = await Promise.all([
+      getJudgeMeProducts(),
+      fetch(
+        `${JUDGEME_API_BASE}/reviews?api_token=${apiToken}&shop_domain=${shopDomain}&page=${page}&per_page=${perPage}`,
+        {
+          method: "GET",
+          headers: { Accept: "application/json" },
+          next: {
+            revalidate: 0,
+            tags: ["judgeme-all-reviews"],
+          },
+        }
+      ),
+    ]);
+
+    if (!reviewsRes.ok) {
+      return {
+        reviews: [],
+        products,
+        stats: {
+          totalCount: 0,
+          averageRating: 0,
+          productReviewCount: 0,
+          storeReviewCount: 0,
+        },
+      };
+    }
+
+    const data = (await reviewsRes.json()) as {
+      reviews?: (JudgeMeReview & {
+        product_id?: number;
+        product_external_id?: number | string;
+        product_handle?: string;
+        product_title?: string;
+        hidden?: boolean;
+        curated?: string;
+      })[];
+    };
+
+    const rawReviews = (data.reviews || []).filter(
+      (r) => r.hidden !== true && r.curated !== "archived"
+    );
+
+    const enrichedReviews: EnrichedJudgeMeReview[] = rawReviews.map((rev) => {
+      // Strictly match Judge.me's recorded product_external_id / product_handle
+      const isShop =
+        !rev.product_external_id ||
+        rev.product_external_id === 0 ||
+        rev.product_external_id === "0" ||
+        rev.product_handle === "judgeme-shop-reviews" ||
+        !rev.product_handle;
+
+      const matchedProd = !isShop
+        ? products.find(
+            (p) =>
+              (rev.product_external_id &&
+                String(p.external_id) === String(rev.product_external_id)) ||
+              (rev.product_handle &&
+                p.handle?.toLowerCase() === rev.product_handle.toLowerCase())
+          )
+        : undefined;
+
+      const productImageUrl =
+        (matchedProd as { image_url?: string | null })?.image_url ||
+        (matchedProd?.handle === "anti-acne-medicated-soap"
+          ? "https://cdn.shopify.com/s/files/1/1015/4806/5085/files/image_2026-08-22_002031970.png?v=1787340041"
+          : matchedProd?.handle === "nourish-grow-hair-oil"
+          ? "https://cdn.shopify.com/s/files/1/1015/4806/5085/files/image_2026-08-22_015321873.png?v=1787345612"
+          : null);
+
+      return {
+        ...rev,
+        is_shop_review: isShop,
+        product_title:
+          matchedProd?.title ||
+          (isShop ? "MZ by LIORA Store & Delivery" : rev.product_title),
+        product_handle:
+          matchedProd?.handle || (isShop ? undefined : rev.product_handle),
+        product_image_url: isShop ? null : productImageUrl,
+      };
+    });
+
+    const totalCount = enrichedReviews.length;
+    const averageRating =
+      totalCount > 0
+        ? Number(
+            (
+              enrichedReviews.reduce((acc, curr) => acc + curr.rating, 0) /
+              totalCount
+            ).toFixed(1)
+          )
+        : 0;
+
+    const productReviewCount = enrichedReviews.filter(
+      (r) => !r.is_shop_review
+    ).length;
+    const storeReviewCount = enrichedReviews.filter(
+      (r) => r.is_shop_review
+    ).length;
+
+    return {
+      reviews: enrichedReviews,
+      products,
+      stats: {
+        totalCount,
+        averageRating,
+        productReviewCount,
+        storeReviewCount,
+      },
+    };
+  } catch (error) {
+    console.error("Error fetching all Judge.me reviews:", error);
+    return {
+      reviews: [],
+      products: [],
+      stats: {
+        totalCount: 0,
+        averageRating: 0,
+        productReviewCount: 0,
+        storeReviewCount: 0,
+      },
     };
   }
 }

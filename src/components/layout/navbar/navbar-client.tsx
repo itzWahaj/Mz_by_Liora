@@ -89,7 +89,7 @@ function NavLink({
 
   return (
     <div
-      className="relative"
+      className="relative shrink-0"
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
     >
@@ -102,7 +102,7 @@ function NavLink({
           href={item.path}
           prefetch={true}
           onClick={() => setIsOpen(false)}
-          className={`group relative flex items-center gap-1.5 rounded-full px-4 py-2 text-sm font-semibold transition-all duration-200 ${
+          className={`group relative flex shrink-0 items-center gap-1.5 whitespace-nowrap rounded-full px-3.5 py-2 text-sm font-semibold transition-all duration-200 ${
             isActive
               ? "bg-brand-gradient text-white shadow-[0_4px_14px_rgba(20,184,166,0.35)]"
               : "text-neutral-700 hover:bg-neutral-100/80 hover:text-brand dark:text-neutral-300 dark:hover:bg-neutral-800/80 dark:hover:text-white"
@@ -116,7 +116,7 @@ function NavLink({
             />
           ) : null}
 
-          <span className="relative z-10 flex items-center gap-1.5">
+          <span className="relative z-10 flex items-center gap-1.5 whitespace-nowrap">
             {item.title}
             {isShop ? (
               <ChevronDownIcon
@@ -288,7 +288,7 @@ export default function NavbarClient({
           </motion.div>
 
           {menu.length > 0 ? (
-            <ul className="hidden items-center gap-1 md:flex">
+            <ul className="hidden shrink-0 items-center gap-1 md:flex">
               {menu.map((item: Menu) => (
                 <li key={item.title}>
                   <NavLink item={item} collections={collections} />
