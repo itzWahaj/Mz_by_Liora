@@ -12,9 +12,30 @@ export async function generateMetadata({
 
   if (!policy) notFound();
 
+  const title = policy.title;
+  const description = `${policy.title} and store guidelines for MZ by LIORA.`;
+  const canonicalUrl = `/policies/${policy.handle}`;
+
   return {
-    title: policy.title,
-    description: `${policy.title} for MZ by LIORA.`,
+    title,
+    description,
+    alternates: {
+      canonical: canonicalUrl,
+    },
+    robots: {
+      index: true,
+      follow: true,
+      googleBot: {
+        index: true,
+        follow: true,
+      },
+    },
+    openGraph: {
+      title,
+      description,
+      url: canonicalUrl,
+      type: "article",
+    },
   };
 }
 
