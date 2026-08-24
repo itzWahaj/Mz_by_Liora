@@ -52,7 +52,7 @@ export default function SplashWrapper({
     <>
       <AnimatePresence mode="wait">
         {state === "showing" && (
-          <SplashScreen key="splash" onComplete={handleComplete} minDuration={3600} />
+          <SplashScreen key="splash" onComplete={handleComplete} minDuration={1400} />
         )}
       </AnimatePresence>
       {/* Site content — render in background while splash plays so it pre-loads */}
