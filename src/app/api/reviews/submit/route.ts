@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { getJudgeMeConfig } from "@/lib/judgeme";
+import { getJudgeMeConfig, getJudgeMeProducts } from "@/lib/judgeme";
 
 const JUDGEME_API_BASE = "https://judge.me/api/v1";
 
@@ -44,6 +44,28 @@ export async function POST(req: Request) {
       );
     }
 
+    const products = await getJudgeMeProducts();
+    const numericId = productId
+      ? String(productId).replace(/^gid:\/\/shopify\/Product\//, "")
+      : "";
+
+    const matchedProduct = products.find((p) => {
+      if (
+        productHandle &&
+        p.handle?.toLowerCase() === productHandle.toLowerCase()
+      ) {
+        return true;
+      }
+      if (numericId && String(p.external_id) === String(numericId)) {
+        return true;
+      }
+      return false;
+    });
+
+    const targetProductId = matchedProduct
+      ? String(matchedProduct.external_id || matchedProduct.id)
+      : numericId;
+
     const payload: Record<string, unknown> = {
       api_token: tokenToUse,
       shop_domain: shopDomain,
@@ -55,11 +77,11 @@ export async function POST(req: Request) {
       body: reviewBody.trim(),
     };
 
+    if (targetProductId) {
+      payload.id = targetProductId;
+    }
     if (productHandle) {
       payload.handle = productHandle;
-    } else if (productId) {
-      const match = productId.match(/\/(\d+)$/);
-      payload.id = match ? match[1] : productId;
     }
 
     const res = await fetch(`${JUDGEME_API_BASE}/reviews`, {

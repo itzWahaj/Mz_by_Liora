@@ -70,8 +70,46 @@ export function extractNumericShopifyId(id: string): string {
   return match ? match[1]! : id;
 }
 
+export type JudgeMeProduct = {
+  id: number;
+  external_id: number | string;
+  handle: string;
+  title: string;
+};
+
 /**
- * Fetch reviews for a product from Judge.me REST API.
+ * Fetch and cache products registered in Judge.me
+ */
+export async function getJudgeMeProducts(): Promise<JudgeMeProduct[]> {
+  const { apiToken, shopDomain } = getJudgeMeConfig();
+
+  if (!apiToken) return [];
+
+  try {
+    const res = await fetch(
+      `${JUDGEME_API_BASE}/products?api_token=${apiToken}&shop_domain=${shopDomain}&per_page=100`,
+      {
+        method: "GET",
+        headers: { Accept: "application/json" },
+        next: {
+          revalidate: 300, // 5 minutes cache
+          tags: ["judgeme-products"],
+        },
+      }
+    );
+
+    if (!res.ok) return [];
+
+    const data = (await res.json()) as { products?: JudgeMeProduct[] };
+    return data.products || [];
+  } catch (error) {
+    console.error("Error fetching Judge.me products:", error);
+    return [];
+  }
+}
+
+/**
+ * Fetch reviews strictly for a specific product from Judge.me REST API.
  */
 export async function getJudgeMeReviews({
   productHandle,
@@ -95,20 +133,46 @@ export async function getJudgeMeReviews({
   }
 
   const numericId = productId ? extractNumericShopifyId(productId) : "";
-  const params = new URLSearchParams({
-    api_token: apiToken,
-    shop_domain: shopDomain,
-    page: String(page),
-    per_page: String(perPage),
-  });
 
-  if (productHandle) {
-    params.set("handle", productHandle);
-  } else if (numericId && numericId.length < 12) {
-    params.set("product_id", numericId);
+  // Require a product identifier to avoid leaking store-wide reviews
+  if (!productHandle && !numericId) {
+    return {
+      current_page: page,
+      per_page: perPage,
+      reviews: [],
+    };
   }
 
   try {
+    // Resolve the internal Judge.me product ID
+    const products = await getJudgeMeProducts();
+    const matchedProduct = products.find((p) => {
+      if (productHandle && p.handle?.toLowerCase() === productHandle.toLowerCase()) {
+        return true;
+      }
+      if (numericId && String(p.external_id) === String(numericId)) {
+        return true;
+      }
+      return false;
+    });
+
+    if (!matchedProduct) {
+      // Product not found in Judge.me or has no reviews registered
+      return {
+        current_page: page,
+        per_page: perPage,
+        reviews: [],
+      };
+    }
+
+    const params = new URLSearchParams({
+      api_token: apiToken,
+      shop_domain: shopDomain,
+      product_id: String(matchedProduct.id),
+      page: String(page),
+      per_page: String(perPage),
+    });
+
     const res = await fetch(`${JUDGEME_API_BASE}/reviews?${params.toString()}`, {
       method: "GET",
       headers: {
@@ -116,7 +180,10 @@ export async function getJudgeMeReviews({
       },
       next: {
         revalidate: 60, // Next.js cache 60s
-        tags: ["judgeme-reviews", productHandle || numericId || "reviews"],
+        tags: [
+          "judgeme-reviews",
+          productHandle || numericId || String(matchedProduct.id),
+        ],
       },
     });
 
@@ -128,13 +195,24 @@ export async function getJudgeMeReviews({
     const data = (await res.json()) as {
       current_page?: number;
       per_page?: number;
-      reviews?: JudgeMeReview[];
+      reviews?: (JudgeMeReview & { product_id?: number; product_handle?: string })[];
     };
+
+    const allReviews = data.reviews ?? [];
+
+    // Filter to ensure only reviews for this specific product are returned
+    const productReviews = allReviews.filter((r) => {
+      if (r.product_id && r.product_id === matchedProduct.id) return true;
+      if (productHandle && r.product_handle === productHandle) return true;
+      // Exclude generic shop reviews (product_external_id === 0 or product_handle === "judgeme-shop-reviews")
+      if (r.product_handle === "judgeme-shop-reviews") return false;
+      return true;
+    });
 
     return {
       current_page: data.current_page ?? page,
       per_page: data.per_page ?? perPage,
-      reviews: data.reviews ?? [],
+      reviews: productReviews,
     };
   } catch (error) {
     console.error("Error fetching Judge.me reviews:", error);

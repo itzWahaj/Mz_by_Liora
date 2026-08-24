@@ -21,7 +21,7 @@ export function StarIcon({
   return (
     <svg
       viewBox="0 0 20 20"
-      className={`${sizeClass} shrink-0 text-amber-400`}
+      className={`${sizeClass} shrink-0 text-[#C9A227]`}
       fill={`url(#${gradientId})`}
       stroke="currentColor"
       strokeWidth="0.8"
