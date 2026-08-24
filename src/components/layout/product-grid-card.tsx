@@ -135,25 +135,15 @@ export default function ProductGridCard({ product }: { product: Product }) {
   const isFallback = imageError || !activeImageUrl;
 
   return (
-    <motion.div
-      className="group relative aspect-square h-full w-full transform-gpu overflow-hidden rounded-2xl"
-      initial="rest"
-      animate="rest"
-      whileHover={reduceMotion ? undefined : "hover"}
-      transition={{ type: "spring", stiffness: 320, damping: 24 }}
-      variants={{
-        rest: { y: 0 },
-        hover: { y: -4 },
-      }}
+    <div
+      className="group relative aspect-square h-full w-full overflow-hidden rounded-2xl transition-transform duration-300 hover:-translate-y-1"
     >
-      <div className="pointer-events-none absolute inset-0 -z-10 transform-gpu rounded-2xl bg-brand-gradient opacity-0 blur-xl transition-brand group-hover:opacity-30" />
-
       <Link
         href={`/product/${product.handle}`}
         className="relative block aspect-square h-full w-full rounded-2xl"
         prefetch={true}
       >
-        <div className="relative h-full w-full overflow-hidden rounded-2xl border border-neutral-200 bg-neutral-100 transition-brand group-hover:border-brand-teal dark:border-neutral-800 dark:bg-neutral-900">
+        <div className="relative h-full w-full overflow-hidden rounded-2xl border border-neutral-200/90 bg-neutral-100 transition-brand group-hover:border-brand-teal group-hover:shadow-md dark:border-neutral-800 dark:bg-neutral-900">
           <div className="absolute inset-0">
             {/* Primary / Active Image */}
             <Image
@@ -212,7 +202,7 @@ export default function ProductGridCard({ product }: { product: Product }) {
             type="button"
             aria-label={`Previous image of ${product.title}`}
             onClick={(event) => stepImage(prevImageIndex, event)}
-            className="pointer-events-auto absolute left-2 top-1/2 z-20 flex h-8 w-8 -translate-y-1/2 items-center justify-center rounded-full border border-white/80 bg-white/85 text-brand opacity-0 shadow-sm backdrop-blur transition-brand hover:border-brand-teal hover:bg-white group-hover:opacity-100 max-md:opacity-100 dark:border-white/15 dark:bg-black/60 dark:text-white"
+            className="pointer-events-auto absolute left-2 top-1/2 z-20 flex h-8 w-8 -translate-y-1/2 items-center justify-center rounded-full border border-neutral-200/80 bg-white/95 text-brand opacity-0 shadow-sm transition-brand hover:border-brand-teal hover:bg-white group-hover:opacity-100 max-md:opacity-100 dark:border-neutral-700 dark:bg-neutral-900/95 dark:text-white"
           >
             <ChevronLeftIcon className="h-4 w-4" />
           </button>
@@ -220,7 +210,7 @@ export default function ProductGridCard({ product }: { product: Product }) {
             type="button"
             aria-label={`Next image of ${product.title}`}
             onClick={(event) => stepImage(nextImageIndex, event)}
-            className="pointer-events-auto absolute right-2 top-1/2 z-20 flex h-8 w-8 -translate-y-1/2 items-center justify-center rounded-full border border-white/80 bg-white/85 text-brand opacity-0 shadow-sm backdrop-blur transition-brand hover:border-brand-teal hover:bg-white group-hover:opacity-100 max-md:opacity-100 dark:border-white/15 dark:bg-black/60 dark:text-white"
+            className="pointer-events-auto absolute right-2 top-1/2 z-20 flex h-8 w-8 -translate-y-1/2 items-center justify-center rounded-full border border-neutral-200/80 bg-white/95 text-brand opacity-0 shadow-sm transition-brand hover:border-brand-teal hover:bg-white group-hover:opacity-100 max-md:opacity-100 dark:border-neutral-700 dark:bg-neutral-900/95 dark:text-white"
           >
             <ChevronRightIcon className="h-4 w-4" />
           </button>
@@ -249,27 +239,17 @@ export default function ProductGridCard({ product }: { product: Product }) {
       ) : null}
 
       <div className="pointer-events-none absolute left-3 top-3 z-10">
-        <AnimatePresence mode="wait" initial={false}>
-          <motion.div
-            key={`${selectedVariant?.id ?? "price"}-${priceAmount}-${compareAtPriceAmount ?? ""}`}
-            initial={{ opacity: 0, y: 4 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -4 }}
-            transition={{ duration: 0.18 }}
-          >
-            <div className="rounded-full border border-brand-navy/10 bg-white/85 px-2.5 py-1 text-xs font-medium shadow-sm backdrop-blur-md dark:border-white/15 dark:bg-black/60">
-              <PriceDisplay
-                amount={priceAmount}
-                compareAtAmount={compareAtPriceAmount}
-                currencyCode={priceCurrency}
-                showBadge={false}
-                size="xs"
-                priceClassName="text-brand dark:text-white"
-                compareAtClassName="text-neutral-400 dark:text-neutral-400"
-              />
-            </div>
-          </motion.div>
-        </AnimatePresence>
+        <div className="rounded-full border border-neutral-200/80 bg-white/95 px-2.5 py-1 text-xs font-medium shadow-sm dark:border-neutral-800 dark:bg-neutral-900/95">
+          <PriceDisplay
+            amount={priceAmount}
+            compareAtAmount={compareAtPriceAmount}
+            currencyCode={priceCurrency}
+            showBadge={false}
+            size="xs"
+            priceClassName="text-brand dark:text-white"
+            compareAtClassName="text-neutral-400 dark:text-neutral-400"
+          />
+        </div>
       </div>
 
       <div className="pointer-events-none absolute inset-x-0 bottom-0 bg-gradient-to-t from-brand-cream/90 via-brand-cream/20 to-transparent px-3 pb-3 pt-10 dark:from-black/75 dark:via-transparent dark:to-transparent">
@@ -323,7 +303,7 @@ export default function ProductGridCard({ product }: { product: Product }) {
           </div>
         ) : null}
 
-        <div className="pointer-events-auto flex items-center gap-2 rounded-xl border border-brand-navy/10 bg-white/80 px-3 py-2 shadow-[0_8px_24px_rgba(15,23,42,0.08)] backdrop-blur-md dark:border-white/10 dark:bg-black/55 dark:shadow-none">
+        <div className="pointer-events-auto flex items-center gap-2 rounded-xl border border-neutral-200/80 bg-white/95 px-3 py-2 shadow-sm dark:border-neutral-800 dark:bg-neutral-900/95">
           <Link
             href={`/product/${product.handle}`}
             className="min-w-0 flex-1"
@@ -394,6 +374,6 @@ export default function ProductGridCard({ product }: { product: Product }) {
           {message}
         </p>
       </div>
-    </motion.div>
+    </div>
   );
 }

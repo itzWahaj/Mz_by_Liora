@@ -89,19 +89,18 @@ export default function CartModal() {
           >
             <motion.button
               aria-label="Close cart overlay"
-              className="absolute inset-0 bg-black/50 backdrop-blur-md"
+              className="absolute inset-0 bg-black/60"
               onClick={closeCart}
             />
             <motion.aside
-              data-lenis-prevent
-              className="fixed bottom-0 right-0 top-0 z-[1001] flex h-dvh w-full max-w-[100vw] flex-col border-l border-neutral-200 bg-white p-4 text-black shadow-2xl sm:p-6 md:w-[410px] dark:border-neutral-700 dark:bg-neutral-950 dark:text-white"
+              className="fixed bottom-0 right-0 top-0 z-[1001] flex h-dvh w-full max-w-[100vw] flex-col border-l border-neutral-200 bg-white p-4 text-black shadow-2xl sm:p-6 md:w-[410px] transform-gpu dark:border-neutral-700 dark:bg-neutral-950 dark:text-white"
               initial={{ x: "100%" }}
               animate={{ x: 0 }}
               exit={{ x: "100%" }}
               transition={
                 reduceMotion
                   ? { duration: 0 }
-                  : { type: "spring", damping: 25, stiffness: 300 }
+                  : { duration: 0.25, ease: [0.16, 1, 0.3, 1] }
               }
             >
               <div className="shrink-0">
@@ -189,11 +188,10 @@ export default function CartModal() {
 
                           return (
                             <motion.li
-                              layout
-                              initial={{ opacity: 0, y: 18 }}
+                              initial={{ opacity: 0, y: 12 }}
                               animate={{ opacity: 1, y: 0 }}
-                              exit={{ opacity: 0, y: -12 }}
-                              transition={{ duration: 0.2 }}
+                              exit={{ opacity: 0, y: -10 }}
+                              transition={{ duration: 0.18 }}
                               key={item.merchandise.id}
                               className="flex w-full flex-col border-b border-neutral-200/80 px-2 py-4 dark:border-neutral-800"
                             >

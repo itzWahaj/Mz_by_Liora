@@ -65,18 +65,17 @@ export default function MobileMenu({
             {/* Backdrop overlay */}
             <motion.button
               aria-label="Close mobile menu overlay"
-              className="absolute inset-0 bg-black/50 backdrop-blur-md"
+              className="absolute inset-0 bg-black/60"
               onClick={closeMobileMenu}
             />
 
             {/* Mobile Drawer Panel */}
             <motion.div
-              data-lenis-prevent
-              className="relative flex h-full w-[85%] max-w-sm flex-col bg-brand-cream/95 p-5 shadow-2xl backdrop-blur-xl dark:bg-neutral-950/95 z-[1001]"
+              className="relative flex h-full w-[85%] max-w-sm flex-col bg-brand-surface p-5 shadow-2xl dark:bg-neutral-950 z-[1001] transform-gpu border-r border-neutral-200/80 dark:border-neutral-800"
               initial={{ x: "-100%" }}
               animate={{ x: 0 }}
               exit={{ x: "-100%" }}
-              transition={{ type: "spring", stiffness: 260, damping: 28 }}
+              transition={{ duration: 0.25, ease: [0.16, 1, 0.3, 1] }}
             >
               {/* Drawer Header */}
               <div className="mb-6 flex items-center justify-between border-b border-neutral-200/80 pb-4 dark:border-neutral-800">
