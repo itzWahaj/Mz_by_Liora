@@ -163,18 +163,26 @@ interface SplashScreenProps {
 
 export default function SplashScreen({
   onComplete,
-  minDuration = 1400,
+  minDuration = 2500,
 }: SplashScreenProps) {
   const { theme } = useTheme();
   const isDark = theme === "dark";
   const [phase, setPhase] = useState<"loading" | "reveal" | "tagline" | "exit">("loading");
   const canvasRef = useParticles(phase !== "exit", isDark);
 
-  // ── Snappy Phase transitions (no polling setInterval) ───────────────────
+  // Preload logo image immediately
   useEffect(() => {
-    const t1 = setTimeout(() => setPhase("reveal"), 150);
-    const t2 = setTimeout(() => setPhase("tagline"), 400);
-    const t3 = setTimeout(() => setPhase("exit"), minDuration - 350);
+    if (typeof window !== "undefined") {
+      const img = new window.Image();
+      img.src = "/logo_3.png";
+    }
+  }, []);
+
+  // Snappy yet smooth luxury phase transitions
+  useEffect(() => {
+    const t1 = setTimeout(() => setPhase("reveal"), 80);
+    const t2 = setTimeout(() => setPhase("tagline"), 450);
+    const t3 = setTimeout(() => setPhase("exit"), minDuration - 450);
     const t4 = setTimeout(() => onComplete(), minDuration);
     return () => [t1, t2, t3, t4].forEach(clearTimeout);
   }, [minDuration, onComplete]);
@@ -183,7 +191,7 @@ export default function SplashScreen({
     <AnimatePresence>
       <motion.div
         key="splash"
-        className="fixed inset-0 z-[9999] flex flex-col items-center justify-center overflow-hidden"
+        className="fixed inset-0 z-[9999] flex flex-col items-center justify-center overflow-hidden select-none"
         style={{
           background: isDark
             ? "radial-gradient(ellipse 80% 80% at 50% 40%, #1A1F0D 0%, #111408 60%, #0A0C05 100%)"
@@ -193,7 +201,7 @@ export default function SplashScreen({
           opacity: 0,
           scale: 1.02,
         }}
-        transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
+        transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
       >
         {/* Particle canvas */}
         <canvas
@@ -268,30 +276,37 @@ export default function SplashScreen({
         />
 
         {/* Center content */}
-        <div className="relative z-10 flex flex-col items-center gap-5 px-8">
-          {/* Brand Logo */}
+        <div className="relative z-10 flex flex-col items-center gap-5 px-6 sm:px-8">
+          {/* Brand Logo Container */}
           <motion.div className="relative flex items-center justify-center">
-            {/* Deep glow pool behind logo */}
-            <div
+            {/* Deep ambient glow behind logo */}
+            <motion.div
               className="absolute pointer-events-none"
               style={{
-                width: "90%",
-                height: "60%",
-                bottom: "-5%",
-                left: "5%",
+                width: "110%",
+                height: "90%",
                 background: isDark
-                  ? "radial-gradient(ellipse, rgba(216,187,122,0.45) 0%, rgba(89,101,34,0.3) 40%, transparent 70%)"
-                  : "radial-gradient(ellipse, rgba(216,187,122,0.3) 0%, rgba(89,101,34,0.15) 50%, transparent 70%)",
-                filter: "blur(28px)",
+                  ? "radial-gradient(ellipse, rgba(216,187,122,0.45) 0%, rgba(89,101,34,0.3) 45%, transparent 70%)"
+                  : "radial-gradient(ellipse, rgba(216,187,122,0.35) 0%, rgba(89,101,34,0.18) 50%, transparent 70%)",
+                filter: "blur(32px)",
                 borderRadius: "50%",
+              }}
+              animate={{
+                scale: [0.95, 1.08, 0.95],
+                opacity: [0.7, 1, 0.7],
+              }}
+              transition={{
+                duration: 3,
+                repeat: Infinity,
+                ease: "easeInOut",
               }}
             />
 
             {/* Logo Image */}
             <motion.div
-              initial={{ opacity: 0, scale: 0.88, y: 16 }}
+              initial={{ opacity: 0, scale: 0.9, y: 12 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
-              transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+              transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
             >
               <div
                 style={{
@@ -301,17 +316,14 @@ export default function SplashScreen({
                 }}
               >
                 <Image
-                  src="/new_logo.png"
+                  src="/logo_3.png"
                   alt="MZ by LIORA"
-                  width={1254}
-                  height={836}
+                  width={925}
+                  height={899}
                   priority
+                  unoptimized
                   draggable={false}
-                  style={{
-                    width: "clamp(260px, 36vw, 420px)",
-                    height: "auto",
-                    userSelect: "none",
-                  }}
+                  className="w-[240px] sm:w-[320px] md:w-[380px] lg:w-[420px] h-auto select-none"
                 />
               </div>
             </motion.div>
@@ -331,7 +343,7 @@ export default function SplashScreen({
                 }}
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.45, ease: "easeOut" }}
+                transition={{ duration: 0.5, ease: "easeOut" }}
               >
                 Care Beyond Standards
               </motion.p>
@@ -339,12 +351,12 @@ export default function SplashScreen({
           </AnimatePresence>
         </div>
 
-        {/* Fast, continuous progress bar */}
+        {/* Smooth continuous progress bar */}
         <motion.div
           className="absolute bottom-0 left-0 right-0"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          transition={{ delay: 0.15, duration: 0.3 }}
+          transition={{ delay: 0.1, duration: 0.3 }}
         >
           {/* Track */}
           <div
@@ -366,18 +378,18 @@ export default function SplashScreen({
               }}
               initial={{ width: "0%" }}
               animate={{ width: "100%" }}
-              transition={{ duration: 1.15, ease: [0.16, 1, 0.3, 1] }}
+              transition={{ duration: 2.1, ease: [0.22, 1, 0.36, 1] }}
             />
           </div>
 
           {/* Footer Branding */}
-          <div className="flex justify-between items-center px-8 py-3.5">
+          <div className="flex justify-between items-center px-6 sm:px-8 py-3.5">
             <span
               className="font-sans font-medium"
               style={{
                 fontSize: 11,
                 letterSpacing: "0.2em",
-                color: isDark ? "rgba(255,255,255,0.45)" : "#303515/70",
+                color: isDark ? "rgba(255,255,255,0.45)" : "rgba(48,53,21,0.7)",
               }}
             >
               mzbyliora.com

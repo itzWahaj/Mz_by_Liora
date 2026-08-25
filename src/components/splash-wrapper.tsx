@@ -1,13 +1,8 @@
 "use client";
 
-import dynamic from "next/dynamic";
+import SplashScreen from "@/components/splash-screen";
 import { useState, useEffect } from "react";
 import { AnimatePresence } from "framer-motion";
-
-// Load the heavy canvas/animation component only client-side
-const SplashScreen = dynamic(() => import("@/components/splash-screen"), {
-  ssr: false,
-});
 
 const SESSION_KEY = "mz-splash-shown";
 
@@ -52,7 +47,7 @@ export default function SplashWrapper({
     <>
       <AnimatePresence mode="wait">
         {state === "showing" && (
-          <SplashScreen key="splash" onComplete={handleComplete} minDuration={1400} />
+          <SplashScreen key="splash" onComplete={handleComplete} minDuration={2500} />
         )}
       </AnimatePresence>
       {/* Site content — render in background while splash plays so it pre-loads */}
