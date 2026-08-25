@@ -156,6 +156,18 @@ export default function MobileMenu({
               })}
             </ul>
           ) : null}
+
+          {/* Mobile Account Action */}
+          <div className="mt-auto border-t border-[#D8BB7A]/40 pt-4 dark:border-neutral-800">
+            <Link
+              href="/account"
+              prefetch={true}
+              onClick={closeMobileMenu}
+              className="flex items-center justify-center gap-2 rounded-full bg-[#596522] py-3 text-sm font-semibold text-white shadow-sm transition-all hover:bg-[#C49A45]"
+            >
+              <span>My Account</span>
+            </Link>
+          </div>
         </aside>
       </div>,
       document.body

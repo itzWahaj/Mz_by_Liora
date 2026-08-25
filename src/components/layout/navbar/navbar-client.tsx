@@ -19,6 +19,7 @@ import { useMemo, useRef, useState } from "react";
 import MobileMenu from "./mobile-menu";
 import Search from "./search";
 import ThemeToggle from "./theme-toggle";
+import AccountButton from "./account-button";
 
 /** Scroll distance (px) over which the navbar fully settles. */
 const SCROLL_START = 0;
@@ -318,6 +319,7 @@ export default function NavbarClient({
             <Search />
           </div>
           <ThemeToggle />
+          <AccountButton />
           <motion.div
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.96 }}
