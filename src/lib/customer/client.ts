@@ -64,7 +64,13 @@ export async function customerAccountFetch<T>({
 
     const json: CustomerAccountGraphQLResponse<T> = await response.json();
     if (json.errors && json.errors.length > 0) {
-      console.error("Customer Account GraphQL errors:", json.errors);
+      console.error(
+        "Customer Account GraphQL errors:",
+        JSON.stringify(json.errors, null, 2)
+      );
+      if (json.data) {
+        return json.data;
+      }
       return null;
     }
 

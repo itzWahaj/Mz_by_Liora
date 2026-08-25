@@ -20,6 +20,7 @@ import MobileMenu from "./mobile-menu";
 import Search from "./search";
 import ThemeToggle from "./theme-toggle";
 import AccountButton from "./account-button";
+import WishlistNavbarButton from "./wishlist-navbar-button";
 
 /** Scroll distance (px) over which the navbar fully settles. */
 const SCROLL_START = 0;
@@ -319,6 +320,7 @@ export default function NavbarClient({
             <Search />
           </div>
           <ThemeToggle />
+          <WishlistNavbarButton />
           <AccountButton />
           <motion.div
             whileHover={{ scale: 1.05 }}

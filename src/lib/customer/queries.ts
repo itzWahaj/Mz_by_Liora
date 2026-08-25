@@ -44,13 +44,12 @@ export const getCustomerProfileQuery = /* GraphQL */ `
 `;
 
 export const getCustomerOrdersQuery = /* GraphQL */ `
-  query getCustomerOrders($first: Int = 25) {
+  query getCustomerOrders($first: Int = 20) {
     customer {
-      orders(first: $first, sortKey: PROCESSED_AT, reverse: true) {
+      orders(first: $first) {
         nodes {
           id
           name
-          number
           processedAt
           financialStatus
           fulfillmentStatus
@@ -58,27 +57,11 @@ export const getCustomerOrdersQuery = /* GraphQL */ `
             amount
             currencyCode
           }
-          subtotalPrice {
-            amount
-            currencyCode
-          }
-          totalTax {
-            amount
-            currencyCode
-          }
-          totalShippingPrice {
-            amount
-            currencyCode
-          }
-          lineItems(first: 25) {
+          lineItems(first: 20) {
             nodes {
               id
               title
               quantity
-              price {
-                amount
-                currencyCode
-              }
               totalPrice {
                 amount
                 currencyCode
@@ -88,16 +71,6 @@ export const getCustomerOrdersQuery = /* GraphQL */ `
                 altText
               }
             }
-          }
-          shippingAddress {
-            id
-            address1
-            address2
-            city
-            province
-            zip
-            country
-            formatted
           }
         }
       }

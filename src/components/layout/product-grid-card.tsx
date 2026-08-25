@@ -192,56 +192,8 @@ export default function ProductGridCard({ product }: { product: Product }) {
         </div>
       </Link>
 
-      {hasDiscount && (
-        <div className="pointer-events-none absolute right-3 top-3 z-10">
-          <DiscountBadge percentage={discountPercentage} />
-        </div>
-      )}
-
-      {hasGallery ? (
-        <>
-          <button
-            type="button"
-            aria-label={`Previous image of ${product.title}`}
-            onClick={(event) => stepImage(prevImageIndex, event)}
-            className="pointer-events-auto absolute left-2 top-1/2 z-20 flex h-8 w-8 -translate-y-1/2 items-center justify-center rounded-full border border-[#D8BB7A]/60 bg-[#FFFDF8]/95 text-[#303515] opacity-0 shadow-sm transition-brand hover:border-[#C49A45] hover:bg-[#FFFDF8] group-hover:opacity-100 max-md:opacity-100 dark:border-neutral-700 dark:bg-neutral-900/95 dark:text-white"
-          >
-            <ChevronLeftIcon className="h-4 w-4" />
-          </button>
-          <button
-            type="button"
-            aria-label={`Next image of ${product.title}`}
-            onClick={(event) => stepImage(nextImageIndex, event)}
-            className="pointer-events-auto absolute right-2 top-1/2 z-20 flex h-8 w-8 -translate-y-1/2 items-center justify-center rounded-full border border-[#D8BB7A]/60 bg-[#FFFDF8]/95 text-[#303515] opacity-0 shadow-sm transition-brand hover:border-[#C49A45] hover:bg-[#FFFDF8] group-hover:opacity-100 max-md:opacity-100 dark:border-neutral-700 dark:bg-neutral-900/95 dark:text-white"
-          >
-            <ChevronRightIcon className="h-4 w-4" />
-          </button>
-          <div
-            className={clsx(
-              "pointer-events-auto absolute right-3 z-10 flex gap-1",
-              hasDiscount ? "top-9" : "top-3"
-            )}
-          >
-            {images.slice(0, 4).map((image, index) => (
-              <button
-                key={`${image.url}-${index}`}
-                type="button"
-                aria-label={`Show image ${index + 1} of ${product.title}`}
-                onClick={(event) => stepImage(index, event)}
-                className={clsx(
-                  "h-1.5 w-1.5 rounded-full transition-brand",
-                  imageIndex === index
-                    ? "scale-125 bg-[#596522]"
-                    : "bg-white/80 ring-1 ring-black/10 hover:bg-white dark:bg-white/40"
-                )}
-              />
-            ))}
-          </div>
-        </>
-      ) : null}
-
       <div className="pointer-events-none absolute left-3 top-3 z-10">
-        <div className="rounded-full border border-[#D8BB7A]/60 bg-[#FFFDF8]/95 px-2.5 py-1 text-xs font-medium shadow-sm dark:border-neutral-800 dark:bg-neutral-900/95">
+        <div className="flex items-center gap-1.5 rounded-full border border-[#D8BB7A]/60 bg-[#FFFDF8]/95 px-2.5 py-1 text-xs font-medium shadow-sm dark:border-neutral-800 dark:bg-neutral-900/95">
           <PriceDisplay
             amount={priceAmount}
             compareAtAmount={compareAtPriceAmount}
@@ -251,6 +203,9 @@ export default function ProductGridCard({ product }: { product: Product }) {
             priceClassName="text-[#4D581E] dark:text-white"
             compareAtClassName="text-neutral-400 dark:text-neutral-400"
           />
+          {hasDiscount && (
+            <DiscountBadge percentage={discountPercentage} />
+          )}
         </div>
       </div>
 
