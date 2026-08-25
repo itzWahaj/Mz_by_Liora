@@ -14,7 +14,7 @@ function SubmitButton({ type }: { type: "plus" | "minus" }) {
       }
       whileTap={{ scale: 0.9 }}
       className={clsx(
-        "ease flex h-full min-w-[36px] max-w-[36px] flex-none items-center justify-center rounded-full p-2 text-brand-teal transition-brand hover:bg-brand-teal/10 hover:text-brand-teal",
+        "ease flex h-full min-w-[36px] max-w-[36px] flex-none items-center justify-center rounded-full p-2 text-[#596522] transition-brand hover:bg-[#596522]/10 hover:text-[#4D581E]",
         {
           "ml-auto": type === "minus",
         }

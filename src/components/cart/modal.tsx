@@ -15,6 +15,7 @@ import Price from "../price";
 import LoadingDots from "../loading-dots";
 import { createCartAndSetCookie, redirectToCheckout } from "./actions";
 import { useCart } from "./cart-context";
+import { trackMetaEvent } from "@/lib/meta/pixel";
 import CloseCart from "./close-cart";
 import { DeleteItemButton } from "./delete-item-button";
 import { EditItemQuantityButton } from "./edit-item-quantity-button";
@@ -95,7 +96,7 @@ export default function CartModal() {
           onClick={closeCart}
         />
         <aside
-          className={`fixed bottom-0 right-0 top-0 z-[1001] flex h-dvh w-full max-w-[100vw] flex-col border-l border-neutral-200 bg-white p-4 text-black shadow-2xl sm:p-6 md:w-[410px] transform-gpu dark:border-neutral-700 dark:bg-neutral-950 dark:text-white transition-transform duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] ${
+          className={`fixed bottom-0 right-0 top-0 z-[1001] flex h-dvh w-full max-w-[100vw] flex-col border-l border-[#D8BB7A]/60 bg-[#FAF9F4] p-4 text-[#303515] shadow-2xl sm:p-6 md:w-[410px] transform-gpu dark:border-neutral-700 dark:bg-neutral-950 dark:text-white transition-transform duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] ${
             isOpen ? "translate-x-0" : "translate-x-full"
           }`}
         >
@@ -104,10 +105,10 @@ export default function CartModal() {
                   <div className="flex min-w-0 items-center gap-3">
                     <LogoSquare size="sm" />
                     <div className="min-w-0">
-                      <p className="font-display text-2xl font-semibold leading-none">
+                      <p className="font-display text-2xl font-semibold leading-none text-[#4D581E] dark:text-white">
                         My Cart
                       </p>
-                      <p className="mt-1 text-[10px] font-medium uppercase tracking-[0.2em] text-neutral-500">
+                      <p className="mt-1 text-[10px] font-medium uppercase tracking-[0.2em] text-[#C49A45]">
                         MZ by LIORA
                       </p>
                     </div>
@@ -120,11 +121,11 @@ export default function CartModal() {
               </div>
 
               {!cart || cart.lines.length === 0 ? (
-                <div className="mt-16 rounded-2xl border border-neutral-200 bg-neutral-50 p-8 text-center dark:border-neutral-800 dark:bg-neutral-900">
+                <div className="mt-16 rounded-2xl border border-[#D8BB7A]/60 bg-[#FFFDF8] p-8 text-center dark:border-neutral-800 dark:bg-neutral-900">
                   <div className="mx-auto flex justify-center">
                     <LogoSquare />
                   </div>
-                  <p className="mt-4 text-center font-display text-2xl font-bold">
+                  <p className="mt-4 text-center font-display text-2xl font-bold text-[#4D581E] dark:text-white">
                     Your Cart is Empty.
                   </p>
                 </div>
@@ -189,11 +190,11 @@ export default function CartModal() {
                               exit={{ opacity: 0, y: -10 }}
                               transition={{ duration: 0.18 }}
                               key={item.merchandise.id}
-                              className="flex w-full flex-col border-b border-neutral-200/80 px-2 py-4 dark:border-neutral-800"
+                              className="flex w-full flex-col border-b border-[#D8BB7A]/30 px-2 py-4 dark:border-neutral-800"
                             >
                               <div className="relative flex w-full flex-row items-start justify-between gap-3">
                                 <div className="z-30 flex flex-1 flex-row space-x-3.5">
-                                  <div className="relative flex h-16 w-16 shrink-0 items-center justify-center rounded-xl border border-neutral-200 bg-neutral-100 shadow-[0_8px_24px_rgba(15,23,42,0.08)] transition-brand hover:border-brand-teal dark:border-neutral-700 dark:bg-neutral-900 dark:shadow-none">
+                                  <div className="relative flex h-16 w-16 shrink-0 items-center justify-center rounded-xl border border-[#D8BB7A]/50 bg-[#FFFDF8] shadow-[0_8px_24px_rgba(48,53,21,0.06)] transition-brand hover:border-[#C49A45] dark:border-neutral-700 dark:bg-neutral-900 dark:shadow-none">
                                     <div className="absolute -left-2 -top-2 z-40">
                                       <DeleteItemButton
                                         item={item}
@@ -232,11 +233,11 @@ export default function CartModal() {
                                     onClick={closeCart}
                                     className="flex min-w-0 flex-1 flex-col pr-1"
                                   >
-                                    <span className="line-clamp-2 text-sm font-semibold leading-snug text-brand transition-colors hover:text-brand-teal dark:text-white dark:hover:text-brand-teal">
+                                    <span className="line-clamp-2 text-sm font-semibold leading-snug text-[#303515] transition-colors hover:text-[#596522] dark:text-white dark:hover:text-[#D8BB7A]">
                                       {item.merchandise.product.title}
                                     </span>
                                     {item.merchandise.title !== DEFAULT_OPTION ? (
-                                      <p className="mt-0.5 text-xs text-neutral-500 dark:text-neutral-400">
+                                      <p className="mt-0.5 text-xs text-[#303515]/60 dark:text-neutral-400">
                                         {item.merchandise.title}
                                       </p>
                                     ) : null}
@@ -244,7 +245,7 @@ export default function CartModal() {
                                     {/* Line item discount badge if on sale */}
                                     {hasLineDiscount && (
                                       <div className="mt-1 flex items-center gap-1">
-                                        <span className="rounded bg-emerald-500/10 px-1.5 py-0.5 text-[10px] font-bold text-emerald-600 dark:bg-emerald-500/20 dark:text-emerald-400">
+                                        <span className="rounded bg-[#596522]/15 px-1.5 py-0.5 text-[10px] font-bold text-[#596522] dark:bg-[#C49A45]/20 dark:text-[#D8BB7A]">
                                           {lineDiscountPercent}% OFF
                                         </span>
                                       </div>
@@ -252,32 +253,27 @@ export default function CartModal() {
                                   </Link>
                                 </div>
 
-                                <div className="flex shrink-0 flex-col items-end justify-between self-stretch">
-                                  <div className="text-right">
-                                    <div className="flex flex-col items-end">
-                                      {hasLineDiscount && (
-                                        <Price
-                                          className="text-xs text-neutral-400 line-through dark:text-neutral-500"
-                                          amount={String(lineCompareTotal)}
-                                          currencyCode={item.cost.totalAmount.currencyCode}
-                                        />
-                                      )}
-                                      <Price
-                                        className="text-sm font-bold text-brand dark:text-white"
-                                        amount={item.cost.totalAmount.amount}
-                                        currencyCode={item.cost.totalAmount.currencyCode}
-                                      />
-                                    </div>
+                                <div className="z-30 flex flex-col items-end gap-1">
+                                  <div className="flex flex-col items-end">
+                                    <Price
+                                      className="text-right text-sm font-semibold text-[#4D581E] dark:text-white"
+                                      amount={item.cost.totalAmount.amount}
+                                      currencyCode={currencyCode}
+                                    />
+                                    {hasLineDiscount && (
+                                      <span className="text-right text-xs text-neutral-400 line-through">
+                                        <Price amount={String(lineCompareTotal)} currencyCode={currencyCode} />
+                                      </span>
+                                    )}
                                   </div>
-
-                                  <div className="ml-auto mt-2 flex h-8 flex-row items-center rounded-full border border-brand-teal/35 bg-white shadow-sm transition-brand hover:border-brand-teal dark:border-brand-teal/40 dark:bg-neutral-900">
+                                  <div className="mt-2 flex h-8 items-center rounded-full border border-[#D8BB7A]/60 bg-[#FFFDF8] dark:border-neutral-700 dark:bg-neutral-900">
                                     <EditItemQuantityButton
                                       item={item}
                                       type="minus"
                                       optimisticUpdate={updateCartItem}
                                     />
-                                    <p className="w-6 text-center">
-                                      <span className="w-full text-xs font-semibold">
+                                    <p className="w-6 text-center text-xs font-semibold">
+                                      <span className="w-full text-sm">
                                         {item.quantity}
                                       </span>
                                     </p>
@@ -296,12 +292,12 @@ export default function CartModal() {
                   </ul>
 
                   {/* Pricing Breakdown & Checkout */}
-                  <div className="shrink-0 border-t border-neutral-200/80 bg-neutral-50/50 p-4 text-sm dark:border-neutral-800 dark:bg-neutral-900/40">
+                  <div className="shrink-0 border-t border-[#D8BB7A]/40 bg-[#FFFDF8]/90 p-4 text-sm dark:border-neutral-800 dark:bg-neutral-900/40">
                     {/* Subtotal */}
                     <div className="mb-2 flex items-center justify-between">
-                      <p className="text-neutral-600 dark:text-neutral-400">Subtotal</p>
+                      <p className="text-[#303515]/75 dark:text-neutral-400">Subtotal</p>
                       <Price
-                        className="text-right font-medium text-black dark:text-white"
+                        className="text-right font-semibold text-[#303515] dark:text-white"
                         amount={String(originalSubtotal > 0 ? originalSubtotal : cart.cost.subtotalAmount.amount)}
                         currencyCode={currencyCode}
                       />
@@ -309,12 +305,12 @@ export default function CartModal() {
 
                     {/* Total Savings / Discount */}
                     {totalSavings > 0 && (
-                      <div className="mb-2 flex items-center justify-between text-emerald-600 dark:text-emerald-400">
+                      <div className="mb-2 flex items-center justify-between text-[#596522] dark:text-[#D8BB7A]">
                         <div className="flex items-center gap-1.5">
                           <TagIcon className="h-3.5 w-3.5 shrink-0" />
                           <span className="font-medium">Total Savings</span>
                           {totalSavingsPercent > 0 && (
-                            <span className="rounded-full bg-emerald-100 px-2 py-0.5 text-[10px] font-bold text-emerald-700 dark:bg-emerald-950/80 dark:text-emerald-300">
+                            <span className="rounded-full bg-[#596522]/15 px-2 py-0.5 text-[10px] font-bold text-[#596522] dark:bg-[#C49A45]/20 dark:text-[#D8BB7A]">
                               {totalSavingsPercent}% OFF
                             </span>
                           )}
@@ -326,30 +322,69 @@ export default function CartModal() {
                     )}
 
                     {/* Shipping */}
-                    <div className="mb-3 flex items-center justify-between text-neutral-600 dark:text-neutral-400">
+                    <div className="mb-3 flex items-center justify-between text-[#303515]/70 dark:text-neutral-400">
                       <p>Shipping</p>
                       <p className="text-right text-xs">Calculated at checkout</p>
                     </div>
 
                     {/* Total */}
-                    <div className="mb-4 flex items-center justify-between border-t border-neutral-200/80 pt-3 dark:border-neutral-800">
+                    <div className="mb-4 flex items-center justify-between border-t border-[#D8BB7A]/40 pt-3 dark:border-neutral-800">
                       <div>
-                        <p className="text-base font-bold text-brand dark:text-white">
+                        <p className="text-base font-bold text-[#4D581E] dark:text-white">
                           Total
                         </p>
-                        <p className="text-[11px] text-neutral-500 dark:text-neutral-400">
+                        <p className="text-[11px] text-[#303515]/60 dark:text-neutral-400">
                           Inclusive of all applicable taxes
                         </p>
                       </div>
                       <Price
-                        className="text-right text-xl font-bold text-brand dark:text-white"
+                        className="text-right text-xl font-bold text-[#4D581E] dark:text-white"
                         amount={cart.cost.totalAmount.amount}
                         currencyCode={currencyCode}
                       />
                     </div>
 
                     {/* Checkout CTA */}
-                    <form action={redirectToCheckout} className="shrink-0">
+                    <form
+                      action={async () => {
+                        if (cart) {
+                          const totalVal = parseFloat(
+                            cart.cost.totalAmount.amount || "0"
+                          );
+                          const currency =
+                            cart.cost.totalAmount.currencyCode || "PKR";
+                          const contentIds = cart.lines
+                            .map(
+                              (line) =>
+                                line.merchandise.product?.id ||
+                                line.merchandise.id
+                            )
+                            .filter(Boolean);
+                          const contents = cart.lines.map((line) => ({
+                            id: line.merchandise.id,
+                            quantity: line.quantity,
+                            item_price:
+                              parseFloat(
+                                line.cost.totalAmount.amount || "0"
+                              ) / (line.quantity || 1),
+                            title: line.merchandise.product.title,
+                          }));
+
+                          trackMetaEvent("InitiateCheckout", {
+                            customData: {
+                              value: totalVal,
+                              currency,
+                              num_items: cart.totalQuantity,
+                              content_ids: contentIds,
+                              contents,
+                              content_type: "product",
+                            },
+                          });
+                        }
+                        await redirectToCheckout();
+                      }}
+                      className="shrink-0"
+                    >
                       <CheckoutButton />
                     </form>
                   </div>

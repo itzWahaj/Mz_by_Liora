@@ -91,7 +91,9 @@ export default function VariantSelector({
 
         return (
           <div key={option.id} className="mb-8">
-            <p className="mb-4 text-sm uppercase tracking-wide">{option.name}</p>
+            <p className="mb-3 text-xs font-semibold uppercase tracking-[0.18em] text-[#4D581E] dark:text-neutral-300">
+              {option.name}
+            </p>
             <div className="flex flex-wrap gap-3">
               {option.values.map((value) => {
                 const optionParams = {
@@ -147,11 +149,11 @@ export default function VariantSelector({
                       updateURL(newState);
                     }}
                     className={clsx(
-                      "relative flex min-w-[52px] items-center justify-center rounded-full border px-3.5 py-2 text-sm font-medium transition-brand",
+                      "relative flex min-w-[52px] items-center justify-center rounded-full border px-4 py-2 text-sm font-semibold transition-brand",
                       {
-                        "border-transparent bg-brand-gradient text-white shadow-[0_8px_20px_rgba(30,95,191,0.28)]":
+                        "border-[#596522] bg-[#596522] text-white shadow-[0_8px_20px_rgba(89,101,34,0.3)]":
                           isActive && isAvailableForSale,
-                        "border-neutral-200 bg-neutral-100 text-brand hover:border-brand-teal/50 hover:bg-white hover:text-brand-blue-dark hover:shadow-[0_8px_20px_rgba(20,184,166,0.14)] dark:border-neutral-700 dark:bg-neutral-900 dark:text-neutral-200 dark:hover:border-brand-teal/40 dark:hover:bg-neutral-800":
+                        "border-[#D8BB7A]/60 bg-[#FFFDF8] text-[#303515] hover:border-[#C49A45] hover:bg-[#FAF9F4] hover:text-[#4D581E] hover:shadow-[0_8px_20px_rgba(196,154,69,0.14)] dark:border-neutral-700 dark:bg-neutral-900 dark:text-neutral-200 dark:hover:border-[#D8BB7A] dark:hover:bg-neutral-800":
                           !isActive && isAvailableForSale,
                         "cursor-not-allowed border-neutral-200 bg-neutral-100/70 text-neutral-400 opacity-45 dark:border-neutral-700 dark:bg-neutral-900/50 dark:text-neutral-500":
                           !isAvailableForSale,

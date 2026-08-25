@@ -62,13 +62,13 @@ export default function FooterNewsletter() {
   }
 
   return (
-    <div className="w-full border-b border-brand-teal/15 pb-10 dark:border-neutral-800">
+    <div className="w-full border-b border-[#D8BB7A]/30 pb-10 dark:border-neutral-800">
       <div className="flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between lg:gap-10">
         <div className="max-w-xl space-y-2">
-          <h3 className="font-display text-3xl font-bold tracking-tight text-brand sm:text-4xl dark:text-white">
+          <h3 className="font-display text-3xl font-bold tracking-tight text-[#4D581E] sm:text-4xl dark:text-white">
             Join the Ritual
           </h3>
-          <p className="font-sans text-sm leading-relaxed text-neutral-600 dark:text-neutral-400 md:text-base">
+          <p className="font-sans text-sm leading-relaxed text-[#303515]/80 dark:text-neutral-400 md:text-base">
             New formulas, restock alerts, and skincare notes from MZ by LIORA —
             straight to your inbox.
           </p>
@@ -77,7 +77,7 @@ export default function FooterNewsletter() {
         <div className="w-full max-w-xl shrink-0">
           {status === "success" ? (
             <p
-              className="rounded-full bg-brand-gradient px-5 py-2.5 text-center text-sm font-medium text-white"
+              className="rounded-full bg-[#596522] px-5 py-2.5 text-center text-sm font-medium text-white"
               role="status"
             >
               You&apos;re in. Welcome to the ritual.
@@ -104,7 +104,7 @@ export default function FooterNewsletter() {
                     }
                   }}
                   placeholder="you@email.com"
-                  className="h-12 min-w-0 w-full flex-1 rounded-full border border-neutral-300/90 bg-white/80 px-6 py-0 font-sans text-sm leading-[48px] text-brand shadow-sm outline-none transition-brand placeholder:text-neutral-400 hover:border-brand-teal/50 hover:shadow-[0_8px_24px_rgba(20,184,166,0.12)] focus:border-brand-teal focus:shadow-[0_0_0_4px_rgba(20,184,166,0.18)] disabled:opacity-60 sm:text-base dark:border-neutral-700 dark:bg-neutral-900/70 dark:text-white dark:placeholder:text-neutral-500 dark:hover:border-brand-teal/40 dark:focus:shadow-[0_0_0_4px_rgba(20,184,166,0.2)]"
+                  className="h-12 min-w-0 w-full flex-1 rounded-full border border-[#D8BB7A]/60 bg-[#FFFDF8]/90 px-6 py-0 font-sans text-sm leading-[48px] text-[#303515] shadow-sm outline-none transition-brand placeholder:text-[#303515]/50 hover:border-[#C49A45] hover:shadow-[0_8px_24px_rgba(196,154,69,0.12)] focus:border-[#C49A45] focus:shadow-[0_0_0_4px_rgba(196,154,69,0.18)] disabled:opacity-60 sm:text-base dark:border-neutral-700 dark:bg-neutral-900/70 dark:text-white dark:placeholder:text-neutral-500 dark:hover:border-[#D8BB7A] dark:focus:shadow-[0_0_0_4px_rgba(196,154,69,0.2)]"
                 />
                 <div className="w-full shrink-0 sm:w-auto">
                   <GradientButton
@@ -118,7 +118,7 @@ export default function FooterNewsletter() {
                 </div>
               </div>
               {status === "error" ? (
-                <p className="px-2 font-sans text-xs text-brand-coral" role="alert">
+                <p className="px-2 font-sans text-xs text-[#C49A45]" role="alert">
                   {errorMessage || "Something went wrong. Please try again."}
                 </p>
               ) : null}

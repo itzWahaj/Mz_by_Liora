@@ -10,6 +10,7 @@ import { CheckIcon, PlusIcon } from "@heroicons/react/24/outline";
 import { motion, useReducedMotion } from "framer-motion";
 import { addItem } from "./actions";
 import { flyToCart } from "./fly-to-cart";
+import { trackMetaEvent } from "@/lib/meta/pixel";
 import { useEffect, useRef, useState } from "react";
 
 function SubmitButton({
@@ -25,7 +26,7 @@ function SubmitButton({
 }) {
   const reduceMotion = Boolean(useReducedMotion());
   const buttonClasses =
-    "relative flex w-full items-center justify-center rounded-full border border-brand-blue/20 bg-brand px-4 py-3.5 text-sm font-medium tracking-wide text-white shadow-sm transition-colors";
+    "relative flex w-full items-center justify-center rounded-full border border-[#596522] bg-[#596522] px-4 py-3.5 text-sm font-semibold tracking-wide text-white shadow-sm transition-all hover:bg-[#C49A45] hover:border-[#C49A45] hover:shadow-[0_8px_20px_rgba(196,154,69,0.35)]";
   const disabledClasses = "cursor-not-allowed opacity-60 hover:opacity-60";
 
   if (!availableForSale) {
@@ -116,6 +117,28 @@ export function AddToCart({ product }: { product: Product }) {
           });
         }
         addCartItem(finalVariant, product);
+
+        // Fire Meta Pixel & CAPI AddToCart event
+        const itemPrice = parseFloat(finalVariant.price.amount || "0");
+        const itemCurrency = finalVariant.price.currencyCode || "PKR";
+        trackMetaEvent("AddToCart", {
+          customData: {
+            content_ids: [finalVariant.id, product.id],
+            content_name: product.title,
+            content_type: "product",
+            value: itemPrice,
+            currency: itemCurrency,
+            contents: [
+              {
+                id: finalVariant.id,
+                quantity: 1,
+                item_price: itemPrice,
+                title: `${product.title}${finalVariant.title && finalVariant.title !== "Default Title" ? ` - ${finalVariant.title}` : ""}`,
+              },
+            ],
+          },
+        });
+
         await actionWithVariant();
         setIsAdded(true);
       }}

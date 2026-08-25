@@ -90,16 +90,16 @@ export default function WhatsAppButton() {
             className="absolute bottom-16 right-0 mb-2 w-[calc(100vw-2.5rem)] max-w-[380px] overflow-hidden rounded-3xl border border-neutral-200/80 bg-white shadow-2xl backdrop-blur-xl sm:w-[380px] dark:border-neutral-800 dark:bg-neutral-900"
           >
             {/* Header */}
-            <div className="flex items-center justify-between bg-[#075E54] px-4 py-3.5 text-white dark:bg-[#128C7E]">
+            <div className="flex items-center justify-between bg-[#4D581E] px-4 py-3.5 text-white dark:bg-[#303515]">
               <div className="flex items-center gap-3">
                 {/* Brand Avatar with Online Indicator */}
-                <div className="relative flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden rounded-full bg-white shadow-sm">
+                <div className="relative flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden rounded-full bg-white border border-[#D8BB7A]/60 shadow-sm">
                   <Image
-                    src="/favicon-192.png"
+                    src="/new_logo.png"
                     alt="MZ by LIORA"
                     width={36}
                     height={36}
-                    className="h-8 w-8 object-contain"
+                    className="h-full w-full object-contain p-1"
                   />
                   <span className="absolute bottom-0 right-0 h-2.5 w-2.5 rounded-full border-2 border-white bg-emerald-400" />
                 </div>
@@ -121,16 +121,16 @@ export default function WhatsAppButton() {
 
             {/* Chat Body (Simulated conversation) */}
             <div
-              className="h-[280px] sm:h-[320px] p-4 bg-[#EFEAE2] dark:bg-[#0B141A] flex flex-col justify-between overflow-y-auto"
+              className="h-[280px] sm:h-[320px] p-4 bg-[#FAF9F4] dark:bg-[#0B141A] flex flex-col justify-between overflow-y-auto"
               style={{
-                backgroundImage: `radial-gradient(#CBD5E1 0.75px, transparent 0.75px)`,
+                backgroundImage: `radial-gradient(#D8BB7A 0.75px, transparent 0.75px)`,
                 backgroundSize: "16px 16px",
               }}
             >
               <div className="space-y-3">
                 {/* Date pill */}
                 <div className="flex justify-center">
-                  <span className="rounded-lg bg-white/80 dark:bg-[#182229] px-2.5 py-0.5 text-[10px] font-medium uppercase tracking-wider text-neutral-500 shadow-sm">
+                  <span className="rounded-lg bg-white/90 dark:bg-[#182229] px-2.5 py-0.5 text-[10px] font-medium uppercase tracking-wider text-[#303515]/70 shadow-sm">
                     Today
                   </span>
                 </div>
@@ -145,7 +145,7 @@ export default function WhatsAppButton() {
                 {/* Incoming Bubble */}
                 <div className="flex flex-col items-start space-y-1">
                   <div className="max-w-[88%] rounded-2xl rounded-tl-sm bg-white p-3.5 text-xs leading-relaxed text-neutral-800 shadow-sm dark:bg-[#202C33] dark:text-neutral-100">
-                    <p className="font-semibold text-brand-teal text-[11px] mb-1">
+                    <p className="font-semibold text-[#596522] text-[11px] mb-1">
                       MZ by LIORA Support
                     </p>
                     <p>
@@ -172,7 +172,7 @@ export default function WhatsAppButton() {
                       setMessage(chip);
                       inputRef.current?.focus();
                     }}
-                    className="rounded-full border border-neutral-300/80 bg-white/90 px-2.5 py-1 text-[10px] font-medium text-neutral-700 shadow-xs transition-colors hover:border-brand-teal hover:bg-white hover:text-brand-teal dark:border-neutral-700 dark:bg-[#202C33] dark:text-neutral-300 dark:hover:text-white"
+                    className="rounded-full border border-[#D8BB7A]/60 bg-white/90 px-2.5 py-1 text-[10px] font-medium text-[#303515] shadow-xs transition-colors hover:border-[#C49A45] hover:bg-white hover:text-[#596522] dark:border-neutral-700 dark:bg-[#202C33] dark:text-neutral-300 dark:hover:text-white"
                   >
                     {chip}
                   </button>
@@ -186,7 +186,7 @@ export default function WhatsAppButton() {
                 e.preventDefault();
                 handleSendMessage();
               }}
-              className="flex items-center gap-2 border-t border-neutral-200/80 bg-[#F0F2F5] p-2.5 dark:border-neutral-800 dark:bg-[#202C33]"
+              className="flex items-center gap-2 border-t border-[#D8BB7A]/30 bg-[#FFFDF8] p-2.5 dark:border-neutral-800 dark:bg-[#202C33]"
             >
               <input
                 ref={inputRef}
@@ -194,12 +194,12 @@ export default function WhatsAppButton() {
                 value={message}
                 onChange={(e) => setMessage(e.target.value)}
                 placeholder="Type a message..."
-                className="flex-1 rounded-full border border-neutral-300/80 bg-white px-4 py-2 text-xs text-neutral-800 outline-none transition-colors placeholder:text-neutral-400 focus:border-brand-teal dark:border-neutral-700 dark:bg-neutral-800 dark:text-white"
+                className="flex-1 rounded-full border border-[#D8BB7A]/60 bg-white px-4 py-2 text-xs text-[#303515] outline-none transition-colors placeholder:text-neutral-400 focus:border-[#C49A45] dark:border-neutral-700 dark:bg-neutral-800 dark:text-white"
               />
               <button
                 type="submit"
                 aria-label="Send message on WhatsApp"
-                className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-[#25D366] text-white shadow-sm transition-transform hover:scale-105 active:scale-95"
+                className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-[#596522] hover:bg-[#C49A45] text-white shadow-sm transition-transform hover:scale-105 active:scale-95"
               >
                 <PaperAirplaneIcon className="h-4 w-4" />
               </button>

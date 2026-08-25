@@ -196,16 +196,16 @@ export default function ReviewsSection({
   return (
     <section
       id="reviews"
-      className="scroll-mt-24 border-t border-[#E5E2DA] py-16 dark:border-[#2A3241]"
+      className="scroll-mt-24 border-t border-[#D8BB7A]/40 py-16 dark:border-neutral-800"
     >
       <div className="mx-auto max-w-screen-2xl">
         {/* Section Header */}
         <div className="mb-10 flex flex-col justify-between gap-6 md:flex-row md:items-end">
           <div>
-            <p className="text-xs font-semibold uppercase tracking-[0.2em] text-brand-teal">
+            <p className="text-xs font-semibold uppercase tracking-[0.2em] text-[#C49A45]">
               Customer Feedback
             </p>
-            <h2 className="mt-1 font-display text-3xl font-bold tracking-tight text-[#1E2A3A] sm:text-4xl dark:text-white">
+            <h2 className="mt-1 font-display text-3xl font-bold tracking-tight text-[#4D581E] sm:text-4xl dark:text-white">
               Verified Reviews
             </h2>
           </div>
@@ -213,7 +213,7 @@ export default function ReviewsSection({
           <button
             type="button"
             onClick={() => setIsModalOpen(true)}
-            className="inline-flex items-center justify-center gap-2 rounded-full bg-brand-gradient px-6 py-3 text-sm font-semibold text-white shadow-sm transition-all hover:brightness-110 hover:shadow-[0_8px_20px_rgba(20,184,166,0.3)]"
+            className="inline-flex items-center justify-center gap-2 rounded-full bg-[#596522] px-6 py-3 text-sm font-semibold text-white shadow-sm transition-all hover:bg-[#C49A45] hover:shadow-[0_8px_20px_rgba(196,154,69,0.3)]"
           >
             <PencilSquareIcon className="h-4 w-4" />
             Write a Review
@@ -221,19 +221,19 @@ export default function ReviewsSection({
         </div>
 
         {/* Rating Summary Card */}
-        <div className="relative mb-12 grid grid-cols-1 gap-8 overflow-hidden rounded-3xl border border-[#E5E2DA] bg-[#FBFAF7] p-6 shadow-sm sm:p-8 lg:grid-cols-12 dark:border-[#2A3241] dark:bg-[#12161F]">
+        <div className="relative mb-12 grid grid-cols-1 gap-8 overflow-hidden rounded-3xl border border-[#D8BB7A]/60 bg-[#FFFDF8] p-6 shadow-sm sm:p-8 lg:grid-cols-12 dark:border-neutral-800 dark:bg-[#12161F]">
           {/* Top 2px Gradient Accent */}
-          <div className="absolute left-0 right-0 top-0 h-[2px] bg-brand-gradient" />
+          <div className="absolute left-0 right-0 top-0 h-[2px] bg-gradient-to-r from-[#D8BB7A] via-[#C49A45] to-transparent" />
 
           {/* Left: Overall Score */}
-          <div className="flex flex-col items-center justify-center text-center lg:col-span-4 lg:border-r lg:border-[#E5E2DA] lg:pr-8 dark:lg:border-[#2A3241]">
-            <span className="font-display text-5xl font-bold tracking-tight text-[#1E2A3A] dark:text-white">
+          <div className="flex flex-col items-center justify-center text-center lg:col-span-4 lg:border-r lg:border-[#D8BB7A]/40 lg:pr-8 dark:lg:border-neutral-800">
+            <span className="font-display text-5xl font-bold tracking-tight text-[#4D581E] dark:text-white">
               {averageRating > 0 ? averageRating.toFixed(1) : "0.0"}
             </span>
             <div className="mt-2">
               <StarsRow rating={averageRating} sizeClass="h-5 w-5" />
             </div>
-            <p className="mt-2 text-sm text-[#475569] dark:text-neutral-400">
+            <p className="mt-2 text-sm text-[#303515]/75 dark:text-neutral-400">
               Based on {totalCount} {totalCount === 1 ? "review" : "reviews"}
             </p>
           </div>
@@ -252,51 +252,46 @@ export default function ReviewsSection({
                   }
                   className={`flex w-16 shrink-0 items-center gap-1 font-medium transition-colors ${
                     activeFilter === star
-                      ? "text-brand-teal"
-                      : "text-[#475569] hover:text-[#1E2A3A] dark:text-neutral-400 dark:hover:text-white"
+                      ? "text-[#596522] font-semibold"
+                      : "text-[#303515]/70 hover:text-[#4D581E] dark:text-neutral-400 dark:hover:text-white"
                   }`}
                 >
                   <span>{star}</span>
                   <StarIcon fillPercent={100} sizeClass="h-3.5 w-3.5" />
                 </button>
 
-                <div className="relative h-2.5 flex-1 overflow-hidden rounded-full bg-[#E5E2DA]/70 dark:bg-neutral-800">
+                <div className="relative h-2.5 flex-1 overflow-hidden rounded-full bg-[#FAF9F4] ring-1 ring-[#D8BB7A]/30 dark:bg-neutral-800">
                   <div
-                    className="h-full rounded-full bg-brand-gradient transition-all duration-500"
+                    className="h-full rounded-full bg-[#596522] transition-all duration-500"
                     style={{ width: `${percentage}%` }}
                   />
                 </div>
 
                 <span className="w-10 text-right text-xs text-neutral-500 dark:text-neutral-400">
-                  {percentage}%
+                  {count}
                 </span>
               </div>
             ))}
           </div>
         </div>
 
-        {/* Reviews List or Empty State */}
-        {reviews.length === 0 ? (
-          <div className="relative overflow-hidden rounded-3xl border border-dashed border-[#E5E2DA] bg-[#FBFAF7]/60 p-12 text-center dark:border-[#2A3241] dark:bg-[#12161F]/40">
-            <ChatBubbleLeftEllipsisIcon className="mx-auto h-12 w-12 text-neutral-400 dark:text-neutral-600" />
-            <h3 className="mt-4 font-display text-xl font-semibold text-[#1E2A3A] dark:text-white">
-              No Reviews Yet
-            </h3>
-            <p className="mx-auto mt-2 max-w-md text-sm text-[#475569] dark:text-neutral-400">
-              Be the first to share your ritual experience with {productTitle}.
+        {/* Reviews List / Content */}
+        {filteredReviews.length === 0 ? (
+          <div className="relative overflow-hidden rounded-3xl border border-dashed border-[#D8BB7A]/60 bg-[#FFFDF8]/60 p-12 text-center dark:border-neutral-800 dark:bg-neutral-900/40">
+            <p className="font-display text-lg font-semibold text-[#4D581E] dark:text-white">
+              {activeFilter === "all"
+                ? "No verified reviews yet"
+                : `No ${activeFilter}-star reviews found`}
             </p>
-            <button
-              type="button"
-              onClick={() => setIsModalOpen(true)}
-              className="mt-6 inline-flex items-center gap-2 rounded-full border border-brand-teal/40 bg-white px-6 py-2.5 text-sm font-semibold text-brand-teal shadow-sm transition-all hover:bg-brand-teal hover:text-white dark:bg-neutral-900"
-            >
-              <PencilSquareIcon className="h-4 w-4" />
-              Write the First Review
-            </button>
+            <p className="mt-1 text-sm text-[#303515]/70 dark:text-neutral-400">
+              {activeFilter === "all"
+                ? "Be the first to share your experience with this formulation."
+                : "Try selecting a different filter above."}
+            </p>
           </div>
         ) : (
           <div className="space-y-6">
-            {/* Filter tags if reviews exist */}
+            {/* Filter Pills if multiple reviews exist */}
             {reviews.length > 3 && (
               <div className="flex flex-wrap items-center gap-2 pb-2">
                 <span className="text-xs font-medium text-neutral-500">
@@ -305,13 +300,19 @@ export default function ReviewsSection({
                 <button
                   type="button"
                   onClick={() => setActiveFilter("all")}
-                  className={`rounded-full px-3 py-1 text-xs font-medium transition-all ${
+                  className={`group relative overflow-hidden rounded-full px-3.5 py-1 text-xs font-semibold transition-all duration-300 ${
                     activeFilter === "all"
-                      ? "bg-brand-teal text-white shadow-sm"
-                      : "border border-[#E5E2DA] bg-[#FBFAF7] text-[#475569] hover:border-brand-teal/50 dark:border-[#2A3241] dark:bg-[#12161F] dark:text-neutral-400"
+                      ? "bg-[#596522] text-white shadow-sm"
+                      : "border border-[#D8BB7A]/60 bg-[#FFFDF8] text-[#303515] hover:text-white dark:border-neutral-800 dark:bg-neutral-900 dark:text-neutral-400 dark:hover:text-white"
                   }`}
                 >
-                  All ({reviews.length})
+                  {activeFilter !== "all" && (
+                    <span
+                      aria-hidden
+                      className="absolute inset-0 origin-left scale-x-0 rounded-full bg-[#596522] opacity-0 transition-all duration-300 ease-out group-hover:scale-x-100 group-hover:opacity-100"
+                    />
+                  )}
+                  <span className="relative z-10">All ({reviews.length})</span>
                 </button>
                 {[5, 4, 3, 2, 1].map((s) => {
                   const count = reviews.filter(
@@ -323,13 +324,19 @@ export default function ReviewsSection({
                       key={s}
                       type="button"
                       onClick={() => setActiveFilter(s)}
-                      className={`rounded-full px-3 py-1 text-xs font-medium transition-all ${
+                      className={`group relative overflow-hidden rounded-full px-3.5 py-1 text-xs font-semibold transition-all duration-300 ${
                         activeFilter === s
-                          ? "bg-brand-teal text-white shadow-sm"
-                          : "border border-[#E5E2DA] bg-[#FBFAF7] text-[#475569] hover:border-brand-teal/50 dark:border-[#2A3241] dark:bg-[#12161F] dark:text-neutral-400"
+                          ? "bg-[#596522] text-white shadow-sm"
+                          : "border border-[#D8BB7A]/60 bg-[#FFFDF8] text-[#303515] hover:text-white dark:border-neutral-800 dark:bg-neutral-900 dark:text-neutral-400 dark:hover:text-white"
                       }`}
                     >
-                      {s} Stars ({count})
+                      {activeFilter !== s && (
+                        <span
+                          aria-hidden
+                          className="absolute inset-0 origin-left scale-x-0 rounded-full bg-[#596522] opacity-0 transition-all duration-300 ease-out group-hover:scale-x-100 group-hover:opacity-100"
+                        />
+                      )}
+                      <span className="relative z-10">{s} Stars ({count})</span>
                     </button>
                   );
                 })}
@@ -341,15 +348,15 @@ export default function ReviewsSection({
               {filteredReviews.map((review) => (
                 <div
                   key={review.id}
-                  className="group relative flex flex-col justify-between overflow-hidden rounded-3xl border border-[#E5E2DA] bg-[#FBFAF7] p-7 shadow-[0_4px_20px_rgba(0,0,0,0.02)] transition-all duration-200 ease-out hover:-translate-y-0.5 hover:border-brand-teal/40 hover:shadow-[0_12px_28px_rgba(30,95,191,0.08)] dark:border-[#2A3241] dark:bg-[#12161F] dark:hover:border-brand-teal/40 dark:hover:shadow-[0_12px_28px_rgba(0,0,0,0.35)]"
+                  className="group relative flex flex-col justify-between overflow-hidden rounded-3xl border border-[#D8BB7A]/60 bg-[#FFFDF8] p-7 shadow-[0_4px_20px_rgba(0,0,0,0.02)] transition-all duration-200 ease-out hover:-translate-y-0.5 hover:border-[#C49A45] hover:shadow-[0_12px_28px_rgba(89,101,34,0.08)] dark:border-neutral-800 dark:bg-neutral-900 dark:hover:border-[#D8BB7A]"
                 >
                   {/* 2px Gradient Top Border */}
-                  <div className="absolute left-0 right-0 top-0 h-[2px] bg-brand-gradient" />
+                  <div className="absolute left-0 right-0 top-0 h-[2px] bg-gradient-to-r from-[#D8BB7A] via-[#C49A45] to-transparent" />
 
                   {/* Decorative Quotation Mark in Top-Left Corner */}
                   <span
                     aria-hidden="true"
-                    className="pointer-events-none absolute -top-1 left-5 select-none font-display text-6xl leading-none text-transparent bg-clip-text bg-brand-gradient opacity-15 dark:opacity-25"
+                    className="pointer-events-none absolute -top-1 left-5 select-none font-display text-6xl leading-none text-transparent bg-clip-text bg-gradient-to-br from-[#596522] to-[#D8BB7A] opacity-15 dark:opacity-25"
                   >
                     “
                   </span>
@@ -365,13 +372,13 @@ export default function ReviewsSection({
 
                     {/* Review Title: Serif Display Font in Charcoal-Navy */}
                     {review.title && (
-                      <h4 className="mt-3 font-display text-lg font-bold tracking-tight text-[#1E2A3A] sm:text-xl dark:text-[#F8FAFC]">
+                      <h4 className="mt-3 font-display text-lg font-bold tracking-tight text-[#4D581E] sm:text-xl dark:text-[#F8FAFC]">
                         {review.title}
                       </h4>
                     )}
 
                     {/* Review Body: Sans font, muted charcoal */}
-                    <p className="mt-2.5 font-sans text-sm leading-relaxed text-[#334155] dark:text-[#CBD5E1]">
+                    <p className="mt-2.5 font-sans text-sm leading-relaxed text-[#303515]/85 dark:text-[#CBD5E1]">
                       {review.body}
                     </p>
                     {/* Review Images if present */}
@@ -390,7 +397,7 @@ export default function ReviewsSection({
                               key={idx}
                               type="button"
                               onClick={() => setLightboxImage(fullUrl)}
-                              className="group/img relative h-24 w-24 overflow-hidden rounded-2xl border-2 border-[#E5E2DA] bg-neutral-100 shadow-xs transition-all duration-200 hover:scale-105 hover:border-brand-teal hover:shadow-md sm:h-28 sm:w-28 dark:border-[#2A3241] dark:bg-neutral-900"
+                              className="group/img relative h-24 w-24 overflow-hidden rounded-2xl border-2 border-[#D8BB7A]/60 bg-[#FAF9F4] shadow-xs transition-all duration-200 hover:scale-105 hover:border-[#C49A45] hover:shadow-md sm:h-28 sm:w-28 dark:border-neutral-700 dark:bg-neutral-900"
                               title="Click to view full photo"
                             >
                               <img
@@ -411,21 +418,21 @@ export default function ReviewsSection({
                   </div>
 
                   {/* Reviewer Meta & Verified Badge */}
-                  <div className="relative z-10 mt-6 border-t border-[#E5E2DA] pt-4 dark:border-[#2A3241]">
+                  <div className="relative z-10 mt-6 border-t border-[#D8BB7A]/30 pt-4 dark:border-neutral-800">
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-2.5">
-                        <div className="flex h-8 w-8 items-center justify-center rounded-full bg-brand-gradient text-xs font-bold text-white shadow-sm ring-2 ring-[#E5E2DA] dark:ring-[#2A3241]">
+                        <div className="flex h-8 w-8 items-center justify-center rounded-full bg-[#596522] text-xs font-bold text-white shadow-sm ring-2 ring-[#D8BB7A]/40 dark:ring-neutral-700">
                           {review.reviewer.name.charAt(0).toUpperCase()}
                         </div>
                         <div>
-                          <p className="text-xs font-semibold text-[#1E2A3A] dark:text-white">
+                          <p className="text-xs font-semibold text-[#4D581E] dark:text-white">
                             {review.reviewer.name}
                           </p>
                           {review.verified &&
                           review.verified !== "nothing" &&
                           review.verified !== "unverified" && (
-                            <span className="mt-0.5 inline-flex items-center gap-1 rounded-full bg-[#14B8A6]/10 px-2 py-0.5 text-[10px] font-semibold text-[#0F766E] dark:bg-[#14B8A6]/20 dark:text-[#2DD4BF]">
-                              <CheckBadgeIcon className="h-3.5 w-3.5 text-[#14B8A6]" />
+                            <span className="mt-0.5 inline-flex items-center gap-1 rounded-full bg-[#596522]/10 px-2 py-0.5 text-[10px] font-semibold text-[#596522] dark:bg-[#C49A45]/20 dark:text-[#D8BB7A]">
+                              <CheckBadgeIcon className="h-3.5 w-3.5 text-[#596522]" />
                               Verified Buyer
                             </span>
                           )}
@@ -435,11 +442,11 @@ export default function ReviewsSection({
 
                     {/* Merchant Reply if present */}
                     {review.reply && (
-                      <div className="mt-3 rounded-2xl border border-[#E5E2DA]/80 bg-white/70 p-3 text-xs dark:border-[#2A3241] dark:bg-neutral-800/60">
-                        <p className="font-semibold text-[#1E2A3A] dark:text-white">
+                      <div className="mt-3 rounded-2xl border border-[#D8BB7A]/40 bg-[#FAF9F4] p-3 text-xs dark:border-neutral-800 dark:bg-neutral-800/60">
+                        <p className="font-semibold text-[#4D581E] dark:text-white">
                           MZ by LIORA Response:
                         </p>
-                        <p className="mt-1 text-[#334155] dark:text-[#CBD5E1]">
+                        <p className="mt-1 text-[#303515]/80 dark:text-[#CBD5E1]">
                           {review.reply.body}
                         </p>
                       </div>
@@ -452,7 +459,7 @@ export default function ReviewsSection({
         )}
       </div>
 
-      {/* Write a Review Modal */}
+      {/* Review Submission Modal */}
       <AnimatePresence>
         {isModalOpen && (
           <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4">
@@ -461,14 +468,14 @@ export default function ReviewsSection({
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               onClick={() => setIsModalOpen(false)}
-              className="absolute inset-0 bg-black/60 backdrop-blur-sm"
+              className="fixed inset-0 bg-black/60 backdrop-blur-sm"
             />
 
             <motion.div
               initial={{ opacity: 0, scale: 0.95, y: 20 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.95, y: 20 }}
-              className="relative max-h-[92vh] w-full max-w-lg overflow-y-auto rounded-3xl border border-[#E5E2DA] bg-[#FBFAF7] p-6 shadow-2xl [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden sm:p-7 dark:border-[#2A3241] dark:bg-[#12161F]"
+              className="relative max-h-[92vh] w-full max-w-lg overflow-y-auto rounded-3xl border border-[#D8BB7A]/60 bg-[#FFFDF8] p-6 shadow-2xl [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden sm:p-7 dark:border-neutral-800 dark:bg-[#12161F]"
             >
               <button
                 type="button"
@@ -478,10 +485,10 @@ export default function ReviewsSection({
                 <XMarkIcon className="h-5 w-5" />
               </button>
 
-              <h3 className="font-display text-xl font-bold text-[#1E2A3A] sm:text-2xl dark:text-white">
+              <h3 className="font-display text-xl font-bold text-[#4D581E] sm:text-2xl dark:text-white">
                 Review {productTitle}
               </h3>
-              <p className="mt-1 text-xs text-neutral-500 dark:text-neutral-400">
+              <p className="mt-1 text-xs text-[#303515]/70 dark:text-neutral-400">
                 Share your authentic ritual experience to help others in our community.
               </p>
 
@@ -489,7 +496,7 @@ export default function ReviewsSection({
                 <div
                   className={`mt-5 rounded-2xl p-6 text-center ${
                     submitStatus.success
-                      ? "bg-emerald-50 text-emerald-800 dark:bg-emerald-950/40 dark:text-emerald-300"
+                      ? "bg-[#596522]/10 text-[#4D581E] dark:bg-emerald-950/40 dark:text-emerald-300"
                       : "bg-rose-50 text-rose-800 dark:bg-rose-950/40 dark:text-rose-300"
                   }`}
                 >
@@ -513,7 +520,7 @@ export default function ReviewsSection({
                 <form onSubmit={handleReviewSubmit} className="mt-5 space-y-3.5">
                   {/* Star Rating Select */}
                   <div>
-                    <label className="block text-xs font-semibold uppercase tracking-wider text-neutral-600 dark:text-neutral-400">
+                    <label className="block text-xs font-semibold uppercase tracking-wider text-[#303515]/75 dark:text-neutral-400">
                       Overall Rating *
                     </label>
                     <div className="mt-1.5 flex items-center gap-1">
@@ -534,7 +541,7 @@ export default function ReviewsSection({
                           />
                         </button>
                       ))}
-                      <span className="ml-2 text-xs font-semibold text-[#C9A227]">
+                      <span className="ml-2 text-xs font-semibold text-[#C49A45]">
                         {formHoverRating || formRating} Star
                         {(formHoverRating || formRating) > 1 ? "s" : ""}
                       </span>
@@ -546,7 +553,7 @@ export default function ReviewsSection({
                     <div>
                       <label
                         htmlFor="rev-name"
-                        className="block text-xs font-semibold uppercase tracking-wider text-neutral-600 dark:text-neutral-400"
+                        className="block text-xs font-semibold uppercase tracking-wider text-[#303515]/75 dark:text-neutral-400"
                       >
                         Your Name *
                       </label>
@@ -557,14 +564,14 @@ export default function ReviewsSection({
                         value={formName}
                         onChange={(e) => setFormName(e.target.value)}
                         placeholder="e.g. Ayesha Khan"
-                        className="mt-1 w-full rounded-xl border border-[#E5E2DA] bg-white px-3 py-2 text-sm text-[#1E2A3A] shadow-sm outline-none transition-brand focus:border-brand-teal focus:ring-2 focus:ring-brand-teal/20 dark:border-neutral-700 dark:bg-neutral-800 dark:text-white"
+                        className="mt-1 w-full rounded-xl border border-[#D8BB7A]/60 bg-white px-3 py-2 text-sm text-[#303515] shadow-sm outline-none transition-brand focus:border-[#C49A45] focus:ring-2 focus:ring-[#C49A45]/20 dark:border-neutral-700 dark:bg-neutral-800 dark:text-white"
                       />
                     </div>
 
                     <div>
                       <label
                         htmlFor="rev-email"
-                        className="block text-xs font-semibold uppercase tracking-wider text-neutral-600 dark:text-neutral-400"
+                        className="block text-xs font-semibold uppercase tracking-wider text-[#303515]/75 dark:text-neutral-400"
                       >
                         Email Address *
                       </label>
@@ -575,7 +582,7 @@ export default function ReviewsSection({
                         value={formEmail}
                         onChange={(e) => setFormEmail(e.target.value)}
                         placeholder="you@email.com"
-                        className="mt-1 w-full rounded-xl border border-[#E5E2DA] bg-white px-3 py-2 text-sm text-[#1E2A3A] shadow-sm outline-none transition-brand focus:border-brand-teal focus:ring-2 focus:ring-brand-teal/20 dark:border-neutral-700 dark:bg-neutral-800 dark:text-white"
+                        className="mt-1 w-full rounded-xl border border-[#D8BB7A]/60 bg-white px-3 py-2 text-sm text-[#303515] shadow-sm outline-none transition-brand focus:border-[#C49A45] focus:ring-2 focus:ring-[#C49A45]/20 dark:border-neutral-700 dark:bg-neutral-800 dark:text-white"
                       />
                     </div>
                   </div>
@@ -584,7 +591,7 @@ export default function ReviewsSection({
                   <div>
                     <label
                       htmlFor="rev-title"
-                      className="block text-xs font-semibold uppercase tracking-wider text-neutral-600 dark:text-neutral-400"
+                      className="block text-xs font-semibold uppercase tracking-wider text-[#303515]/75 dark:text-neutral-400"
                     >
                       Review Headline (Optional)
                     </label>
@@ -594,7 +601,7 @@ export default function ReviewsSection({
                       value={formTitle}
                       onChange={(e) => setFormTitle(e.target.value)}
                       placeholder="e.g. Transformed my skin texture!"
-                      className="mt-1 w-full rounded-xl border border-[#E5E2DA] bg-white px-3 py-2 text-sm text-[#1E2A3A] shadow-sm outline-none transition-brand focus:border-brand-teal focus:ring-2 focus:ring-brand-teal/20 dark:border-neutral-700 dark:bg-neutral-800 dark:text-white"
+                      className="mt-1 w-full rounded-xl border border-[#D8BB7A]/60 bg-white px-3 py-2 text-sm text-[#303515] shadow-sm outline-none transition-brand focus:border-[#C49A45] focus:ring-2 focus:ring-[#C49A45]/20 dark:border-neutral-700 dark:bg-neutral-800 dark:text-white"
                     />
                   </div>
 
@@ -602,7 +609,7 @@ export default function ReviewsSection({
                   <div>
                     <label
                       htmlFor="rev-body"
-                      className="block text-xs font-semibold uppercase tracking-wider text-neutral-600 dark:text-neutral-400"
+                      className="block text-xs font-semibold uppercase tracking-wider text-[#303515]/75 dark:text-neutral-400"
                     >
                       Review Description *
                     </label>
@@ -613,13 +620,13 @@ export default function ReviewsSection({
                       value={formBody}
                       onChange={(e) => setFormBody(e.target.value)}
                       placeholder="Write your honest thoughts about the formula, scent, and results..."
-                      className="mt-1 w-full rounded-xl border border-[#E5E2DA] bg-white px-3 py-2 text-sm text-[#1E2A3A] shadow-sm outline-none transition-brand focus:border-brand-teal focus:ring-2 focus:ring-brand-teal/20 dark:border-neutral-700 dark:bg-neutral-800 dark:text-white"
+                      className="mt-1 w-full rounded-xl border border-[#D8BB7A]/60 bg-white px-3 py-2 text-sm text-[#303515] shadow-sm outline-none transition-brand focus:border-[#C49A45] focus:ring-2 focus:ring-[#C49A45]/20 dark:border-neutral-700 dark:bg-neutral-800 dark:text-white"
                     />
                   </div>
 
                   {/* Photo Upload Section */}
                   <div>
-                    <label className="block text-xs font-semibold uppercase tracking-wider text-neutral-600 dark:text-neutral-400">
+                    <label className="block text-xs font-semibold uppercase tracking-wider text-[#303515]/75 dark:text-neutral-400">
                       Attach Photos (Optional)
                     </label>
                     
@@ -629,7 +636,7 @@ export default function ReviewsSection({
                           {selectedImages.map((imgData, idx) => (
                             <div
                               key={idx}
-                              className="group relative h-16 w-16 overflow-hidden rounded-xl border-2 border-brand-teal/50 bg-neutral-100 shadow-xs dark:bg-neutral-800"
+                              className="group relative h-16 w-16 overflow-hidden rounded-xl border-2 border-[#596522]/50 bg-[#FAF9F4] shadow-xs dark:bg-neutral-800"
                             >
                               <img
                                 src={imgData}
@@ -662,9 +669,9 @@ export default function ReviewsSection({
                           />
                           <label
                             htmlFor="product-review-photo-upload"
-                            className="flex cursor-pointer items-center justify-center gap-2 rounded-xl border border-dashed border-[#E5E2DA] bg-neutral-50/80 px-3.5 py-2.5 text-xs font-medium text-neutral-600 transition-colors hover:border-brand-teal hover:bg-brand-teal/5 dark:border-neutral-700 dark:bg-neutral-800/40 dark:text-neutral-300 dark:hover:border-brand-teal"
+                            className="flex cursor-pointer items-center justify-center gap-2 rounded-xl border border-dashed border-[#D8BB7A]/60 bg-[#FAF9F4] px-3.5 py-2.5 text-xs font-medium text-[#303515]/80 transition-colors hover:border-[#C49A45] hover:bg-[#C49A45]/10 dark:border-neutral-700 dark:bg-neutral-800/40 dark:text-neutral-300 dark:hover:border-[#D8BB7A]"
                           >
-                            <PhotoIcon className="h-4 w-4 text-brand-teal" />
+                            <PhotoIcon className="h-4 w-4 text-[#596522]" />
                             <span>Add Photos (up to 3, max 5MB each)</span>
                           </label>
                         </div>
@@ -677,7 +684,7 @@ export default function ReviewsSection({
                     <button
                       type="submit"
                       disabled={isSubmitting}
-                      className="w-full rounded-full bg-brand-gradient py-2.5 text-sm font-semibold text-white shadow-md transition-all hover:brightness-110 disabled:opacity-60"
+                      className="w-full rounded-full bg-[#596522] py-2.5 text-sm font-semibold text-white shadow-md transition-all hover:bg-[#C49A45] hover:shadow-[0_8px_20px_rgba(196,154,69,0.35)] disabled:opacity-60"
                     >
                       {isSubmitting ? "Submitting Review…" : "Submit Review"}
                     </button>

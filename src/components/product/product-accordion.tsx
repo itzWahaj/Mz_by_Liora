@@ -170,7 +170,7 @@ export default function ProductAccordion({
   if (!descriptionHtml && !description) return null;
 
   return (
-    <div className="mt-8 divide-y divide-neutral-200/80 rounded-2xl border border-neutral-200/80 bg-white/60 p-1 shadow-sm backdrop-blur-xs dark:divide-neutral-800 dark:border-neutral-800 dark:bg-neutral-900/40">
+    <div className="mt-8 divide-y divide-[#D8BB7A]/30 rounded-2xl border border-[#D8BB7A]/60 bg-[#FFFDF8] p-1 shadow-sm backdrop-blur-xs dark:divide-neutral-800 dark:border-neutral-800 dark:bg-neutral-900/40">
       {sections.map((section) => {
         const isOpen = openSectionIds.includes(section.id);
         const Icon = section.icon;
@@ -181,18 +181,18 @@ export default function ProductAccordion({
               type="button"
               onClick={() => toggleSection(section.id)}
               aria-expanded={isOpen}
-              className="flex w-full items-center justify-between px-4 py-3.5 text-left text-sm font-semibold text-brand transition-colors hover:text-brand-teal dark:text-white dark:hover:text-brand-teal"
+              className="flex w-full items-center justify-between px-4 py-3.5 text-left text-sm font-semibold text-[#4D581E] transition-colors hover:text-[#596522] dark:text-white dark:hover:text-[#D8BB7A]"
             >
               <span className="flex items-center gap-2.5">
-                <span className="flex h-7 w-7 items-center justify-center rounded-full bg-brand-teal/10 text-brand-teal dark:bg-brand-teal/20">
+                <span className="flex h-7 w-7 items-center justify-center rounded-full bg-[#596522]/10 text-[#596522] dark:bg-[#C49A45]/20 dark:text-[#D8BB7A]">
                   <Icon className="h-4 w-4" />
                 </span>
                 <span>{section.title}</span>
               </span>
               <ChevronDownIcon
                 className={clsx(
-                  "h-4 w-4 text-neutral-400 transition-transform duration-300",
-                  isOpen && "rotate-180 text-brand-teal"
+                  "h-4 w-4 text-[#303515]/50 transition-transform duration-300",
+                  isOpen && "rotate-180 text-[#596522]"
                 )}
               />
             </button>
@@ -205,7 +205,7 @@ export default function ProductAccordion({
                   exit={{ height: 0, opacity: 0 }}
                   transition={{ duration: 0.28, ease: [0.16, 1, 0.3, 1] }}
                 >
-                  <div className="px-4 pb-4 pt-1 text-xs leading-relaxed text-neutral-600 dark:text-neutral-300">
+                  <div className="px-4 pb-4 pt-1 text-xs leading-relaxed text-[#303515]/85 dark:text-neutral-300">
                     {section.contentHtml ? (
                       <div
                         className="prose prose-sm dark:prose-invert max-w-none [&>p]:mb-2 [&>ul]:list-disc [&>ul]:pl-4"
@@ -217,7 +217,7 @@ export default function ProductAccordion({
                       <ul className="space-y-2">
                         {section.contentLines.map((line, idx) => (
                           <li key={idx} className="flex items-start gap-2">
-                            <span className="mt-1 h-1.5 w-1.5 shrink-0 rounded-full bg-brand-teal" />
+                            <span className="mt-1 h-1.5 w-1.5 shrink-0 rounded-full bg-[#596522]" />
                             <span>{line}</span>
                           </li>
                         ))}

@@ -245,72 +245,72 @@ export default function AllReviewsClient({
     <div className="min-h-screen pb-24 pt-8 md:pt-12">
       <div className="mx-auto max-w-screen-2xl px-4 sm:px-6 lg:px-8">
         {/* Header Hero Banner */}
-        <div className="relative mb-12 overflow-hidden rounded-3xl border border-[#E5E2DA] bg-[#FBFAF7] p-8 shadow-sm sm:p-12 dark:border-[#2A3241] dark:bg-[#12161F]">
+        <div className="relative mb-12 overflow-hidden rounded-3xl border border-[#D8BB7A]/60 bg-[#FFFDF8] p-8 shadow-sm sm:p-12 dark:border-neutral-800 dark:bg-[#12161F]">
           {/* Top 2px Gradient Accent Line */}
-          <div className="absolute left-0 right-0 top-0 h-[2px] bg-brand-gradient" />
+          <div className="absolute left-0 right-0 top-0 h-[2px] bg-gradient-to-r from-[#D8BB7A] via-[#C49A45] to-transparent" />
 
           <div className="grid grid-cols-1 gap-10 lg:grid-cols-12 lg:items-center">
             {/* Left: Headline & Trust Pillars */}
             <div className="lg:col-span-7">
-              <span className="inline-flex items-center gap-1.5 rounded-full bg-brand-teal/10 px-3.5 py-1 text-xs font-semibold uppercase tracking-[0.18em] text-brand-teal dark:bg-brand-teal/20">
+              <span className="inline-flex items-center gap-1.5 rounded-full bg-[#596522]/10 px-3.5 py-1 text-xs font-semibold uppercase tracking-[0.18em] text-[#596522] dark:bg-[#C49A45]/20 dark:text-[#D8BB7A]">
                 <SparklesIcon className="h-3.5 w-3.5" />
                 Verified Customer Experiences
               </span>
-              <h1 className="mt-3 font-display text-4xl font-bold tracking-tight text-[#1E2A3A] sm:text-5xl lg:text-6xl dark:text-white">
+              <h1 className="mt-3 font-display text-4xl font-bold tracking-tight text-[#4D581E] sm:text-5xl lg:text-6xl dark:text-white">
                 Real Care. <br />
-                <span className="bg-brand-gradient bg-clip-text text-transparent">
+                <span className="bg-gradient-to-r from-[#596522] to-[#C49A45] bg-clip-text text-transparent">
                   Real Rituals.
                 </span>
               </h1>
-              <p className="mt-4 max-w-xl text-base leading-relaxed text-[#475569] sm:text-lg dark:text-neutral-300">
+              <p className="mt-4 max-w-xl text-base leading-relaxed text-[#303515]/80 sm:text-lg dark:text-neutral-300">
                 Explore authentic feedback from customers across Pakistan who have
                 made MZ by LIORA a staple in their daily botanical skincare routine.
               </p>
 
               {/* Trust Badges */}
-              <div className="mt-8 flex flex-wrap items-center gap-6 text-xs font-medium text-[#1E2A3A] dark:text-neutral-300">
+              <div className="mt-8 flex flex-wrap items-center gap-6 text-xs font-medium text-[#4D581E] dark:text-neutral-300">
                 <div className="flex items-center gap-2">
-                  <ShieldCheckIcon className="h-4 w-4 text-brand-teal" />
+                  <ShieldCheckIcon className="h-4 w-4 text-[#596522]" />
                   <span>100% Genuine Reviews</span>
                 </div>
                 <div className="flex items-center gap-2">
-                  <TruckIcon className="h-4 w-4 text-brand-teal" />
+                  <TruckIcon className="h-4 w-4 text-[#596522]" />
                   <span>Fast Nationwide Delivery</span>
                 </div>
                 <div className="flex items-center gap-2">
-                  <SparklesIcon className="h-4 w-4 text-brand-teal" />
+                  <SparklesIcon className="h-4 w-4 text-[#596522]" />
                   <span>Botanical Formulas</span>
                 </div>
               </div>
             </div>
 
             {/* Right: Score Card & Write Review CTA */}
-            <div className="flex flex-col items-center justify-center rounded-2xl border border-[#E5E2DA] bg-white/80 p-8 text-center shadow-sm lg:col-span-5 dark:border-[#2A3241] dark:bg-neutral-900/80">
-              <span className="font-display text-6xl font-bold tracking-tight text-[#1E2A3A] dark:text-white">
+            <div className="flex flex-col items-center justify-center rounded-2xl border border-[#D8BB7A]/60 bg-[#FAF9F4] p-8 text-center shadow-sm lg:col-span-5 dark:border-neutral-800 dark:bg-neutral-900/80">
+              <span className="font-display text-6xl font-bold tracking-tight text-[#4D581E] dark:text-white">
                 {avgRating > 0 ? avgRating.toFixed(1) : "5.0"}
               </span>
               <div className="mt-2">
                 <StarsRow rating={avgRating} sizeClass="h-6 w-6" />
               </div>
-              <p className="mt-2 text-sm font-medium text-[#475569] dark:text-neutral-400">
+              <p className="mt-2 text-sm font-medium text-[#303515]/75 dark:text-neutral-400">
                 Overall rating based on {totalReviewsCount}{" "}
                 {totalReviewsCount === 1 ? "review" : "reviews"}
               </p>
 
               {/* Mini Breakdown */}
-              <div className="mt-5 w-full space-y-1.5 border-t border-[#E5E2DA] pt-4 dark:border-[#2A3241]">
+              <div className="mt-5 w-full space-y-1.5 border-t border-[#D8BB7A]/40 pt-4 dark:border-neutral-800">
                 {ratingDistribution.slice(0, 3).map(({ star, percentage }) => (
                   <div key={star} className="flex items-center gap-2 text-xs">
-                    <span className="w-8 text-left font-medium text-[#475569] dark:text-neutral-400">
+                    <span className="w-8 text-left font-medium text-[#303515]/80 dark:text-neutral-400">
                       {star}★
                     </span>
-                    <div className="h-1.5 flex-1 overflow-hidden rounded-full bg-[#E5E2DA] dark:bg-neutral-800">
+                    <div className="h-1.5 flex-1 overflow-hidden rounded-full bg-[#FFFDF8] ring-1 ring-[#D8BB7A]/30 dark:bg-neutral-800">
                       <div
-                        className="h-full rounded-full bg-brand-gradient"
+                        className="h-full rounded-full bg-[#596522]"
                         style={{ width: `${percentage}%` }}
                       />
                     </div>
-                    <span className="w-8 text-right text-neutral-400">
+                    <span className="w-8 text-right text-[#303515]/60">
                       {percentage}%
                     </span>
                   </div>
@@ -320,7 +320,7 @@ export default function AllReviewsClient({
               <button
                 type="button"
                 onClick={() => setIsModalOpen(true)}
-                className="mt-6 inline-flex w-full items-center justify-center gap-2 rounded-full bg-brand-gradient px-6 py-3 text-sm font-semibold text-white shadow-sm transition-all hover:brightness-110 hover:shadow-[0_8px_20px_rgba(20,184,166,0.3)]"
+                className="mt-6 inline-flex w-full items-center justify-center gap-2 rounded-full bg-[#596522] px-6 py-3 text-sm font-semibold text-white shadow-sm transition-all hover:bg-[#C49A45] hover:shadow-[0_8px_20px_rgba(196,154,69,0.3)]"
               >
                 <PencilSquareIcon className="h-4 w-4" />
                 Write a Store Review
@@ -330,33 +330,45 @@ export default function AllReviewsClient({
         </div>
 
         {/* Tab Navigation & Controls */}
-        <div className="mb-8 flex flex-col justify-between gap-4 border-b border-[#E5E2DA] pb-6 md:flex-row md:items-center dark:border-[#2A3241]">
+        <div className="mb-8 flex flex-col justify-between gap-4 border-b border-[#D8BB7A]/40 pb-6 md:flex-row md:items-center dark:border-neutral-800">
           {/* Main Segmented Tabs */}
-          <div className="inline-flex rounded-2xl border border-[#E5E2DA] bg-[#FBFAF7] p-1.5 shadow-sm dark:border-[#2A3241] dark:bg-[#12161F]">
+          <div className="inline-flex rounded-2xl border border-[#D8BB7A]/60 bg-[#FAF9F4] p-1.5 shadow-sm dark:border-neutral-800 dark:bg-[#12161F]">
             <button
               type="button"
               onClick={() => {
                 setActiveTab("all");
                 setSelectedProductHandle("all");
               }}
-              className={`rounded-xl px-4 py-2 text-xs font-semibold transition-all sm:text-sm ${
+              className={`group relative overflow-hidden rounded-xl px-4 py-2 text-xs font-semibold transition-all duration-300 sm:text-sm ${
                 activeTab === "all"
-                  ? "bg-brand-gradient text-white shadow-sm"
-                  : "text-[#475569] hover:text-[#1E2A3A] dark:text-neutral-400 dark:hover:text-white"
+                  ? "bg-[#596522] text-white shadow-sm"
+                  : "text-[#303515]/80 hover:text-white dark:text-neutral-400 dark:hover:text-white"
               }`}
             >
-              All Reviews ({totalReviewsCount})
+              {activeTab !== "all" && (
+                <span
+                  aria-hidden
+                  className="absolute inset-0 origin-left scale-x-0 rounded-xl bg-[#596522] opacity-0 transition-all duration-300 ease-out group-hover:scale-x-100 group-hover:opacity-100"
+                />
+              )}
+              <span className="relative z-10">All Reviews ({totalReviewsCount})</span>
             </button>
             <button
               type="button"
               onClick={() => setActiveTab("products")}
-              className={`rounded-xl px-4 py-2 text-xs font-semibold transition-all sm:text-sm ${
+              className={`group relative overflow-hidden rounded-xl px-4 py-2 text-xs font-semibold transition-all duration-300 sm:text-sm ${
                 activeTab === "products"
-                  ? "bg-brand-gradient text-white shadow-sm"
-                  : "text-[#475569] hover:text-[#1E2A3A] dark:text-neutral-400 dark:hover:text-white"
+                  ? "bg-[#596522] text-white shadow-sm"
+                  : "text-[#303515]/80 hover:text-white dark:text-neutral-400 dark:hover:text-white"
               }`}
             >
-              Product Reviews ({productReviewsCount})
+              {activeTab !== "products" && (
+                <span
+                  aria-hidden
+                  className="absolute inset-0 origin-left scale-x-0 rounded-xl bg-[#596522] opacity-0 transition-all duration-300 ease-out group-hover:scale-x-100 group-hover:opacity-100"
+                />
+              )}
+              <span className="relative z-10">Product Reviews ({productReviewsCount})</span>
             </button>
             <button
               type="button"
@@ -364,13 +376,19 @@ export default function AllReviewsClient({
                 setActiveTab("store");
                 setSelectedProductHandle("all");
               }}
-              className={`rounded-xl px-4 py-2 text-xs font-semibold transition-all sm:text-sm ${
+              className={`group relative overflow-hidden rounded-xl px-4 py-2 text-xs font-semibold transition-all duration-300 sm:text-sm ${
                 activeTab === "store"
-                  ? "bg-brand-gradient text-white shadow-sm"
-                  : "text-[#475569] hover:text-[#1E2A3A] dark:text-neutral-400 dark:hover:text-white"
+                  ? "bg-[#596522] text-white shadow-sm"
+                  : "text-[#303515]/80 hover:text-white dark:text-neutral-400 dark:hover:text-white"
               }`}
             >
-              Store & Delivery ({storeReviewsCount})
+              {activeTab !== "store" && (
+                <span
+                  aria-hidden
+                  className="absolute inset-0 origin-left scale-x-0 rounded-xl bg-[#596522] opacity-0 transition-all duration-300 ease-out group-hover:scale-x-100 group-hover:opacity-100"
+                />
+              )}
+              <span className="relative z-10">Store & Delivery ({storeReviewsCount})</span>
             </button>
           </div>
 
@@ -380,13 +398,13 @@ export default function AllReviewsClient({
               <button
                 type="button"
                 onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-                className="group inline-flex items-center gap-2 rounded-2xl border border-[#E5E2DA] bg-[#FBFAF7] px-4 py-2.5 text-xs font-semibold text-[#1E2A3A] shadow-sm transition-all hover:border-brand-teal/50 hover:shadow-md dark:border-[#2A3241] dark:bg-[#12161F] dark:text-white"
+                className="group inline-flex items-center gap-2 rounded-2xl border border-[#D8BB7A]/60 bg-[#FFFDF8] px-4 py-2.5 text-xs font-semibold text-[#303515] shadow-sm transition-all hover:border-[#C49A45] hover:shadow-md dark:border-neutral-800 dark:bg-[#12161F] dark:text-white"
               >
-                <FunnelIcon className="h-4 w-4 text-brand-teal" />
+                <FunnelIcon className="h-4 w-4 text-[#596522]" />
                 <span>{selectedProductLabel}</span>
                 <ChevronDownIcon
-                  className={`h-3.5 w-3.5 text-neutral-400 transition-transform duration-200 ${
-                    isDropdownOpen ? "rotate-180 text-brand-teal" : ""
+                  className={`h-3.5 w-3.5 text-[#303515]/60 transition-transform duration-200 ${
+                    isDropdownOpen ? "rotate-180 text-[#596522]" : ""
                   }`}
                 />
               </button>
@@ -398,7 +416,7 @@ export default function AllReviewsClient({
                     animate={{ opacity: 1, y: 0, scale: 1 }}
                     exit={{ opacity: 0, y: 4, scale: 0.96 }}
                     transition={{ duration: 0.15, ease: "easeOut" }}
-                    className="absolute right-0 top-full z-50 mt-2 w-64 overflow-hidden rounded-2xl border border-[#E5E2DA] bg-[#FBFAF7] p-2 shadow-xl backdrop-blur-xl dark:border-[#2A3241] dark:bg-[#12161F]"
+                    className="absolute right-0 top-full z-50 mt-2 w-64 overflow-hidden rounded-2xl border border-[#D8BB7A] bg-[#FFFDF8] p-2 shadow-2xl dark:border-neutral-800 dark:bg-[#12161F]"
                   >
                     <button
                       type="button"
@@ -406,19 +424,25 @@ export default function AllReviewsClient({
                         setSelectedProductHandle("all");
                         setIsDropdownOpen(false);
                       }}
-                      className={`flex w-full items-center justify-between rounded-xl px-3 py-2 text-xs font-semibold transition-all ${
+                      className={`group relative flex w-full items-center justify-between overflow-hidden rounded-xl px-3 py-2 text-xs font-semibold transition-all duration-300 ${
                         selectedProductHandle === "all"
-                          ? "bg-brand-gradient text-white shadow-sm"
-                          : "text-[#475569] hover:bg-neutral-200/50 hover:text-[#1E2A3A] dark:text-neutral-300 dark:hover:bg-neutral-800"
+                          ? "bg-[#596522] text-white shadow-sm"
+                          : "text-[#303515]/80 hover:text-white dark:text-neutral-300 dark:hover:text-white"
                       }`}
                     >
-                      <span>All Products</span>
+                      {selectedProductHandle !== "all" && (
+                        <span
+                          aria-hidden
+                          className="absolute inset-0 origin-left scale-x-0 rounded-xl bg-[#596522] opacity-0 transition-all duration-300 ease-out group-hover:scale-x-100 group-hover:opacity-100"
+                        />
+                      )}
+                      <span className="relative z-10">All Products</span>
                       {selectedProductHandle === "all" && (
-                        <CheckIcon className="h-3.5 w-3.5" />
+                        <CheckIcon className="relative z-10 h-3.5 w-3.5" />
                       )}
                     </button>
 
-                    <div className="my-1 border-t border-[#E5E2DA] dark:border-[#2A3241]" />
+                    <div className="my-1 border-t border-[#D8BB7A]/30 dark:border-neutral-800" />
 
                     {products.map((p) => (
                       <button
@@ -428,15 +452,21 @@ export default function AllReviewsClient({
                           setSelectedProductHandle(p.handle);
                           setIsDropdownOpen(false);
                         }}
-                        className={`flex w-full items-center justify-between rounded-xl px-3 py-2 text-left text-xs font-semibold transition-all ${
+                        className={`group relative flex w-full items-center justify-between overflow-hidden rounded-xl px-3 py-2 text-left text-xs font-semibold transition-all duration-300 ${
                           selectedProductHandle === p.handle
-                            ? "bg-brand-gradient text-white shadow-sm"
-                            : "text-[#475569] hover:bg-neutral-200/50 hover:text-[#1E2A3A] dark:text-neutral-300 dark:hover:bg-neutral-800"
+                            ? "bg-[#596522] text-white shadow-sm"
+                            : "text-[#303515]/80 hover:text-white dark:text-neutral-300 dark:hover:text-white"
                         }`}
                       >
-                        <span className="truncate pr-2">{p.title}</span>
+                        {selectedProductHandle !== p.handle && (
+                          <span
+                            aria-hidden
+                            className="absolute inset-0 origin-left scale-x-0 rounded-xl bg-[#596522] opacity-0 transition-all duration-300 ease-out group-hover:scale-x-100 group-hover:opacity-100"
+                          />
+                        )}
+                        <span className="relative z-10 truncate pr-2">{p.title}</span>
                         {selectedProductHandle === p.handle && (
-                          <CheckIcon className="h-3.5 w-3.5 shrink-0" />
+                          <CheckIcon className="relative z-10 h-3.5 w-3.5 shrink-0" />
                         )}
                       </button>
                     ))}
@@ -449,11 +479,11 @@ export default function AllReviewsClient({
 
         {/* Reviews Cards Grid */}
         {filteredReviews.length === 0 ? (
-          <div className="relative overflow-hidden rounded-3xl border border-dashed border-[#E5E2DA] bg-[#FBFAF7]/60 p-16 text-center dark:border-[#2A3241] dark:bg-[#12161F]/40">
-            <h3 className="font-display text-2xl font-bold text-[#1E2A3A] dark:text-white">
+          <div className="relative overflow-hidden rounded-3xl border border-dashed border-[#D8BB7A]/60 bg-[#FFFDF8]/60 p-16 text-center dark:border-neutral-800 dark:bg-[#12161F]/40">
+            <h3 className="font-display text-2xl font-bold text-[#4D581E] dark:text-white">
               No matching reviews found
             </h3>
-            <p className="mx-auto mt-2 max-w-md text-sm text-[#475569] dark:text-neutral-400">
+            <p className="mx-auto mt-2 max-w-md text-sm text-[#303515]/75 dark:text-neutral-400">
               Try selecting a different category or viewing all products.
             </p>
             <button
@@ -462,7 +492,7 @@ export default function AllReviewsClient({
                 setActiveTab("all");
                 setSelectedProductHandle("all");
               }}
-              className="mt-6 inline-flex items-center gap-2 rounded-full border border-brand-teal/40 bg-white px-6 py-2.5 text-sm font-semibold text-brand-teal shadow-sm transition-all hover:bg-brand-teal hover:text-white dark:bg-neutral-900"
+              className="mt-6 inline-flex items-center gap-2 rounded-full border border-[#D8BB7A] bg-[#FFFDF8] px-6 py-2.5 text-sm font-semibold text-[#596522] shadow-sm transition-all hover:bg-[#596522] hover:text-white dark:bg-neutral-900"
             >
               Reset Filter
             </button>
@@ -472,15 +502,15 @@ export default function AllReviewsClient({
             {filteredReviews.map((review) => (
               <div
                 key={review.id}
-                className="group relative flex flex-col justify-between overflow-hidden rounded-3xl border border-[#E5E2DA] bg-[#FBFAF7] p-7 shadow-[0_4px_20px_rgba(0,0,0,0.02)] transition-all duration-200 ease-out hover:-translate-y-0.5 hover:border-brand-teal/40 hover:shadow-[0_12px_28px_rgba(30,95,191,0.08)] dark:border-[#2A3241] dark:bg-[#12161F] dark:hover:border-brand-teal/40 dark:hover:shadow-[0_12px_28px_rgba(0,0,0,0.35)]"
+                className="group relative flex flex-col justify-between overflow-hidden rounded-3xl border border-[#D8BB7A]/60 bg-[#FFFDF8] p-7 shadow-[0_4px_20px_rgba(0,0,0,0.02)] transition-all duration-200 ease-out hover:-translate-y-0.5 hover:border-[#C49A45] hover:shadow-[0_12px_28px_rgba(89,101,34,0.08)] dark:border-neutral-800 dark:bg-[#12161F] dark:hover:border-[#D8BB7A]"
               >
                 {/* 2px Gradient Top Accent */}
-                <div className="absolute left-0 right-0 top-0 h-[2px] bg-brand-gradient" />
+                <div className="absolute left-0 right-0 top-0 h-[2px] bg-gradient-to-r from-[#D8BB7A] via-[#C49A45] to-transparent" />
 
                 {/* Decorative Quotation Mark in Top-Left Corner */}
                 <span
                   aria-hidden="true"
-                  className="pointer-events-none absolute -top-1 left-5 select-none font-display text-6xl leading-none text-transparent bg-clip-text bg-brand-gradient opacity-15 dark:opacity-25"
+                  className="pointer-events-none absolute -top-1 left-5 select-none font-display text-6xl leading-none text-transparent bg-clip-text bg-gradient-to-br from-[#596522] to-[#D8BB7A] opacity-15 dark:opacity-25"
                 >
                   “
                 </span>
@@ -488,33 +518,33 @@ export default function AllReviewsClient({
                 <div className="relative z-10">
                   {/* TOP HEADER: Product Image + Product Name + Link OR Store Brand Info */}
                   {review.is_shop_review ? (
-                    <div className="flex items-center justify-between gap-3 border-b border-[#E5E2DA] pb-3.5 dark:border-[#2A3241]">
+                    <div className="flex items-center justify-between gap-3 border-b border-[#D8BB7A]/30 pb-3.5 dark:border-neutral-800">
                       <div className="flex items-center gap-2.5">
-                        <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-brand-gradient p-1 shadow-sm">
+                        <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-[#596522] p-1 shadow-sm">
                           <LogoSquare size="sm" />
                         </div>
                         <div>
-                          <p className="text-xs font-bold text-[#1E2A3A] dark:text-white">
+                          <p className="text-xs font-bold text-[#4D581E] dark:text-white">
                             MZ by LIORA
                           </p>
-                          <span className="inline-flex items-center gap-1 text-[11px] font-medium text-neutral-500 dark:text-neutral-400">
-                            <TruckIcon className="h-3 w-3 text-brand-teal" />
+                          <span className="inline-flex items-center gap-1 text-[11px] font-medium text-[#C49A45]">
+                            <TruckIcon className="h-3 w-3 text-[#596522]" />
                             Store & Delivery
                           </span>
                         </div>
                       </div>
-                      <span className="text-[11px] font-medium text-neutral-400">
+                      <span className="text-[11px] font-medium text-[#303515]/60">
                         {formatDate(review.created_at)}
                       </span>
                     </div>
                   ) : (
-                    <div className="flex items-center justify-between gap-3 border-b border-[#E5E2DA] pb-3.5 dark:border-[#2A3241]">
+                    <div className="flex items-center justify-between gap-3 border-b border-[#D8BB7A]/30 pb-3.5 dark:border-neutral-800">
                       <Link
                         href={`/product/${review.product_handle}`}
                         className="group/prod flex min-w-0 items-center gap-2.5 transition-colors"
                       >
                         {review.product_image_url ? (
-                          <div className="relative h-10 w-10 shrink-0 overflow-hidden rounded-xl border border-[#E5E2DA] bg-white shadow-xs dark:border-neutral-700 dark:bg-neutral-800">
+                          <div className="relative h-10 w-10 shrink-0 overflow-hidden rounded-xl border border-[#D8BB7A]/50 bg-white shadow-xs dark:border-neutral-700 dark:bg-neutral-800">
                             <Image
                               src={review.product_image_url}
                               alt={review.product_title || "Product image"}
@@ -524,21 +554,21 @@ export default function AllReviewsClient({
                             />
                           </div>
                         ) : (
-                          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-brand-teal/10 text-brand-teal">
+                          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#596522]/10 text-[#596522]">
                             <SparklesIcon className="h-5 w-5" />
                           </div>
                         )}
                         <div className="min-w-0 flex-1">
-                          <p className="truncate text-xs font-bold text-[#1E2A3A] transition-colors group-hover/prod:text-brand-teal dark:text-white dark:group-hover/prod:text-brand-teal-light">
+                          <p className="truncate text-xs font-bold text-[#4D581E] transition-colors group-hover/prod:text-[#596522] dark:text-white dark:group-hover/prod:text-[#D8BB7A]">
                             {review.product_title || "Product Review"}
                           </p>
-                          <span className="inline-flex items-center gap-1 text-[11px] font-semibold text-brand-teal">
+                          <span className="inline-flex items-center gap-1 text-[11px] font-semibold text-[#596522]">
                             <span>View Product</span>
                             <ArrowRightIcon className="h-2.5 w-2.5 transition-transform group-hover/prod:translate-x-0.5" />
                           </span>
                         </div>
                       </Link>
-                      <span className="shrink-0 text-[11px] font-medium text-neutral-400">
+                      <span className="shrink-0 text-[11px] font-medium text-[#303515]/60">
                         {formatDate(review.created_at)}
                       </span>
                     </div>
@@ -551,13 +581,13 @@ export default function AllReviewsClient({
 
                   {/* Headline: Serif Display Font */}
                   {review.title && (
-                    <h4 className="mt-2.5 font-display text-lg font-bold tracking-tight text-[#1E2A3A] sm:text-xl dark:text-[#F8FAFC]">
+                    <h4 className="mt-2.5 font-display text-lg font-bold tracking-tight text-[#4D581E] sm:text-xl dark:text-[#F8FAFC]">
                       {review.title}
                     </h4>
                   )}
 
                   {/* Body Text */}
-                  <p className="mt-2 font-sans text-sm leading-relaxed text-[#334155] dark:text-[#CBD5E1]">
+                  <p className="mt-2 font-sans text-sm leading-relaxed text-[#303515]/85 dark:text-[#CBD5E1]">
                     {review.body}
                   </p>
 
@@ -577,7 +607,7 @@ export default function AllReviewsClient({
                             key={idx}
                             type="button"
                             onClick={() => setLightboxImage(fullUrl)}
-                            className="group/img relative h-24 w-24 overflow-hidden rounded-2xl border-2 border-[#E5E2DA] bg-neutral-100 shadow-xs transition-all duration-200 hover:scale-105 hover:border-brand-teal hover:shadow-md sm:h-28 sm:w-28 dark:border-[#2A3241] dark:bg-neutral-900"
+                            className="group/img relative h-24 w-24 overflow-hidden rounded-2xl border-2 border-[#D8BB7A]/60 bg-[#FAF9F4] shadow-xs transition-all duration-200 hover:scale-105 hover:border-[#C49A45] hover:shadow-md sm:h-28 sm:w-28 dark:border-neutral-700 dark:bg-neutral-900"
                             title="Click to view full photo"
                           >
                             <img
@@ -598,21 +628,21 @@ export default function AllReviewsClient({
                 </div>
 
                 {/* Footer: Reviewer Info & Verified Badge */}
-                <div className="relative z-10 mt-6 border-t border-[#E5E2DA] pt-4 dark:border-[#2A3241]">
+                <div className="relative z-10 mt-6 border-t border-[#D8BB7A]/30 pt-4 dark:border-neutral-800">
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-2.5">
-                      <div className="flex h-8 w-8 items-center justify-center rounded-full bg-brand-gradient text-xs font-bold text-white shadow-sm ring-2 ring-[#E5E2DA] dark:ring-[#2A3241]">
+                      <div className="flex h-8 w-8 items-center justify-center rounded-full bg-[#596522] text-xs font-bold text-white shadow-sm ring-2 ring-[#D8BB7A]/40 dark:ring-neutral-700">
                         {review.reviewer.name.charAt(0).toUpperCase()}
                       </div>
                       <div>
-                        <p className="text-xs font-semibold text-[#1E2A3A] dark:text-white">
+                        <p className="text-xs font-semibold text-[#4D581E] dark:text-white">
                           {review.reviewer.name}
                         </p>
                         {review.verified &&
                         review.verified !== "nothing" &&
                         review.verified !== "unverified" && (
-                          <span className="mt-0.5 inline-flex items-center gap-1 rounded-full bg-[#14B8A6]/10 px-2 py-0.5 text-[10px] font-semibold text-[#0F766E] dark:bg-[#14B8A6]/20 dark:text-[#2DD4BF]">
-                            <CheckBadgeIcon className="h-3.5 w-3.5 text-[#14B8A6]" />
+                          <span className="mt-0.5 inline-flex items-center gap-1 rounded-full bg-[#596522]/10 px-2 py-0.5 text-[10px] font-semibold text-[#596522] dark:bg-[#C49A45]/20 dark:text-[#D8BB7A]">
+                            <CheckBadgeIcon className="h-3.5 w-3.5 text-[#596522]" />
                             Verified Buyer
                           </span>
                         )}
@@ -622,11 +652,11 @@ export default function AllReviewsClient({
 
                   {/* Merchant Reply if present */}
                   {review.reply && (
-                    <div className="mt-3 rounded-2xl border border-[#E5E2DA]/80 bg-white/70 p-3 text-xs dark:border-[#2A3241] dark:bg-neutral-800/60">
-                      <p className="font-semibold text-[#1E2A3A] dark:text-white">
+                    <div className="mt-3 rounded-2xl border border-[#D8BB7A]/40 bg-[#FAF9F4] p-3 text-xs dark:border-neutral-800 dark:bg-neutral-800/60">
+                      <p className="font-semibold text-[#4D581E] dark:text-white">
                         MZ by LIORA Response:
                       </p>
-                      <p className="mt-1 text-[#334155] dark:text-[#CBD5E1]">
+                      <p className="mt-1 text-[#303515]/80 dark:text-[#CBD5E1]">
                         {review.reply.body}
                       </p>
                     </div>
@@ -647,14 +677,14 @@ export default function AllReviewsClient({
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               onClick={() => setIsModalOpen(false)}
-              className="absolute inset-0 bg-black/60 backdrop-blur-sm"
+              className="fixed inset-0 bg-black/60 backdrop-blur-sm"
             />
 
             <motion.div
               initial={{ opacity: 0, scale: 0.95, y: 20 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.95, y: 20 }}
-              className="relative max-h-[92vh] w-full max-w-lg overflow-y-auto rounded-3xl border border-[#E5E2DA] bg-[#FBFAF7] p-6 shadow-2xl [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden sm:p-7 dark:border-[#2A3241] dark:bg-[#12161F]"
+              className="relative max-h-[92vh] w-full max-w-lg overflow-y-auto rounded-3xl border border-[#D8BB7A]/60 bg-[#FFFDF8] p-6 shadow-2xl [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden sm:p-7 dark:border-neutral-800 dark:bg-[#12161F]"
             >
               <button
                 type="button"
@@ -665,16 +695,16 @@ export default function AllReviewsClient({
               </button>
 
               <div className="flex items-center gap-2">
-                <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-brand-gradient p-1 text-white shadow-xs">
+                <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-[#596522] p-1 text-white shadow-xs">
                   <LogoSquare size="sm" />
                 </div>
                 <div>
-                  <h3 className="font-display text-xl font-bold text-[#1E2A3A] sm:text-2xl dark:text-white">
+                  <h3 className="font-display text-xl font-bold text-[#4D581E] sm:text-2xl dark:text-white">
                     Store & Delivery Experience
                   </h3>
                 </div>
               </div>
-              <p className="mt-1 text-xs text-neutral-500 dark:text-neutral-400">
+              <p className="mt-1 text-xs text-[#303515]/70 dark:text-neutral-400">
                 Share your feedback regarding our delivery speed, packaging, customer care, and overall shopping experience.
               </p>
 
@@ -682,7 +712,7 @@ export default function AllReviewsClient({
                 <div
                   className={`mt-5 rounded-2xl p-6 text-center ${
                     submitStatus.success
-                      ? "bg-emerald-50 text-emerald-800 dark:bg-emerald-950/40 dark:text-emerald-300"
+                      ? "bg-[#596522]/10 text-[#4D581E] dark:bg-emerald-950/40 dark:text-emerald-300"
                       : "bg-rose-50 text-rose-800 dark:bg-rose-950/40 dark:text-rose-300"
                   }`}
                 >
@@ -706,7 +736,7 @@ export default function AllReviewsClient({
                 <form onSubmit={handleReviewSubmit} className="mt-5 space-y-3.5">
                   {/* Star Rating Select */}
                   <div>
-                    <label className="block text-xs font-semibold uppercase tracking-wider text-neutral-600 dark:text-neutral-400">
+                    <label className="block text-xs font-semibold uppercase tracking-wider text-[#303515]/75 dark:text-neutral-400">
                       Overall Experience Rating *
                     </label>
                     <div className="mt-1.5 flex items-center gap-1">
@@ -727,7 +757,7 @@ export default function AllReviewsClient({
                           />
                         </button>
                       ))}
-                      <span className="ml-2 text-xs font-semibold text-[#C9A227]">
+                      <span className="ml-2 text-xs font-semibold text-[#C49A45]">
                         {formHoverRating || formRating} Star
                         {(formHoverRating || formRating) > 1 ? "s" : ""}
                       </span>
@@ -739,7 +769,7 @@ export default function AllReviewsClient({
                     <div>
                       <label
                         htmlFor="store-rev-name"
-                        className="block text-xs font-semibold uppercase tracking-wider text-neutral-600 dark:text-neutral-400"
+                        className="block text-xs font-semibold uppercase tracking-wider text-[#303515]/75 dark:text-neutral-400"
                       >
                         Your Name *
                       </label>
@@ -750,14 +780,14 @@ export default function AllReviewsClient({
                         value={formName}
                         onChange={(e) => setFormName(e.target.value)}
                         placeholder="e.g. Ayesha Khan"
-                        className="mt-1 w-full rounded-xl border border-[#E5E2DA] bg-white px-3 py-2 text-sm text-[#1E2A3A] shadow-sm outline-none transition-brand focus:border-brand-teal focus:ring-2 focus:ring-brand-teal/20 dark:border-neutral-700 dark:bg-neutral-800 dark:text-white"
+                        className="mt-1 w-full rounded-xl border border-[#D8BB7A]/60 bg-white px-3 py-2 text-sm text-[#303515] shadow-sm outline-none transition-brand focus:border-[#C49A45] focus:ring-2 focus:ring-[#C49A45]/20 dark:border-neutral-700 dark:bg-neutral-800 dark:text-white"
                       />
                     </div>
 
                     <div>
                       <label
                         htmlFor="store-rev-email"
-                        className="block text-xs font-semibold uppercase tracking-wider text-neutral-600 dark:text-neutral-400"
+                        className="block text-xs font-semibold uppercase tracking-wider text-[#303515]/75 dark:text-neutral-400"
                       >
                         Email Address *
                       </label>
@@ -768,7 +798,7 @@ export default function AllReviewsClient({
                         value={formEmail}
                         onChange={(e) => setFormEmail(e.target.value)}
                         placeholder="you@email.com"
-                        className="mt-1 w-full rounded-xl border border-[#E5E2DA] bg-white px-3 py-2 text-sm text-[#1E2A3A] shadow-sm outline-none transition-brand focus:border-brand-teal focus:ring-2 focus:ring-brand-teal/20 dark:border-neutral-700 dark:bg-neutral-800 dark:text-white"
+                        className="mt-1 w-full rounded-xl border border-[#D8BB7A]/60 bg-white px-3 py-2 text-sm text-[#303515] shadow-sm outline-none transition-brand focus:border-[#C49A45] focus:ring-2 focus:ring-[#C49A45]/20 dark:border-neutral-700 dark:bg-neutral-800 dark:text-white"
                       />
                     </div>
                   </div>
@@ -777,7 +807,7 @@ export default function AllReviewsClient({
                   <div>
                     <label
                       htmlFor="store-rev-title"
-                      className="block text-xs font-semibold uppercase tracking-wider text-neutral-600 dark:text-neutral-400"
+                      className="block text-xs font-semibold uppercase tracking-wider text-[#303515]/75 dark:text-neutral-400"
                     >
                       Headline (Optional)
                     </label>
@@ -787,7 +817,7 @@ export default function AllReviewsClient({
                       value={formTitle}
                       onChange={(e) => setFormTitle(e.target.value)}
                       placeholder="e.g. Fast delivery & wonderful packaging!"
-                      className="mt-1 w-full rounded-xl border border-[#E5E2DA] bg-white px-3 py-2 text-sm text-[#1E2A3A] shadow-sm outline-none transition-brand focus:border-brand-teal focus:ring-2 focus:ring-brand-teal/20 dark:border-neutral-700 dark:bg-neutral-800 dark:text-white"
+                      className="mt-1 w-full rounded-xl border border-[#D8BB7A]/60 bg-white px-3 py-2 text-sm text-[#303515] shadow-sm outline-none transition-brand focus:border-[#C49A45] focus:ring-2 focus:ring-[#C49A45]/20 dark:border-neutral-700 dark:bg-neutral-800 dark:text-white"
                     />
                   </div>
 
@@ -795,7 +825,7 @@ export default function AllReviewsClient({
                   <div>
                     <label
                       htmlFor="store-rev-body"
-                      className="block text-xs font-semibold uppercase tracking-wider text-neutral-600 dark:text-neutral-400"
+                      className="block text-xs font-semibold uppercase tracking-wider text-[#303515]/75 dark:text-neutral-400"
                     >
                       Your Feedback *
                     </label>
@@ -806,13 +836,13 @@ export default function AllReviewsClient({
                       value={formBody}
                       onChange={(e) => setFormBody(e.target.value)}
                       placeholder="Write about the order delivery time, packaging care, or customer support..."
-                      className="mt-1 w-full rounded-xl border border-[#E5E2DA] bg-white px-3 py-2 text-sm text-[#1E2A3A] shadow-sm outline-none transition-brand focus:border-brand-teal focus:ring-2 focus:ring-brand-teal/20 dark:border-neutral-700 dark:bg-neutral-800 dark:text-white"
+                      className="mt-1 w-full rounded-xl border border-[#D8BB7A]/60 bg-white px-3 py-2 text-sm text-[#303515] shadow-sm outline-none transition-brand focus:border-[#C49A45] focus:ring-2 focus:ring-[#C49A45]/20 dark:border-neutral-700 dark:bg-neutral-800 dark:text-white"
                     />
                   </div>
 
                   {/* Photo Upload Section */}
                   <div>
-                    <label className="block text-xs font-semibold uppercase tracking-wider text-neutral-600 dark:text-neutral-400">
+                    <label className="block text-xs font-semibold uppercase tracking-wider text-[#303515]/75 dark:text-neutral-400">
                       Attach Photos (Optional)
                     </label>
                     
@@ -822,7 +852,7 @@ export default function AllReviewsClient({
                           {selectedImages.map((imgData, idx) => (
                             <div
                               key={idx}
-                              className="group relative h-16 w-16 overflow-hidden rounded-xl border-2 border-brand-teal/50 bg-neutral-100 shadow-xs dark:bg-neutral-800"
+                              className="group relative h-16 w-16 overflow-hidden rounded-xl border-2 border-[#596522]/50 bg-[#FAF9F4] shadow-xs dark:bg-neutral-800"
                             >
                               <img
                                 src={imgData}
@@ -855,9 +885,9 @@ export default function AllReviewsClient({
                           />
                           <label
                             htmlFor="store-review-photo-upload"
-                            className="flex cursor-pointer items-center justify-center gap-2 rounded-xl border border-dashed border-[#E5E2DA] bg-neutral-50/80 px-3.5 py-2.5 text-xs font-medium text-neutral-600 transition-colors hover:border-brand-teal hover:bg-brand-teal/5 dark:border-neutral-700 dark:bg-neutral-800/40 dark:text-neutral-300 dark:hover:border-brand-teal"
+                            className="flex cursor-pointer items-center justify-center gap-2 rounded-xl border border-dashed border-[#D8BB7A]/60 bg-[#FAF9F4] px-3.5 py-2.5 text-xs font-medium text-[#303515]/80 transition-colors hover:border-[#C49A45] hover:bg-[#C49A45]/10 dark:border-neutral-700 dark:bg-neutral-800/40 dark:text-neutral-300 dark:hover:border-[#D8BB7A]"
                           >
-                            <PhotoIcon className="h-4 w-4 text-brand-teal" />
+                            <PhotoIcon className="h-4 w-4 text-[#596522]" />
                             <span>Add Photos (up to 3, max 5MB each)</span>
                           </label>
                         </div>
@@ -870,7 +900,7 @@ export default function AllReviewsClient({
                     <button
                       type="submit"
                       disabled={isSubmitting}
-                      className="w-full rounded-full bg-brand-gradient py-2.5 text-sm font-semibold text-white shadow-md transition-all hover:brightness-110 disabled:opacity-60"
+                      className="w-full rounded-full bg-[#596522] py-2.5 text-sm font-semibold text-white shadow-md transition-all hover:bg-[#C49A45] hover:shadow-[0_8px_20px_rgba(196,154,69,0.35)] disabled:opacity-60"
                     >
                       {isSubmitting ? "Submitting Review…" : "Submit Store Review"}
                     </button>

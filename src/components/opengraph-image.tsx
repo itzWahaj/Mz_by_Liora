@@ -23,8 +23,8 @@ export default async function OpengraphImage(
           alignItems: "center",
           justifyContent: "center",
           position: "relative",
-          background: "linear-gradient(145deg, #0B1120 0%, #0F172A 40%, #162444 100%)",
-          color: "#FAFAF9",
+          background: "linear-gradient(135deg, #FAF9F4 0%, #FFFDF8 45%, #F4EFE6 100%)",
+          color: "#303515",
           padding: "40px",
         }}
       >
@@ -32,13 +32,13 @@ export default async function OpengraphImage(
         <div
           style={{
             position: "absolute",
-            top: "20%",
+            top: "30%",
             left: "50%",
             transform: "translate(-50%, -50%)",
-            width: "500px",
-            height: "300px",
+            width: "600px",
+            height: "350px",
             borderRadius: "999px",
-            background: "radial-gradient(circle, rgba(20, 184, 166, 0.18) 0%, rgba(30, 95, 191, 0.08) 50%, transparent 80%)",
+            background: "radial-gradient(circle, rgba(216, 187, 122, 0.25) 0%, rgba(89, 101, 34, 0.12) 50%, transparent 80%)",
           }}
         />
 
@@ -50,7 +50,7 @@ export default async function OpengraphImage(
             left: "24px",
             right: "24px",
             bottom: "24px",
-            border: "1px solid rgba(255, 255, 255, 0.08)",
+            border: "2px solid rgba(216, 187, 122, 0.5)",
             borderRadius: "24px",
           }}
         />
@@ -60,8 +60,8 @@ export default async function OpengraphImage(
         <img
           src={LOGO_OG_BASE64}
           alt="MZ by LIORA"
-          width={340}
-          height={227}
+          width={380}
+          height={253}
           style={{
             objectFit: "contain",
           }}
@@ -71,11 +71,11 @@ export default async function OpengraphImage(
         {!isDefaultTitle && (
           <p
             style={{
-              marginTop: 16,
-              fontSize: 42,
+              marginTop: 14,
+              fontSize: 38,
               fontWeight: 700,
               fontFamily: "Georgia, serif",
-              color: "#FFFFFF",
+              color: "#4D581E",
               textAlign: "center",
               maxWidth: "900px",
             }}
@@ -90,20 +90,20 @@ export default async function OpengraphImage(
             display: "flex",
             alignItems: "center",
             gap: 12,
-            marginTop: isDefaultTitle ? 22 : 12,
-            padding: "8px 26px",
+            marginTop: isDefaultTitle ? 20 : 10,
+            padding: "8px 28px",
             borderRadius: 999,
-            background: "rgba(20, 184, 166, 0.12)",
-            border: "1px solid rgba(20, 184, 166, 0.35)",
+            background: "rgba(89, 101, 34, 0.12)",
+            border: "1px solid rgba(216, 187, 122, 0.7)",
           }}
         >
           <p
             style={{
-              fontSize: 20,
-              fontWeight: 600,
+              fontSize: 18,
+              fontWeight: 700,
               letterSpacing: 4,
               textTransform: "uppercase",
-              color: "#2DD4BF",
+              color: "#596522",
               margin: 0,
             }}
           >
@@ -116,10 +116,11 @@ export default async function OpengraphImage(
           style={{
             position: "absolute",
             bottom: "36px",
-            fontSize: 15,
+            fontSize: 14,
+            fontWeight: 600,
             letterSpacing: 3,
             textTransform: "uppercase",
-            color: "rgba(255, 255, 255, 0.4)",
+            color: "#C49A45",
             margin: 0,
           }}
         >

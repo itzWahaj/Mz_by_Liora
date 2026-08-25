@@ -6,29 +6,41 @@
   html {
     color-scheme: light;
     scrollbar-width: thin;
-    scrollbar-color: #14b8a6 #e8f4f2;
+    scrollbar-color: #596522 #FAF9F4;
     -webkit-overflow-scrolling: touch;
     touch-action: manipulation;
   }
 
   body {
-    @apply bg-brand-surface text-brand antialiased transition-colors duration-300;
+    @apply bg-[#FAF9F4] text-[#303515] antialiased transition-colors duration-300;
     -webkit-tap-highlight-color: transparent;
   }
 
   h1,
   h2,
-  h3 {
-    @apply font-display;
+  h3,
+  h4,
+  h5,
+  h6 {
+    @apply font-display text-[#4D581E];
   }
 
   html.dark {
     color-scheme: dark;
-    scrollbar-color: #2dd4bf #171717;
+    scrollbar-color: #C49A45 #171717;
   }
 
   html.dark body {
     @apply bg-black text-white;
+  }
+
+  html.dark h1,
+  html.dark h2,
+  html.dark h3,
+  html.dark h4,
+  html.dark h5,
+  html.dark h6 {
+    @apply text-white;
   }
 
   /* Brand scrollbar — WebKit / Chromium / Safari (page + nested scrollers) */
@@ -38,20 +50,20 @@
   }
 
   *::-webkit-scrollbar-track {
-    background: #e8f4f2;
+    background: #FAF9F4;
     border-radius: 9999px;
   }
 
   *::-webkit-scrollbar-thumb {
-    background-image: linear-gradient(180deg, #1e5fbf 0%, #14b8a6 55%, #2dd4bf 100%);
-    background-color: #14b8a6;
+    background-image: linear-gradient(180deg, #596522 0%, #4D581E 55%, #C49A45 100%);
+    background-color: #596522;
     border-radius: 9999px;
-    border: 2px solid #e8f4f2;
+    border: 2px solid #FAF9F4;
     background-clip: padding-box;
   }
 
   *::-webkit-scrollbar-thumb:hover {
-    background-image: linear-gradient(180deg, #0f3d8c 0%, #0d9488 55%, #14b8a6 100%);
+    background-image: linear-gradient(180deg, #C49A45 0%, #D8BB7A 100%);
   }
 
   *::-webkit-scrollbar-corner {
@@ -64,17 +76,17 @@
 
   html.dark *::-webkit-scrollbar-thumb {
     border-color: #171717;
-    background-image: linear-gradient(180deg, #3b82f6 0%, #14b8a6 50%, #2dd4bf 100%);
+    background-image: linear-gradient(180deg, #C49A45 0%, #596522 100%);
   }
 
   html.dark *::-webkit-scrollbar-thumb:hover {
-    background-image: linear-gradient(180deg, #60a5fa 0%, #2dd4bf 55%, #5eead4 100%);
+    background-image: linear-gradient(180deg, #D8BB7A 0%, #C49A45 100%);
   }
 }
 
 @layer components {
   .btn-brand {
-    @apply transition-brand rounded-full bg-brand px-4 py-2 text-sm font-medium text-white hover:bg-brand/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-accent focus-visible:ring-offset-2;
+    @apply transition-brand rounded-full bg-[#596522] px-4 py-2 text-sm font-medium text-white hover:bg-[#C49A45] hover:shadow-[0_8px_20px_rgba(196,154,69,0.35)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C49A45] focus-visible:ring-offset-2;
   }
 
   .btn-brand-lg {
@@ -120,7 +132,7 @@
   /* Optional utility if a region needs an explicit brand scrollbar */
   .scrollbar-brand {
     scrollbar-width: thin;
-    scrollbar-color: #14b8a6 #e8f4f2;
+    scrollbar-color: #596522 #FAF9F4;
   }
 
   .scrollbar-brand::-webkit-scrollbar {
@@ -129,14 +141,14 @@
   }
 
   .scrollbar-brand::-webkit-scrollbar-thumb {
-    background-image: linear-gradient(180deg, #1e5fbf 0%, #14b8a6 55%, #2dd4bf 100%);
+    background-image: linear-gradient(180deg, #596522 0%, #4D581E 55%, #C49A45 100%);
     border-radius: 9999px;
-    border: 2px solid #e8f4f2;
+    border: 2px solid #FAF9F4;
     background-clip: padding-box;
   }
 
   html.dark .scrollbar-brand {
-    scrollbar-color: #2dd4bf #171717;
+    scrollbar-color: #C49A45 #171717;
   }
 
   html.dark .scrollbar-brand::-webkit-scrollbar-thumb {
@@ -184,11 +196,11 @@ a,
 input,
 button,
 select {
-  @apply transition-brand focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-teal focus-visible:ring-offset-2 focus-visible:ring-offset-brand-surface dark:focus-visible:ring-offset-black;
+  @apply transition-brand focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C49A45] focus-visible:ring-offset-2 focus-visible:ring-offset-[#FAF9F4] dark:focus-visible:ring-offset-black;
 }
 
 ::selection {
-  @apply bg-brand-accent/25 text-brand dark:text-white;
+  @apply bg-[#D8BB7A]/40 text-[#303515] dark:text-white;
 }
 
 @keyframes skeleton-shimmer {

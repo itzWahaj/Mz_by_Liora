@@ -17,7 +17,7 @@ type GradientButtonProps = {
 };
 
 const buttonClasses =
-  "transition-brand inline-flex h-10 items-center justify-center rounded-full bg-brand-gradient px-6 text-sm font-medium text-white shadow-sm hover:brightness-110 hover:shadow-[0_12px_32px_rgba(30,95,191,0.35)] disabled:cursor-not-allowed disabled:opacity-60";
+  "transition-brand inline-flex h-10 items-center justify-center rounded-full bg-[#596522] px-6 text-sm font-medium text-white shadow-sm hover:bg-[#C49A45] hover:shadow-[0_12px_32px_rgba(196,154,69,0.35)] disabled:cursor-not-allowed disabled:opacity-60";
 
 export default function GradientButton({
   href,

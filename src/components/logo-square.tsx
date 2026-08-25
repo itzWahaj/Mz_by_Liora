@@ -7,7 +7,7 @@ export default function LogoSquare({ size }: { size?: "sm" | undefined }) {
   return (
     <div
       className={clsx(
-        "relative flex flex-none items-center justify-center overflow-hidden rounded-full bg-white shadow-[0_0_0_1px_rgba(30,95,191,0.12)]",
+        "relative flex flex-none items-center justify-center overflow-hidden rounded-full bg-white shadow-[0_0_0_1px_rgba(216,187,122,0.4)]",
         {
           "h-12 w-12": !size,
           "h-9 w-9": size === "sm",
@@ -15,11 +15,11 @@ export default function LogoSquare({ size }: { size?: "sm" | undefined }) {
       )}
     >
       <Image
-        src="/logo.png"
+        src="/new_logo.png"
         alt="MZ by LIORA"
         width={px}
         height={px}
-        className="h-full w-full object-contain p-0.5"
+        className="h-full w-full object-contain p-1"
         priority
       />
     </div>

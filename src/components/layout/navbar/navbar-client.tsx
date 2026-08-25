@@ -94,27 +94,26 @@ function NavLink({
       onMouseLeave={handleMouseLeave}
     >
       <motion.div
-        whileHover={{ scale: 1.04 }}
-        whileTap={{ scale: 0.96 }}
+        whileHover={{ scale: 1.03 }}
+        whileTap={{ scale: 0.97 }}
         transition={{ type: "spring", stiffness: 400, damping: 25 }}
       >
         <Link
           href={item.path}
           prefetch={true}
           onClick={() => setIsOpen(false)}
-          className={`group relative flex shrink-0 items-center gap-1.5 whitespace-nowrap rounded-full px-3.5 py-2 text-sm font-semibold transition-all duration-200 ${
+          className={`group relative flex shrink-0 items-center gap-1.5 whitespace-nowrap overflow-hidden rounded-full px-4 py-2 text-sm font-semibold transition-all duration-300 ${
             isActive
-              ? "bg-brand-gradient text-white shadow-[0_4px_14px_rgba(20,184,166,0.35)]"
-              : "text-neutral-700 hover:bg-neutral-100/80 hover:text-brand dark:text-neutral-300 dark:hover:bg-neutral-800/80 dark:hover:text-white"
+              ? "bg-[#596522] text-white shadow-[0_4px_14px_rgba(89,101,34,0.35)]"
+              : "text-[#303515] hover:text-white dark:text-neutral-300 dark:hover:text-white"
           }`}
         >
-          {isActive ? (
-            <motion.span
-              layoutId="navActivePill"
-              className="absolute inset-0 -z-10 rounded-full bg-brand-gradient"
-              transition={{ type: "spring", stiffness: 380, damping: 30 }}
+          {!isActive && (
+            <span
+              aria-hidden
+              className="absolute inset-0 origin-left scale-x-0 rounded-full bg-[#596522] opacity-0 transition-all duration-300 ease-out group-hover:scale-x-100 group-hover:opacity-100"
             />
-          ) : null}
+          )}
 
           <span className="relative z-10 flex items-center gap-1.5 whitespace-nowrap">
             {item.title}
@@ -134,17 +133,17 @@ function NavLink({
         <AnimatePresence>
           {isOpen && (
             <motion.div
-              initial={{ opacity: 0, y: 10, scale: 0.96 }}
+              initial={{ opacity: 0, y: 8, scale: 0.97 }}
               animate={{ opacity: 1, y: 0, scale: 1 }}
-              exit={{ opacity: 0, y: 8, scale: 0.96 }}
+              exit={{ opacity: 0, y: 6, scale: 0.97 }}
               transition={{ duration: 0.18, ease: "easeOut" }}
-              className="absolute left-0 top-full z-[120] pt-2"
+              className="absolute left-0 top-full z-[9999] pt-2"
             >
-              <div className="w-64 rounded-2xl border border-neutral-200/90 bg-white/95 p-3 shadow-2xl backdrop-blur-xl dark:border-neutral-800 dark:bg-neutral-900/95">
-                <div className="mb-2 px-3 pt-1 text-[10px] font-semibold uppercase tracking-[0.18em] text-neutral-400 dark:text-neutral-500">
+              <div className="w-72 rounded-2xl border border-[#D8BB7A] bg-[#FFFDF8] p-3 shadow-[0_20px_50px_rgba(48,53,21,0.22)] dark:border-neutral-800 dark:bg-neutral-900">
+                <div className="mb-2 px-3 pt-1 text-[10px] font-bold uppercase tracking-[0.2em] text-[#C49A45]">
                   Categories
                 </div>
-                <div className="space-y-0.5">
+                <div className="space-y-1">
                   {subCategories.map((cat) => {
                     const isCatActive = pathname === cat.href;
                     return (
@@ -153,43 +152,55 @@ function NavLink({
                         href={cat.href}
                         prefetch={true}
                         onClick={() => setIsOpen(false)}
-                        className={`group flex items-center justify-between rounded-xl px-3 py-2 text-sm font-medium transition-all ${
+                        className={`group relative flex items-center justify-between overflow-hidden rounded-xl px-3 py-2.5 text-sm font-medium transition-all duration-300 ${
                           isCatActive
-                            ? "bg-brand-teal/10 text-brand-teal dark:bg-brand-teal/20 dark:text-brand-teal-light"
-                            : "text-neutral-700 hover:bg-neutral-100 hover:text-brand dark:text-neutral-300 dark:hover:bg-neutral-800/80 dark:hover:text-white"
+                            ? "bg-[#596522] text-white shadow-sm font-semibold"
+                            : "text-[#303515] hover:text-white dark:text-neutral-300 dark:hover:text-white"
                         }`}
                       >
-                        <span className="flex items-center gap-2.5">
+                        {!isCatActive && (
+                          <span
+                            aria-hidden
+                            className="absolute inset-0 origin-left scale-x-0 rounded-xl bg-[#596522] opacity-0 transition-all duration-300 ease-out group-hover:scale-x-100 group-hover:opacity-100"
+                          />
+                        )}
+                        <span className="relative z-10 flex items-center gap-2.5">
                           {cat.image ? (
-                            <span className="relative h-6 w-6 shrink-0 overflow-hidden rounded-md border border-neutral-200/80 dark:border-neutral-700">
+                            <span className="relative h-7 w-7 shrink-0 overflow-hidden rounded-lg border border-[#D8BB7A]/60 bg-white dark:border-neutral-700">
                               <Image
                                 src={cat.image}
                                 alt={cat.title}
                                 fill
-                                sizes="24px"
+                                sizes="28px"
                                 className="object-cover"
                               />
                             </span>
                           ) : (
-                            <span className="h-1.5 w-1.5 rounded-full bg-brand-teal/40 transition-transform group-hover:scale-150 group-hover:bg-brand-teal" />
+                            <span className={`h-2 w-2 rounded-full transition-colors ${
+                              isCatActive ? "bg-white" : "bg-[#D8BB7A] group-hover:bg-white"
+                            }`} />
                           )}
                           <span>{cat.title}</span>
                         </span>
-                        <ArrowRightIcon className="h-3.5 w-3.5 opacity-0 transition-all group-hover:translate-x-0.5 group-hover:opacity-100 text-brand-teal" />
+                        <ArrowRightIcon className="relative z-10 h-3.5 w-3.5 opacity-0 transition-all group-hover:translate-x-0.5 group-hover:opacity-100 text-white" />
                       </Link>
                     );
                   })}
                 </div>
 
-                <div className="mt-2 border-t border-neutral-100 pt-2 dark:border-neutral-800">
+                <div className="mt-2 border-t border-[#D8BB7A]/40 pt-2 dark:border-neutral-800">
                   <Link
                     href="/search"
                     prefetch={true}
                     onClick={() => setIsOpen(false)}
-                    className="flex items-center justify-between rounded-xl px-3 py-2 text-xs font-semibold uppercase tracking-wider text-brand-teal transition-all hover:bg-brand-teal/10 dark:text-brand-teal-light"
+                    className="group relative flex items-center justify-between overflow-hidden rounded-xl px-3 py-2 text-xs font-bold uppercase tracking-wider text-[#596522] transition-all hover:text-white dark:text-[#D8BB7A]"
                   >
-                    <span>Shop All Products</span>
-                    <ArrowRightIcon className="h-3.5 w-3.5" />
+                    <span
+                      aria-hidden
+                      className="absolute inset-0 origin-left scale-x-0 rounded-xl bg-[#596522] opacity-0 transition-all duration-300 ease-out group-hover:scale-x-100 group-hover:opacity-100"
+                    />
+                    <span className="relative z-10">Shop All Products</span>
+                    <ArrowRightIcon className="relative z-10 h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5 text-[#596522] group-hover:text-white" />
                   </Link>
                 </div>
               </div>
@@ -217,12 +228,12 @@ export default function NavbarClient({
   const height = useTransform(scrollY, range, [80, 56]);
   const paddingY = useTransform(scrollY, range, [14, 6]);
   const blur = useTransform(scrollY, range, [0, 18]);
-  const bgAlpha = useTransform(scrollY, range, [0.78, 0.94]);
-  const borderOpacity = useTransform(scrollY, range, [0.08, 0.35]);
+  const bgAlpha = useTransform(scrollY, range, [0.82, 0.96]);
+  const borderOpacity = useTransform(scrollY, range, [0.15, 0.45]);
   const shadowAlpha = useTransform(
     scrollY,
     range,
-    theme === "dark" ? [0, 0.45] : [0, 0.08]
+    theme === "dark" ? [0, 0.45] : [0, 0.06]
   );
   const logoScale = useTransform(scrollY, range, [1, 0.88]);
 
@@ -230,13 +241,13 @@ export default function NavbarClient({
   const backgroundColor = useTransform(bgAlpha, (alpha) =>
     theme === "dark"
       ? `rgba(0, 0, 0, ${alpha})`
-      : `rgba(250, 250, 249, ${alpha})`
+      : `rgba(250, 249, 244, ${alpha})`
   );
-  const borderColor = useMotionTemplate`rgba(148, 163, 184, ${borderOpacity})`;
+  const borderColor = useMotionTemplate`rgba(216, 187, 122, ${borderOpacity})`;
   const boxShadow = useTransform(shadowAlpha, (alpha) =>
     theme === "dark"
       ? `0 10px 40px rgba(0, 0, 0, ${alpha})`
-      : `0 10px 40px rgba(15, 23, 42, ${alpha})`
+      : `0 10px 40px rgba(48, 53, 21, ${alpha})`
   );
 
   return (
@@ -254,13 +265,15 @@ export default function NavbarClient({
     >
       <motion.div
         style={{ paddingTop: paddingY, paddingBottom: paddingY }}
-        className="relative z-10 mx-auto flex h-full max-w-screen-2xl items-center gap-3 overflow-visible px-4 lg:gap-6 lg:px-6"
+        className="relative z-10 mx-auto flex h-full max-w-screen-2xl items-center justify-between gap-2 overflow-visible px-3 sm:px-4 lg:gap-4 lg:px-6"
       >
-        <div className="flex flex-none items-center gap-2 md:hidden">
+        {/* Mobile Menu Trigger (< lg) */}
+        <div className="flex flex-none items-center gap-2 lg:hidden">
           <MobileMenu menu={menu} collections={collections} />
         </div>
 
-        <div className="flex min-w-0 flex-1 items-center gap-4 lg:gap-8">
+        {/* Left: Brand Logo & Desktop Navigation */}
+        <div className="flex min-w-0 items-center gap-6 xl:gap-8">
           <motion.div style={{ scale: logoScale }} className="origin-left shrink-0">
             <motion.div
               whileHover={{ scale: 1.03 }}
@@ -272,14 +285,14 @@ export default function NavbarClient({
                 prefetch={true}
                 className="group flex items-center gap-2.5 rounded-full pr-1 transition-brand"
               >
-                <span className="rounded-full ring-0 transition-brand group-hover:ring-2 group-hover:ring-brand-teal/40 group-hover:ring-offset-2 group-hover:ring-offset-brand-cream dark:group-hover:ring-offset-black">
+                <span className="rounded-full ring-0 transition-brand group-hover:ring-2 group-hover:ring-[#D8BB7A] group-hover:ring-offset-2 group-hover:ring-offset-[#FAF9F4] dark:group-hover:ring-offset-black">
                   <LogoSquare />
                 </span>
                 <div className="hidden min-w-0 flex-col sm:flex">
-                  <span className="font-display text-lg font-semibold leading-none tracking-tight text-brand transition-colors group-hover:text-brand-blue-dark dark:text-white dark:group-hover:text-brand-teal-light">
+                  <span className="font-display text-base lg:text-lg font-semibold leading-none tracking-tight text-[#4D581E] transition-colors group-hover:text-[#596522] dark:text-white dark:group-hover:text-[#D8BB7A]">
                     {siteName}
                   </span>
-                  <span className="mt-1 text-[10px] font-medium uppercase tracking-[0.2em] text-neutral-500 transition-colors group-hover:text-brand-teal">
+                  <span className="mt-0.5 text-[9px] font-medium uppercase tracking-[0.2em] text-[#C49A45] transition-colors group-hover:text-[#596522]">
                     Skincare
                   </span>
                 </div>
@@ -287,8 +300,9 @@ export default function NavbarClient({
             </motion.div>
           </motion.div>
 
+          {/* Desktop Navigation Links (lg+) */}
           {menu.length > 0 ? (
-            <ul className="hidden shrink-0 items-center gap-1 md:flex">
+            <ul className="hidden shrink-0 items-center gap-2 lg:flex xl:gap-3">
               {menu.map((item: Menu) => (
                 <li key={item.title}>
                   <NavLink item={item} collections={collections} />
@@ -298,19 +312,17 @@ export default function NavbarClient({
           ) : null}
         </div>
 
-        <div className="hidden min-w-0 flex-1 justify-center overflow-visible md:flex">
-          <div className="relative z-50 w-full max-w-md overflow-visible">
+        {/* Right: Search Bar & Actions */}
+        <div className="flex shrink-0 items-center justify-end gap-2 lg:gap-3">
+          <div className="hidden sm:block relative z-50 w-36 md:w-44 lg:w-56 xl:w-72">
             <Search />
           </div>
-        </div>
-
-        <div className="flex shrink-0 items-center justify-end gap-2">
           <ThemeToggle />
           <motion.div
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.96 }}
             transition={{ type: "spring", stiffness: 380, damping: 20 }}
-            className="rounded-full border border-neutral-200/80 bg-white/70 p-1 shadow-sm backdrop-blur-sm transition-brand hover:border-brand-teal/50 hover:shadow-[0_8px_24px_rgba(20,184,166,0.2)] dark:border-neutral-800 dark:bg-neutral-950/70 dark:hover:border-brand-teal/40"
+            className="rounded-full border border-[#D8BB7A]/60 bg-[#FFFDF8] p-1 shadow-sm backdrop-blur-sm transition-brand hover:border-[#C49A45] hover:shadow-[0_8px_24px_rgba(196,154,69,0.2)] dark:border-neutral-800 dark:bg-neutral-950/70"
           >
             <CartModal />
           </motion.div>

@@ -71,7 +71,7 @@ export function DiscountBadge({
   return (
     <span
       className={clsx(
-        "inline-flex items-center rounded-full bg-gradient-to-r from-brand-coral to-rose-500 px-2 py-0.5 text-[11px] font-bold leading-none tracking-tight text-white shadow-sm ring-1 ring-white/20",
+        "inline-flex items-center rounded-full bg-gradient-to-r from-[#596522] to-[#C49A45] px-2 py-0.5 text-[11px] font-bold leading-none tracking-tight text-white shadow-xs ring-1 ring-white/20",
         className
       )}
       aria-label={`${percentage}% discount`}
@@ -156,7 +156,7 @@ export default function PriceDisplay({
         className={clsx(
           "tracking-tight",
           sizeClasses.current,
-          hasDiscount ? "text-brand-coral dark:text-brand-coral" : "text-current",
+          hasDiscount ? "text-[#4D581E] dark:text-[#D8BB7A]" : "text-current",
           priceClassName
         )}
       >

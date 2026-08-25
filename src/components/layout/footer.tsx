@@ -6,7 +6,7 @@ import Link from "next/link";
 
 function FooterSectionHeading({ title }: { title: string }) {
   return (
-    <h4 className="text-xs font-semibold uppercase tracking-[0.18em] text-neutral-800 dark:text-neutral-200">
+    <h4 className="text-xs font-semibold uppercase tracking-[0.18em] text-[#4D581E] dark:text-neutral-200">
       {title}
     </h4>
   );
@@ -15,7 +15,7 @@ function FooterSectionHeading({ title }: { title: string }) {
 function FooterNavLink({ href, label }: { href: string; label: string }) {
   if (!href || href === "#") {
     return (
-      <span className="font-sans text-sm text-neutral-600 dark:text-neutral-400">
+      <span className="font-sans text-sm text-[#303515]/80 dark:text-neutral-400">
         {label}
       </span>
     );
@@ -25,11 +25,11 @@ function FooterNavLink({ href, label }: { href: string; label: string }) {
     <Link
       href={href}
       prefetch={true}
-      className="group relative inline-flex items-center overflow-hidden rounded-full px-2.5 py-1 font-sans text-sm font-medium text-neutral-600 transition-brand hover:text-white dark:text-neutral-400 dark:hover:text-white"
+      className="group relative inline-flex items-center overflow-hidden rounded-full px-2.5 py-1 font-sans text-sm font-medium text-[#303515]/80 transition-brand hover:text-white dark:text-neutral-400 dark:hover:text-white"
     >
       <span
         aria-hidden
-        className="absolute inset-0 origin-left scale-x-0 rounded-full bg-brand-gradient opacity-0 transition-all duration-300 ease-out group-hover:scale-x-100 group-hover:opacity-100"
+        className="absolute inset-0 origin-left scale-x-0 rounded-full bg-[#596522] opacity-0 transition-all duration-300 ease-out group-hover:scale-x-100 group-hover:opacity-100"
       />
       <span className="relative z-10">{label}</span>
     </Link>
@@ -81,11 +81,11 @@ export default async function Footer() {
 
   return (
     <footer className="mt-auto">
-      <div aria-hidden className="h-[3px] w-full bg-brand-gradient" />
-      <div className="relative overflow-hidden bg-[#F3F8F7] dark:bg-black">
+      <div aria-hidden className="h-[2px] w-full bg-gradient-to-r from-transparent via-[#D8BB7A] to-transparent" />
+      <div className="relative overflow-hidden bg-[#FAF9F4] dark:bg-black">
         <div
           aria-hidden
-          className="pointer-events-none absolute inset-0 bg-brand-radial opacity-[0.07] dark:opacity-20"
+          className="pointer-events-none absolute inset-0 bg-brand-radial opacity-[0.08] dark:opacity-20"
         />
         <div className="relative mx-auto flex max-w-screen-2xl flex-col gap-12 px-4 py-12 md:px-8 lg:px-12">
           {/* Newsletter Section */}
@@ -99,19 +99,19 @@ export default async function Footer() {
                 href="/"
                 className="group inline-flex items-center gap-3 transition-brand hover:opacity-90"
               >
-                <span className="rounded-full transition-brand group-hover:ring-2 group-hover:ring-brand-teal/35 group-hover:ring-offset-2 group-hover:ring-offset-[#F3F8F7] dark:group-hover:ring-offset-black">
+                <span className="rounded-full transition-brand group-hover:ring-2 group-hover:ring-[#D8BB7A] group-hover:ring-offset-2 group-hover:ring-offset-[#FAF9F4] dark:group-hover:ring-offset-black">
                   <LogoSquare size="sm" />
                 </span>
                 <div>
-                  <p className="font-display text-xl font-bold tracking-tight text-brand transition-colors group-hover:text-brand-blue-dark dark:text-white dark:group-hover:text-brand-teal-light">
+                  <p className="font-display text-xl font-bold tracking-tight text-[#4D581E] transition-colors group-hover:text-[#596522] dark:text-white dark:group-hover:text-[#D8BB7A]">
                     {siteName}
                   </p>
-                  <p className="text-xs uppercase tracking-[0.2em] text-neutral-500 transition-colors group-hover:text-brand-teal">
+                  <p className="text-xs uppercase tracking-[0.2em] text-[#C49A45] transition-colors group-hover:text-[#596522]">
                     {BRAND.tagline}
                   </p>
                 </div>
               </Link>
-              <p className="font-sans text-sm leading-relaxed text-neutral-600 dark:text-neutral-400">
+              <p className="font-sans text-sm leading-relaxed text-[#303515]/80 dark:text-neutral-400">
                 {BRAND.description}
               </p>
 
@@ -121,7 +121,7 @@ export default async function Footer() {
                   (badge) => (
                     <span
                       key={badge}
-                      className="inline-flex items-center rounded-full border border-brand-teal/20 bg-white/70 px-3 py-1 text-xs font-medium text-brand-teal dark:border-neutral-800 dark:bg-neutral-900/60 dark:text-brand-teal-light"
+                      className="inline-flex items-center rounded-full border border-[#D8BB7A]/60 bg-[#FFFDF8] px-3 py-1 text-xs font-medium text-[#4D581E] dark:border-neutral-800 dark:bg-neutral-900/60 dark:text-[#D8BB7A]"
                     >
                       {badge}
                     </span>
@@ -152,10 +152,10 @@ export default async function Footer() {
         </div>
 
         {/* Footer Bottom Bar */}
-        <div className="relative border-t border-brand-teal/15 px-4 py-6 text-center text-xs text-neutral-500 dark:border-neutral-800 dark:text-neutral-400 md:px-8">
+        <div className="relative border-t border-[#D8BB7A]/30 px-4 py-6 text-center text-xs text-[#303515]/70 dark:border-neutral-800 dark:text-neutral-400 md:px-8">
           <div className="mx-auto flex max-w-screen-2xl flex-col items-center justify-between gap-3 sm:flex-row">
             <p>© {year} {process.env.COMPANY_NAME || siteName}. All rights reserved.</p>
-            <div className="flex items-center gap-4 text-neutral-400">
+            <div className="flex items-center gap-4 text-[#303515]/60 dark:text-neutral-400">
               <span>Care Beyond Standards</span>
             </div>
           </div>

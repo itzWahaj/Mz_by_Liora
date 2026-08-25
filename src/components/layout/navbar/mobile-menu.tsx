@@ -70,12 +70,12 @@ export default function MobileMenu({
 
         {/* Mobile Drawer Panel */}
         <aside
-          className={`relative flex h-full w-[85%] max-w-sm flex-col bg-brand-surface p-5 shadow-2xl dark:bg-neutral-950 z-[1001] transform-gpu border-r border-neutral-200/80 dark:border-neutral-800 transition-transform duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] ${
+          className={`relative flex h-full w-[85%] max-w-sm flex-col bg-[#FAF9F4] p-5 shadow-2xl dark:bg-neutral-950 z-[1001] transform-gpu border-r border-[#D8BB7A]/60 dark:border-neutral-800 transition-transform duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] ${
             isOpen ? "translate-x-0" : "-translate-x-full"
           }`}
         >
           {/* Drawer Header */}
-          <div className="mb-6 flex items-center justify-between border-b border-neutral-200/80 pb-4 dark:border-neutral-800">
+          <div className="mb-6 flex items-center justify-between border-b border-[#D8BB7A]/30 pb-4 dark:border-neutral-800">
             <Link
               href="/"
               prefetch={true}
@@ -84,16 +84,16 @@ export default function MobileMenu({
             >
               <LogoSquare size="sm" />
               <div className="flex flex-col">
-                <span className="font-display text-lg font-semibold leading-none text-brand dark:text-white">
+                <span className="font-display text-lg font-semibold leading-none text-[#4D581E] dark:text-white">
                   MZ by LIORA
                 </span>
-                <span className="mt-1 text-[9px] font-medium uppercase tracking-[0.2em] text-neutral-500">
+                <span className="mt-1 text-[9px] font-medium uppercase tracking-[0.2em] text-[#C49A45]">
                   Skincare
                 </span>
               </div>
             </Link>
             <button
-              className="flex h-10 w-10 items-center justify-center rounded-full border border-neutral-300/90 bg-white text-black shadow-sm transition-brand hover:border-brand-teal dark:border-neutral-700 dark:bg-neutral-900 dark:text-white"
+              className="flex h-10 w-10 items-center justify-center rounded-full border border-[#D8BB7A]/60 bg-[#FFFDF8] text-[#303515] shadow-sm transition-brand hover:border-[#C49A45] hover:bg-[#596522] hover:text-white dark:border-neutral-700 dark:bg-neutral-900 dark:text-white"
               onClick={closeMobileMenu}
               aria-label="Close mobile menu"
             >
@@ -126,24 +126,24 @@ export default function MobileMenu({
                       href={item.path}
                       prefetch={true}
                       onClick={closeMobileMenu}
-                      className="group inline-flex items-center text-lg font-bold text-brand transition-brand hover:text-brand-teal dark:text-white dark:hover:text-brand-teal-light"
+                      className="group inline-flex items-center text-lg font-bold text-[#4D581E] transition-brand hover:text-[#596522] dark:text-white dark:hover:text-[#D8BB7A]"
                     >
                       <span className="relative">
                         {item.title}
-                        <span className="absolute -bottom-1 left-0 h-[2px] w-full origin-left scale-x-0 bg-brand-gradient transition-transform duration-300 ease-out group-hover:scale-x-100" />
+                        <span className="absolute -bottom-1 left-0 h-[2px] w-full origin-left scale-x-0 bg-[#596522] transition-transform duration-300 ease-out group-hover:scale-x-100" />
                       </span>
                     </Link>
 
                     {/* Sub-categories */}
                     {subCategories.length > 0 ? (
-                      <ul className="mt-2.5 ml-3 space-y-2 border-l-2 border-brand-teal/20 pl-3">
+                      <ul className="mt-2.5 ml-3 space-y-2 border-l-2 border-[#D8BB7A]/40 pl-3">
                         {subCategories.map((sub) => (
                           <li key={sub.title}>
                             <Link
                               href={sub.path || "#"}
                               prefetch={true}
                               onClick={closeMobileMenu}
-                              className="text-sm font-medium text-neutral-600 transition-colors hover:text-brand-teal dark:text-neutral-400 dark:hover:text-white"
+                              className="text-sm font-medium text-[#303515]/80 transition-colors hover:text-[#596522] dark:text-neutral-400 dark:hover:text-white"
                             >
                               {sub.title}
                             </Link>
@@ -166,7 +166,7 @@ export default function MobileMenu({
       <button
         onClick={openMobileMenu}
         aria-label="Open mobile menu"
-        className="flex h-11 w-11 items-center justify-center rounded-full border border-neutral-300/90 bg-white/80 text-black shadow-sm transition-transform duration-150 active:scale-95 md:hidden dark:border-neutral-700 dark:bg-neutral-900/70 dark:text-white"
+        className="flex h-11 w-11 items-center justify-center rounded-full border border-[#D8BB7A]/60 bg-[#FFFDF8]/90 text-[#303515] shadow-sm transition-transform duration-150 active:scale-95 md:hidden dark:border-neutral-700 dark:bg-neutral-900/70 dark:text-white"
       >
         <Bars3Icon className="h-5 w-5" />
       </button>

@@ -6,6 +6,7 @@ import { Navbar } from "@/components/layout/navbar";
 import Footer from "@/components/layout/footer";
 import WhatsAppButton from "@/components/whatsapp-button";
 import ExitIntentModal from "@/components/modal/exit-intent-modal";
+import MetaPixel from "@/components/analytics/meta-pixel";
 import { CartProvider } from "@/components/cart/cart-context";
 import LenisProvider from "@/components/providers/lenis-provider";
 import { ThemeProvider } from "@/components/providers/theme-provider";
@@ -150,6 +151,7 @@ export default async function RootLayout({
             </CartProvider>
           </SplashWrapper>
         </ThemeProvider>
+        <MetaPixel />
         {process.env.NEXT_PUBLIC_KLAVIYO_PUBLIC_KEY ? (
           <Script
             id="klaviyo-js"

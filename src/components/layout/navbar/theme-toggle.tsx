@@ -16,7 +16,7 @@ export default function ThemeToggle() {
       onClick={toggleTheme}
       whileHover={{ scale: 1.05, y: -1 }}
       whileTap={{ scale: 0.96 }}
-      className="group relative flex h-11 w-11 items-center justify-center rounded-full border border-neutral-300/90 bg-white/80 text-brand shadow-sm transition-brand hover:border-brand-teal/50 hover:bg-brand-gradient hover:text-white hover:shadow-[0_8px_20px_rgba(30,95,191,0.28)] dark:border-neutral-700 dark:bg-neutral-900/70 dark:text-white dark:hover:border-transparent"
+      className="group relative flex h-11 w-11 items-center justify-center rounded-full border border-[#D8BB7A]/60 bg-[#FFFDF8]/90 text-[#303515] shadow-sm transition-brand hover:border-[#C49A45] hover:bg-[#596522] hover:text-white hover:shadow-[0_8px_20px_rgba(89,101,34,0.3)] dark:border-neutral-700 dark:bg-neutral-900/70 dark:text-white dark:hover:border-transparent"
     >
       {isDark ? (
         <SunIcon className="h-4 w-4 transition-transform duration-300 group-hover:rotate-45" />

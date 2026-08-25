@@ -164,7 +164,7 @@ export default function Search() {
     <form
       ref={rootRef}
       onSubmit={onSubmit}
-      className="group relative z-40 w-full max-w-[550px] lg:w-80 xl:w-full"
+      className="group relative z-40 w-full"
       role="search"
     >
       <input
@@ -189,9 +189,9 @@ export default function Search() {
           if (query.trim().length >= 2) setOpen(true);
         }}
         onKeyDown={onKeyDownInput}
-        className="text-md peer w-full rounded-full border border-neutral-300/90 bg-white/80 px-4 py-2 pr-10 text-black shadow-sm placeholder:text-neutral-500 transition-brand hover:border-brand-teal/50 hover:shadow-[0_8px_24px_rgba(20,184,166,0.12)] focus:border-brand-teal focus:shadow-[0_0_0_4px_rgba(20,184,166,0.18)] md:text-sm dark:border-neutral-700 dark:bg-neutral-900/70 dark:text-white dark:placeholder:text-neutral-400 dark:hover:border-brand-teal/40 dark:focus:shadow-[0_0_0_4px_rgba(20,184,166,0.2)]"
+        className="text-md peer w-full rounded-full border border-[#D8BB7A]/60 bg-[#FFFDF8]/90 px-4 py-2 pr-10 text-[#303515] shadow-sm placeholder:text-[#303515]/50 transition-brand hover:border-[#C49A45] hover:shadow-[0_8px_24px_rgba(196,154,69,0.12)] focus:border-[#C49A45] focus:shadow-[0_0_0_4px_rgba(196,154,69,0.18)] md:text-sm dark:border-neutral-700 dark:bg-neutral-900/70 dark:text-white dark:placeholder:text-neutral-400 dark:hover:border-[#D8BB7A] dark:focus:shadow-[0_0_0_4px_rgba(196,154,69,0.2)]"
       />
-      <div className="pointer-events-none absolute right-0 top-0 mr-3 flex h-full items-center text-neutral-500 transition-colors peer-focus:text-brand-teal group-hover:text-brand-teal">
+      <div className="pointer-events-none absolute right-0 top-0 mr-3 flex h-full items-center text-[#303515]/60 transition-colors peer-focus:text-[#596522] group-hover:text-[#596522]">
         <MagnifyingGlassIcon className="h-4" />
       </div>
 
@@ -200,12 +200,12 @@ export default function Search() {
           id={listId}
           role="listbox"
           data-lenis-prevent
-          className="absolute left-0 right-0 top-[calc(100%+0.5rem)] z-50 overflow-hidden rounded-2xl border border-neutral-200/90 bg-white/95 shadow-[0_20px_50px_rgba(15,23,42,0.16)] backdrop-blur-md dark:border-neutral-800 dark:bg-neutral-950/95"
+          className="absolute left-0 right-0 top-[calc(100%+0.5rem)] z-[9999] overflow-hidden rounded-2xl border border-[#D8BB7A] bg-[#FFFDF8] shadow-[0_20px_50px_rgba(48,53,21,0.22)] dark:border-neutral-800 dark:bg-neutral-950"
         >
           {loading && suggestions.length === 0 ? (
-            <p className="px-4 py-3 text-sm text-neutral-500">Searching…</p>
+            <p className="px-4 py-3 text-sm text-[#303515]/60">Searching…</p>
           ) : suggestions.length === 0 ? (
-            <p className="px-4 py-3 text-sm text-neutral-500">
+            <p className="px-4 py-3 text-sm text-[#303515]/60">
               No products match &quot;{query.trim()}&quot;
             </p>
           ) : (
@@ -225,8 +225,8 @@ export default function Search() {
                       onMouseEnter={() => setActiveIndex(index)}
                       className={
                         active
-                          ? "flex items-center gap-3 bg-brand-gradient px-3 py-2.5 text-white"
-                          : "flex items-center gap-3 px-3 py-2.5 text-brand transition-colors hover:bg-brand-teal/10 dark:text-white dark:hover:bg-brand-teal/15"
+                          ? "flex items-center gap-3 bg-[#596522] px-3 py-2.5 text-white"
+                          : "flex items-center gap-3 px-3 py-2.5 text-[#303515] transition-colors hover:bg-[#FAF9F4] hover:text-[#4D581E] dark:text-white dark:hover:bg-neutral-800/80"
                       }
                     >
                       <span
@@ -262,7 +262,7 @@ export default function Search() {
                           className={
                             active
                               ? "mt-0.5 text-xs text-white/90"
-                              : "mt-0.5 text-xs text-neutral-500 dark:text-neutral-400"
+                              : "mt-0.5 text-xs text-[#303515]/70 dark:text-neutral-400"
                           }
                           amount={product.amount}
                           currencyCode={product.currencyCode}
@@ -281,12 +281,12 @@ export default function Search() {
           <button
             type="button"
             onClick={() => goToSearch(query)}
-            className="flex w-full items-center justify-between border-t border-neutral-200 px-4 py-2.5 text-left text-sm font-medium text-brand transition-colors hover:bg-neutral-50 dark:border-neutral-800 dark:text-white dark:hover:bg-neutral-900"
+            className="flex w-full items-center justify-between border-t border-[#D8BB7A]/30 px-4 py-2.5 text-left text-sm font-semibold text-[#596522] transition-colors hover:bg-[#FAF9F4] hover:text-[#4D581E] dark:border-neutral-800 dark:text-white dark:hover:bg-neutral-900"
           >
             <span>
               View all results for &quot;{query.trim()}&quot;
             </span>
-            <MagnifyingGlassIcon className="h-4 w-4 text-brand-teal" />
+            <MagnifyingGlassIcon className="h-4 w-4 text-[#C49A45]" />
           </button>
         </div>
       ) : null}

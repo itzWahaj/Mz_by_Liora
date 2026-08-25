@@ -297,8 +297,8 @@ export default function SplashScreen({
               <div
                 style={{
                   filter: isDark
-                    ? "drop-shadow(0 0 24px rgba(20,184,166,0.6)) drop-shadow(0 0 50px rgba(30,95,191,0.35))"
-                    : "drop-shadow(0 10px 25px rgba(15,23,42,0.08)) drop-shadow(0 0 15px rgba(20,184,166,0.25))",
+                    ? "drop-shadow(0 0 24px rgba(216,187,122,0.6)) drop-shadow(0 0 50px rgba(89,101,34,0.35))"
+                    : "drop-shadow(0 10px 25px rgba(48,53,21,0.08)) drop-shadow(0 0 15px rgba(196,154,69,0.25))",
                 }}
               >
                 <Image

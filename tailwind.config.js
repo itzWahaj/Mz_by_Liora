@@ -13,41 +13,64 @@ module.exports = {
     extend: {
       colors: {
         brand: {
-          DEFAULT: "#0F172A",
-          accent: "#14B8A6",
-          blue: {
-            DEFAULT: "#1E5FBF",
-            light: "#3B82F6",
-            dark: "#0F3D8C",
+          DEFAULT: "#303515", // Normal Text: Dark Olive
+          heading: "#4D581E", // Headings: Deep Olive Green
+          olive: {
+            DEFAULT: "#596522", // Buttons: Olive Green
+            deep: "#4D581E",    // Headings: Deep Olive
+            dark: "#303515",    // Normal Text: Dark Olive
+            light: "#70802B",
+            subtle: "#F4F6EC",
           },
+          gold: {
+            DEFAULT: "#C49A45", // Button Hover / Accents: Antique Gold
+            light: "#D8BB7A",   // Borders: Soft Champagne Gold
+            champagne: "#D8BB7A",
+            dark: "#A37C2E",
+            subtle: "#FAF5E8",
+          },
+          champagne: "#D8BB7A", // Borders: Soft Champagne Gold
+          cream: "#FAF9F4",     // Background: Warm Ivory
+          surface: "#FAF9F4",   // Background: Warm Ivory
+          card: "#FFFDF8",      // Product Cards: Soft Cream
+          accent: "#C49A45",    // Small Accents: Antique Gold
+
+          // Seamless backward-compatible color aliases
           teal: {
-            DEFAULT: "#14B8A6",
-            light: "#2DD4BF",
+            DEFAULT: "#596522",
+            light: "#C49A45",
+            dark: "#4D581E",
+          },
+          blue: {
+            DEFAULT: "#4D581E",
+            light: "#596522",
+            dark: "#303515",
           },
           coral: {
-            DEFAULT: "#E8734A",
-            dark: "#C2410C",
+            DEFAULT: "#C49A45",
+            dark: "#A37C2E",
           },
           purple: {
-            DEFAULT: "#7C3AED",
-            pink: "#DB2777",
+            DEFAULT: "#596522",
+            pink: "#C49A45",
           },
-          // Backward-compatible alias used by existing classes.
-          violet: "#7C3AED",
-          navy: "#0F172A",
-          cream: "#FAFAF9",
-          surface: "#FAFAF9",
+          violet: "#596522",
+          navy: "#303515",
         },
       },
       backgroundImage: {
         "brand-gradient":
-          "linear-gradient(135deg, #1E5FBF 0%, #14B8A6 50%, #2DD4BF 100%)",
+          "linear-gradient(135deg, #596522 0%, #4D581E 100%)",
+        "brand-gradient-hover":
+          "linear-gradient(135deg, #C49A45 0%, #D8BB7A 100%)",
+        "brand-gradient-gold":
+          "linear-gradient(135deg, #C49A45 0%, #D8BB7A 100%)",
         "brand-gradient-warm":
-          "linear-gradient(135deg, #E8734A 0%, #DB2777 50%, #7C3AED 100%)",
+          "linear-gradient(135deg, #596522 0%, #C49A45 100%)",
         "brand-gradient-full":
-          "linear-gradient(120deg, #1E5FBF 0%, #14B8A6 30%, #E8734A 70%, #7C3AED 100%)",
+          "linear-gradient(120deg, #596522 0%, #4D581E 40%, #C49A45 75%, #D8BB7A 100%)",
         "brand-radial":
-          "radial-gradient(circle, #3B82F6 0%, #14B8A6 40%, #E8734A 80%, #7C3AED 100%)",
+          "radial-gradient(circle, #D8BB7A 0%, #FAF9F4 70%)",
       },
       fontFamily: {
         sans: ["var(--font-inter)", "system-ui", "sans-serif"],

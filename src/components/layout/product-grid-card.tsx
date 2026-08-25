@@ -16,6 +16,7 @@ import { useFormState } from "react-dom";
 import { addItem } from "../cart/actions";
 import { useCart } from "../cart/cart-context";
 import { flyToCart } from "../cart/fly-to-cart";
+import { trackMetaEvent } from "@/lib/meta/pixel";
 import PriceDisplay, {
   calculateDiscount,
   DiscountBadge,
@@ -143,7 +144,7 @@ export default function ProductGridCard({ product }: { product: Product }) {
         className="relative block aspect-square h-full w-full rounded-2xl"
         prefetch={true}
       >
-        <div className="relative h-full w-full overflow-hidden rounded-2xl border border-neutral-200/90 bg-neutral-100 transition-brand group-hover:border-brand-teal group-hover:shadow-md dark:border-neutral-800 dark:bg-neutral-900">
+        <div className="relative h-full w-full overflow-hidden rounded-2xl border border-[#D8BB7A]/60 bg-[#FFFDF8] transition-brand group-hover:border-[#C49A45] group-hover:shadow-[0_12px_28px_rgba(89,101,34,0.1)] dark:border-[#D8BB7A]/20 dark:bg-neutral-900">
           <div className="absolute inset-0">
             {/* Primary / Active Image */}
             <Image
@@ -158,7 +159,7 @@ export default function ProductGridCard({ product }: { product: Product }) {
               onError={() => setImageError(true)}
               className={clsx(
                 isFallback
-                  ? "object-contain p-10 opacity-70 bg-gradient-to-br from-brand-teal/5 via-white to-brand-blue/5 dark:from-neutral-900 dark:to-neutral-950"
+                  ? "object-contain p-10 opacity-70 bg-gradient-to-br from-[#596522]/5 via-[#FFFDF8] to-[#C49A45]/5 dark:from-neutral-900 dark:to-neutral-950"
                   : "object-cover",
                 !reduceMotion && [
                   "transition-all duration-500 ease-out motion-reduce:transition-none",
@@ -202,7 +203,7 @@ export default function ProductGridCard({ product }: { product: Product }) {
             type="button"
             aria-label={`Previous image of ${product.title}`}
             onClick={(event) => stepImage(prevImageIndex, event)}
-            className="pointer-events-auto absolute left-2 top-1/2 z-20 flex h-8 w-8 -translate-y-1/2 items-center justify-center rounded-full border border-neutral-200/80 bg-white/95 text-brand opacity-0 shadow-sm transition-brand hover:border-brand-teal hover:bg-white group-hover:opacity-100 max-md:opacity-100 dark:border-neutral-700 dark:bg-neutral-900/95 dark:text-white"
+            className="pointer-events-auto absolute left-2 top-1/2 z-20 flex h-8 w-8 -translate-y-1/2 items-center justify-center rounded-full border border-[#D8BB7A]/60 bg-[#FFFDF8]/95 text-[#303515] opacity-0 shadow-sm transition-brand hover:border-[#C49A45] hover:bg-[#FFFDF8] group-hover:opacity-100 max-md:opacity-100 dark:border-neutral-700 dark:bg-neutral-900/95 dark:text-white"
           >
             <ChevronLeftIcon className="h-4 w-4" />
           </button>
@@ -210,7 +211,7 @@ export default function ProductGridCard({ product }: { product: Product }) {
             type="button"
             aria-label={`Next image of ${product.title}`}
             onClick={(event) => stepImage(nextImageIndex, event)}
-            className="pointer-events-auto absolute right-2 top-1/2 z-20 flex h-8 w-8 -translate-y-1/2 items-center justify-center rounded-full border border-neutral-200/80 bg-white/95 text-brand opacity-0 shadow-sm transition-brand hover:border-brand-teal hover:bg-white group-hover:opacity-100 max-md:opacity-100 dark:border-neutral-700 dark:bg-neutral-900/95 dark:text-white"
+            className="pointer-events-auto absolute right-2 top-1/2 z-20 flex h-8 w-8 -translate-y-1/2 items-center justify-center rounded-full border border-[#D8BB7A]/60 bg-[#FFFDF8]/95 text-[#303515] opacity-0 shadow-sm transition-brand hover:border-[#C49A45] hover:bg-[#FFFDF8] group-hover:opacity-100 max-md:opacity-100 dark:border-neutral-700 dark:bg-neutral-900/95 dark:text-white"
           >
             <ChevronRightIcon className="h-4 w-4" />
           </button>
@@ -229,7 +230,7 @@ export default function ProductGridCard({ product }: { product: Product }) {
                 className={clsx(
                   "h-1.5 w-1.5 rounded-full transition-brand",
                   imageIndex === index
-                    ? "scale-125 bg-brand-gradient"
+                    ? "scale-125 bg-[#596522]"
                     : "bg-white/80 ring-1 ring-black/10 hover:bg-white dark:bg-white/40"
                 )}
               />
@@ -239,20 +240,20 @@ export default function ProductGridCard({ product }: { product: Product }) {
       ) : null}
 
       <div className="pointer-events-none absolute left-3 top-3 z-10">
-        <div className="rounded-full border border-neutral-200/80 bg-white/95 px-2.5 py-1 text-xs font-medium shadow-sm dark:border-neutral-800 dark:bg-neutral-900/95">
+        <div className="rounded-full border border-[#D8BB7A]/60 bg-[#FFFDF8]/95 px-2.5 py-1 text-xs font-medium shadow-sm dark:border-neutral-800 dark:bg-neutral-900/95">
           <PriceDisplay
             amount={priceAmount}
             compareAtAmount={compareAtPriceAmount}
             currencyCode={priceCurrency}
             showBadge={false}
             size="xs"
-            priceClassName="text-brand dark:text-white"
+            priceClassName="text-[#4D581E] dark:text-white"
             compareAtClassName="text-neutral-400 dark:text-neutral-400"
           />
         </div>
       </div>
 
-      <div className="pointer-events-none absolute inset-x-0 bottom-0 bg-gradient-to-t from-brand-cream/90 via-brand-cream/20 to-transparent px-3 pb-3 pt-10 dark:from-black/75 dark:via-transparent dark:to-transparent">
+      <div className="pointer-events-none absolute inset-x-0 bottom-0 bg-gradient-to-t from-[#FAF9F4]/95 via-[#FAF9F4]/30 to-transparent px-3 pb-3 pt-10 dark:from-black/75 dark:via-transparent dark:to-transparent">
         {multiOption.length > 0 ? (
           <div className="pointer-events-auto mb-2 flex flex-wrap gap-1.5">
             {multiOption.flatMap((option) =>
@@ -288,10 +289,10 @@ export default function ProductGridCard({ product }: { product: Product }) {
                       "rounded-full border px-2 py-0.5 text-[10px] font-medium uppercase tracking-wide transition-brand",
                       isActive
                         ? available
-                          ? "border-transparent bg-brand-gradient text-white shadow-sm"
+                          ? "border-transparent bg-[#596522] text-white shadow-sm"
                           : "border-transparent bg-neutral-400 text-white"
                         : available
-                          ? "cursor-pointer border-white/80 bg-white/85 text-brand hover:scale-105 hover:border-brand-teal hover:shadow-[0_4px_12px_rgba(20,184,166,0.2)] dark:border-white/15 dark:bg-black/55 dark:text-white dark:hover:border-brand-teal/50"
+                          ? "cursor-pointer border-[#D8BB7A]/60 bg-[#FFFDF8]/90 text-[#303515] hover:scale-105 hover:border-[#C49A45] hover:text-[#596522] hover:shadow-[0_4px_12px_rgba(196,154,69,0.2)] dark:border-white/15 dark:bg-black/55 dark:text-white dark:hover:border-[#D8BB7A]"
                           : "cursor-pointer border-neutral-200 bg-neutral-100/80 text-neutral-500 hover:border-neutral-300 dark:border-neutral-700 dark:bg-neutral-900/60"
                     )}
                   >
@@ -303,13 +304,13 @@ export default function ProductGridCard({ product }: { product: Product }) {
           </div>
         ) : null}
 
-        <div className="pointer-events-auto flex items-center gap-2 rounded-xl border border-neutral-200/80 bg-white/95 px-3 py-2 shadow-sm dark:border-neutral-800 dark:bg-neutral-900/95">
+        <div className="pointer-events-auto flex items-center gap-2 rounded-xl border border-[#D8BB7A]/60 bg-[#FFFDF8]/95 px-3 py-2 shadow-sm dark:border-neutral-800 dark:bg-neutral-900/95">
           <Link
             href={`/product/${product.handle}`}
             className="min-w-0 flex-1"
             prefetch={true}
           >
-            <p className="line-clamp-1 text-sm font-medium leading-snug text-brand dark:text-white">
+            <p className="line-clamp-1 text-sm font-semibold leading-snug text-[#303515] dark:text-white">
               {product.title}
             </p>
             {product.reviews &&
@@ -320,7 +321,7 @@ export default function ProductGridCard({ product }: { product: Product }) {
                   rating={product.reviews.rating}
                   sizeClass="h-3.5 w-3.5"
                 />
-                <span className="text-xs font-semibold text-[#1E2A3A] dark:text-white">
+                <span className="text-xs font-semibold text-[#4D581E] dark:text-white">
                   {product.reviews.rating.toFixed(1)}
                 </span>
                 <span className="text-[11px] font-medium text-neutral-400 dark:text-neutral-500">
@@ -340,6 +341,28 @@ export default function ProductGridCard({ product }: { product: Product }) {
                 });
               }
               addCartItem(selectedVariant, product);
+
+              // Fire Meta Pixel & CAPI AddToCart event
+              const itemPrice = parseFloat(selectedVariant.price.amount || "0");
+              const itemCurrency = selectedVariant.price.currencyCode || "PKR";
+              trackMetaEvent("AddToCart", {
+                customData: {
+                  content_ids: [selectedVariant.id, product.id],
+                  content_name: product.title,
+                  content_type: "product",
+                  value: itemPrice,
+                  currency: itemCurrency,
+                  contents: [
+                    {
+                      id: selectedVariant.id,
+                      quantity: 1,
+                      item_price: itemPrice,
+                      title: `${product.title}${selectedVariant.title && selectedVariant.title !== "Default Title" ? ` - ${selectedVariant.title}` : ""}`,
+                    },
+                  ],
+                },
+              });
+
               await actionWithVariant();
               setIsAdded(true);
             }}
@@ -360,7 +383,7 @@ export default function ProductGridCard({ product }: { product: Product }) {
               }
               disabled={!canQuickAdd}
               whileTap={canQuickAdd ? { scale: 0.92 } : undefined}
-              className="inline-flex h-8 w-8 items-center justify-center rounded-full bg-brand-gradient text-white shadow-[0_8px_20px_rgba(20,184,166,0.35)] transition-brand hover:brightness-110 disabled:cursor-not-allowed disabled:opacity-50"
+              className="inline-flex h-8 w-8 items-center justify-center rounded-full bg-[#596522] text-white shadow-[0_8px_20px_rgba(89,101,34,0.35)] transition-brand hover:bg-[#C49A45] hover:shadow-[0_8px_20px_rgba(196,154,69,0.4)] disabled:cursor-not-allowed disabled:opacity-50"
             >
               {isAdded ? (
                 <CheckIcon className="h-4 w-4" strokeWidth={2.5} />

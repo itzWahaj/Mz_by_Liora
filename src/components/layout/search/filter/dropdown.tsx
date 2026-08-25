@@ -70,11 +70,11 @@ export default function FilterItemDropDown({
         type="button"
         onClick={toggleSelect}
         aria-expanded={openSelect}
-        className="flex w-full items-center justify-between rounded-2xl border border-neutral-200 bg-white px-4 py-3 text-left text-sm font-medium text-brand shadow-sm transition-brand hover:border-brand-teal/40 dark:border-neutral-800 dark:bg-neutral-950 dark:text-white"
+        className="flex w-full items-center justify-between rounded-2xl border border-[#D8BB7A]/60 bg-[#FFFDF8] px-4 py-3 text-left text-sm font-medium text-[#303515] shadow-sm transition-brand hover:border-[#C49A45] dark:border-neutral-800 dark:bg-neutral-950 dark:text-white"
       >
         <span className="line-clamp-1">{formatLabel(active)}</span>
         <ChevronDownIcon
-          className={`h-4 w-4 shrink-0 text-brand-teal transition-transform ${
+          className={`h-4 w-4 shrink-0 text-[#596522] transition-transform ${
             openSelect ? "rotate-180" : ""
           }`}
         />
@@ -82,7 +82,7 @@ export default function FilterItemDropDown({
       {openSelect ? (
         <div
           onClick={closeSelect}
-          className="absolute left-0 top-full z-50 mt-2 max-h-72 w-full overflow-y-auto rounded-2xl border border-neutral-200/90 bg-white/95 p-2 shadow-[0_20px_50px_rgba(15,23,42,0.22)] backdrop-blur-xl dark:border-neutral-800 dark:bg-neutral-950/95"
+          className="absolute left-0 top-full z-50 mt-2 max-h-72 w-full overflow-y-auto rounded-2xl border border-[#D8BB7A] bg-[#FFFDF8] p-2 shadow-[0_20px_50px_rgba(48,53,21,0.22)] dark:border-neutral-800 dark:bg-neutral-950"
         >
           <ul className="space-y-1">
             {list.map((item: ListItem, i) => (

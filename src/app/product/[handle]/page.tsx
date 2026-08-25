@@ -5,6 +5,7 @@ import RelatedProductsCarousel from "@/components/product/related-products-carou
 import ReviewsSection from "@/components/product/reviews-section";
 import Breadcrumbs from "@/components/ui/breadcrumbs";
 import Skeleton from "@/components/ui/skeleton";
+import ProductViewTracker from "@/components/analytics/product-view-tracker";
 import { BRAND, HIDDEN_PRODUCT_TAG } from "@/lib/constants";
 import { getJudgeMeReviews } from "@/lib/judgeme";
 import { getProduct, getProductRecommendations } from "@/lib/shopify";
@@ -220,6 +221,7 @@ export default async function ProductPage({
 
   return (
     <ProductProvider>
+      <ProductViewTracker product={product} />
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{

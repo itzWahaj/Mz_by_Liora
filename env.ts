@@ -15,6 +15,10 @@ const envSchema = z.object({
   NEXT_PUBLIC_JUDGEME_PUBLIC_TOKEN: z.string().optional(),
   JUDGEME_PRIVATE_TOKEN: z.string().optional(),
   NEXT_PUBLIC_JUDGEME_SHOP_DOMAIN: z.string().optional(),
+  NEXT_PUBLIC_META_PIXEL_ID: z.string().optional(),
+  META_CAPI_ACCESS_TOKEN: z.string().optional(),
+  META_CAPI_TEST_EVENT_CODE: z.string().optional(),
+  SHOPIFY_WEBHOOK_SECRET: z.string().optional(),
 });
 
 envSchema.parse(process.env);

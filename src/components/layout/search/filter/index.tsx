@@ -25,9 +25,9 @@ function FilterItemList({ list }: { list: ListItem[] }) {
 
 function PanelIcon({ title }: { title?: string }) {
   if (title?.toLowerCase().includes("sort")) {
-    return <AdjustmentsHorizontalIcon className="h-4 w-4 text-brand-coral" />;
+    return <AdjustmentsHorizontalIcon className="h-4 w-4 text-[#C49A45]" />;
   }
-  return <Squares2X2Icon className="h-4 w-4 text-brand-teal" />;
+  return <Squares2X2Icon className="h-4 w-4 text-[#596522]" />;
 }
 
 export default function FilterList({
@@ -43,18 +43,18 @@ export default function FilterList({
     <nav
       aria-label={title || "Filters"}
       className={clsx(
-        "relative rounded-2xl border border-neutral-200/80 bg-white/80 shadow-[0_12px_40px_rgba(15,23,42,0.06)] backdrop-blur-sm transition-all dark:border-neutral-800 dark:bg-neutral-950/80 dark:shadow-[0_12px_40px_rgba(0,0,0,0.35)]",
+        "relative rounded-2xl border border-[#D8BB7A]/60 bg-[#FFFDF8]/95 shadow-[0_12px_40px_rgba(48,53,21,0.06)] backdrop-blur-sm transition-all dark:border-neutral-800 dark:bg-neutral-950/80 dark:shadow-[0_12px_40px_rgba(0,0,0,0.35)]",
         isOpen ? "z-50" : "z-30 overflow-visible"
       )}
     >
       {title ? (
-        <div className="flex items-center gap-2 rounded-t-2xl border-b border-neutral-200/80 px-4 py-3 dark:border-neutral-800">
+        <div className="flex items-center gap-2 rounded-t-2xl border-b border-[#D8BB7A]/30 px-4 py-3 dark:border-neutral-800">
           <PanelIcon title={title} />
           <div>
-            <p className="text-[10px] font-medium uppercase tracking-[0.2em] text-neutral-500">
+            <p className="text-[10px] font-medium uppercase tracking-[0.2em] text-[#C49A45]">
               Browse
             </p>
-            <h3 className="font-display text-lg font-semibold leading-none tracking-tight text-brand dark:text-white">
+            <h3 className="font-display text-lg font-semibold leading-none tracking-tight text-[#4D581E] dark:text-white">
               {title}
             </h3>
           </div>

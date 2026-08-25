@@ -29,21 +29,27 @@ function PathFilterItem({ item }: { item: PathItem }) {
       <DynamicTag
         href={createUrl(item.path, newParams)}
         className={clsx(
-          "group relative flex w-full items-center rounded-xl px-3 py-2.5 text-sm transition-brand",
+          "group relative flex w-full items-center overflow-hidden rounded-xl px-3.5 py-2.5 text-sm font-medium transition-all duration-300",
           active
-            ? "bg-brand-gradient font-medium text-white shadow-[0_8px_24px_rgba(30,95,191,0.28)]"
-            : "text-neutral-700 hover:bg-brand-blue/5 hover:text-brand-blue-dark dark:text-neutral-300 dark:hover:bg-white/5 dark:hover:text-white"
+            ? "bg-[#596522] font-semibold text-white shadow-[0_4px_14px_rgba(89,101,34,0.35)]"
+            : "text-[#303515] hover:text-white dark:text-neutral-300 dark:hover:text-white"
         )}
       >
+        {!active && (
+          <span
+            aria-hidden
+            className="absolute inset-0 origin-left scale-x-0 rounded-xl bg-[#596522] opacity-0 transition-all duration-300 ease-out group-hover:scale-x-100 group-hover:opacity-100"
+          />
+        )}
         <span
           className={clsx(
-            "mr-2.5 h-1.5 w-1.5 shrink-0 rounded-full transition-brand",
+            "relative z-10 mr-2.5 h-1.5 w-1.5 shrink-0 rounded-full transition-colors",
             active
               ? "bg-white"
-              : "bg-neutral-300 group-hover:bg-brand-teal dark:bg-neutral-600"
+              : "bg-[#D8BB7A] group-hover:bg-white dark:bg-neutral-500"
           )}
         />
-        <span className="line-clamp-1">{formatLabel(item.title)}</span>
+        <span className="relative z-10 line-clamp-1">{formatLabel(item.title)}</span>
       </DynamicTag>
     </li>
   );
@@ -70,21 +76,27 @@ function SortFilterItem({ item }: { item: SortFilterItemType }) {
         prefetch={!active ? false : undefined}
         href={href}
         className={clsx(
-          "group relative flex w-full items-center rounded-xl px-3 py-2.5 text-sm transition-brand",
+          "group relative flex w-full items-center overflow-hidden rounded-xl px-3.5 py-2.5 text-sm font-medium transition-all duration-300",
           active
-            ? "bg-brand-gradient font-medium text-white shadow-[0_8px_24px_rgba(20,184,166,0.25)]"
-            : "text-neutral-700 hover:bg-brand-teal/10 hover:text-brand-teal dark:text-neutral-300 dark:hover:bg-white/5 dark:hover:text-white"
+            ? "bg-[#596522] font-semibold text-white shadow-[0_4px_14px_rgba(89,101,34,0.35)]"
+            : "text-[#303515] hover:text-white dark:text-neutral-300 dark:hover:text-white"
         )}
       >
+        {!active && (
+          <span
+            aria-hidden
+            className="absolute inset-0 origin-left scale-x-0 rounded-xl bg-[#596522] opacity-0 transition-all duration-300 ease-out group-hover:scale-x-100 group-hover:opacity-100"
+          />
+        )}
         <span
           className={clsx(
-            "mr-2.5 h-1.5 w-1.5 shrink-0 rounded-full transition-brand",
+            "relative z-10 mr-2.5 h-1.5 w-1.5 shrink-0 rounded-full transition-colors",
             active
               ? "bg-white"
-              : "bg-neutral-300 group-hover:bg-brand-coral dark:bg-neutral-600"
+              : "bg-[#D8BB7A] group-hover:bg-white dark:bg-neutral-500"
           )}
         />
-        <span className="line-clamp-1">{item.title}</span>
+        <span className="relative z-10 line-clamp-1">{item.title}</span>
       </DynamicTag>
     </li>
   );

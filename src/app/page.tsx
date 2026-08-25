@@ -85,24 +85,24 @@ export default async function Home() {
                     prefetch={false}
                     className="group/title relative inline-flex flex-col items-center"
                   >
-                    <h2 className="font-display text-3xl font-bold tracking-tight text-brand transition-brand group-hover/title:-translate-y-0.5 group-hover/title:text-brand-blue dark:text-white dark:group-hover/title:text-brand-teal-light sm:text-4xl">
+                    <h2 className="font-display text-3xl font-bold tracking-tight text-[#4D581E] transition-brand group-hover/title:-translate-y-0.5 group-hover/title:text-[#596522] dark:text-white dark:group-hover/title:text-[#D8BB7A] sm:text-4xl">
                       {collection.title}
                     </h2>
                     <span
                       aria-hidden
-                      className="mt-2 h-[3px] w-16 origin-center scale-x-0 rounded-full bg-brand-gradient transition-transform duration-300 ease-out group-hover/title:scale-x-100"
+                      className="mt-2 h-[3px] w-16 origin-center scale-x-0 rounded-full bg-gradient-to-r from-[#D8BB7A] via-[#C49A45] to-[#D8BB7A] transition-transform duration-300 ease-out group-hover/title:scale-x-100"
                     />
                   </Link>
                 </RevealItem>
                 <RevealItem>
                   <Link
                     href={collection.href}
-                    className="group/link relative inline-flex items-center overflow-hidden rounded-full px-4 py-1.5 text-sm font-medium text-neutral-600 transition-brand hover:text-white dark:text-neutral-400 dark:hover:text-white"
+                    className="group/link relative inline-flex items-center overflow-hidden rounded-full px-4 py-1.5 text-sm font-medium text-[#303515]/80 transition-brand hover:text-white dark:text-neutral-400 dark:hover:text-white"
                     prefetch={false}
                   >
                     <span
                       aria-hidden
-                      className="absolute inset-0 origin-left scale-x-0 rounded-full bg-brand-gradient opacity-0 transition-all duration-300 ease-out group-hover/link:scale-x-100 group-hover/link:opacity-100"
+                      className="absolute inset-0 origin-left scale-x-0 rounded-full bg-[#596522] opacity-0 transition-all duration-300 ease-out group-hover/link:scale-x-100 group-hover/link:opacity-100"
                     />
                     <span className="relative z-10">View all</span>
                   </Link>
@@ -117,21 +117,21 @@ export default async function Home() {
       })}
 
       {sale ? (
-        <section className="w-full bg-neutral-100 py-12 lg:py-16 dark:bg-neutral-950">
+        <section className="w-full border-y border-[#D8BB7A]/40 bg-[#FFFDF8] py-12 lg:py-16 dark:bg-neutral-950">
           <RevealStagger className="mx-auto flex w-full max-w-7xl flex-col items-center justify-center gap-4 px-4 text-center md:px-6">
-            <RevealItem className="text-xs uppercase tracking-[0.2em] text-brand-accent">
+            <RevealItem className="text-xs uppercase tracking-[0.2em] text-[#C49A45] font-semibold">
               Limited time
             </RevealItem>
-            <RevealItem className="font-display text-3xl font-bold tracking-tight md:text-4xl">
+            <RevealItem className="font-display text-3xl font-bold tracking-tight text-[#4D581E] md:text-4xl dark:text-white">
               {sale.title}
             </RevealItem>
-            <RevealItem className="mx-auto max-w-[600px] text-neutral-600 md:text-xl dark:text-neutral-400">
+            <RevealItem className="mx-auto max-w-[600px] text-[#303515]/80 md:text-xl dark:text-neutral-400">
               Limited seasonal offers on selected MZ by LIORA rituals.
             </RevealItem>
             <RevealItem>
               <Link
                 href={sale.href}
-                className="inline-flex h-10 items-center justify-center rounded-full bg-brand px-8 text-sm font-medium text-white shadow-sm transition-colors hover:bg-brand/90"
+                className="inline-flex h-11 items-center justify-center rounded-full bg-[#596522] px-8 text-sm font-semibold text-white shadow-sm transition-colors hover:bg-[#C49A45]"
                 prefetch={false}
               >
                 Shop {sale.title}
