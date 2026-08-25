@@ -16,7 +16,6 @@ export const COOKIE_AUTH_REDIRECT_URI = "shopify_auth_redirect_uri";
 const DEFAULT_SCOPES = [
   "openid",
   "email",
-  "customer-account-api:full",
 ].join(" ");
 
 export function getCustomerAuthConfig(origin?: string) {
