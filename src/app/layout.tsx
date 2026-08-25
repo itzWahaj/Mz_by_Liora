@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 import { Cormorant_Garamond, Inter } from "next/font/google";
 import "./globals.css";
 import { Navbar } from "@/components/layout/navbar";
+import AnnouncementBar from "@/components/layout/announcement-bar";
 import Footer from "@/components/layout/footer";
 import WhatsAppButton from "@/components/whatsapp-button";
 import ExitIntentModal from "@/components/modal/exit-intent-modal";
@@ -190,6 +191,7 @@ export default async function RootLayout({
           <SplashWrapper>
             <CartProvider cartPromise={cart}>
               <LenisProvider>
+                <AnnouncementBar />
                 <Navbar />
                 {children}
                 <Footer />

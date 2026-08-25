@@ -20,7 +20,7 @@ import CloseCart from "./close-cart";
 import { DeleteItemButton } from "./delete-item-button";
 import { EditItemQuantityButton } from "./edit-item-quantity-button";
 import OpenCart from "./open-cart";
-import { TagIcon } from "@heroicons/react/24/outline";
+import { TagIcon, TruckIcon, CheckCircleIcon } from "@heroicons/react/24/outline";
 
 type MerchandiseSearchParams = {
   [key: string]: string;
@@ -130,7 +130,27 @@ export default function CartModal() {
                   </p>
                 </div>
               ) : (
-                <div className="flex min-h-0 flex-1 flex-col pt-3">
+                <div className="flex min-h-0 flex-1 flex-col pt-2">
+                  {/* Free Delivery Nationwide Highlight Bar */}
+                  <div className="mx-2 mb-2 flex items-center justify-between gap-3 rounded-2xl border border-[#D8BB7A]/60 bg-[#FAF9F4] p-3 text-xs shadow-xs dark:border-neutral-800 dark:bg-neutral-900/80">
+                    <div className="flex items-center gap-2.5">
+                      <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-[#596522] text-white shadow-xs">
+                        <TruckIcon className="h-4 w-4" />
+                      </span>
+                      <div>
+                        <p className="font-bold text-[#4D581E] dark:text-[#D8BB7A]">
+                          Free Shipping Unlocked!
+                        </p>
+                        <p className="text-[11px] text-[#303515]/75 dark:text-neutral-400">
+                          No separate delivery charges across Pakistan.
+                        </p>
+                      </div>
+                    </div>
+                    <span className="rounded-full bg-[#596522] px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider text-white shadow-xs">
+                      FREE
+                    </span>
+                  </div>
+
                   <ul className="min-h-0 flex-1 overflow-y-auto overscroll-contain py-2 pr-1">
                     <AnimatePresence initial={false}>
                       {cart.lines
@@ -322,9 +342,19 @@ export default function CartModal() {
                     )}
 
                     {/* Shipping */}
-                    <div className="mb-3 flex items-center justify-between text-[#303515]/70 dark:text-neutral-400">
-                      <p>Shipping</p>
-                      <p className="text-right text-xs">Calculated at checkout</p>
+                    <div className="mb-3 flex items-center justify-between">
+                      <div className="flex items-center gap-1.5 text-xs text-[#303515]/80 dark:text-neutral-300">
+                        <TruckIcon className="h-4 w-4 text-[#596522] dark:text-[#D8BB7A]" />
+                        <span className="font-medium">Shipping & Delivery</span>
+                      </div>
+                      <div className="text-right">
+                        <span className="font-bold text-[#596522] dark:text-[#D8BB7A]">
+                          FREE
+                        </span>
+                        <span className="block text-[10px] text-[#303515]/60 dark:text-neutral-400">
+                          No delivery charges
+                        </span>
+                      </div>
                     </div>
 
                     {/* Total */}

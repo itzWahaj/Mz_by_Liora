@@ -20,18 +20,17 @@ type Particle = {
 };
 
 const PARTICLE_COLORS_DARK = [
-  "rgba(30,95,191,",
-  "rgba(20,184,166,",
-  "rgba(45,212,191,",
-  "rgba(232,115,74,",
-  "rgba(124,58,237,",
+  "rgba(216,187,122,", // Champagne Gold
+  "rgba(196,154,69,",  // Antique Gold
+  "rgba(89,101,34,",   // Olive Green
+  "rgba(250,249,244,", // Warm Ivory
 ];
 
 const PARTICLE_COLORS_LIGHT = [
-  "rgba(20,184,166,",
-  "rgba(30,95,191,",
-  "rgba(14,165,233,",
-  "rgba(232,115,74,",
+  "rgba(216,187,122,", // Champagne Gold
+  "rgba(196,154,69,",  // Antique Gold
+  "rgba(89,101,34,",   // Olive Green
+  "rgba(77,88,30,",    // Deep Olive
 ];
 
 function useParticles(active: boolean, isDark: boolean) {
@@ -187,8 +186,8 @@ export default function SplashScreen({
         className="fixed inset-0 z-[9999] flex flex-col items-center justify-center overflow-hidden"
         style={{
           background: isDark
-            ? "#04080F"
-            : "radial-gradient(ellipse 80% 80% at 50% 40%, #FFFFFF 0%, #F5F8F8 60%, #E8F0F2 100%)",
+            ? "radial-gradient(ellipse 80% 80% at 50% 40%, #1A1F0D 0%, #111408 60%, #0A0C05 100%)"
+            : "radial-gradient(ellipse 80% 80% at 50% 40%, #FFFDF8 0%, #FAF9F4 60%, #F3EFE6 100%)",
         }}
         exit={{
           opacity: 0,
@@ -203,12 +202,12 @@ export default function SplashScreen({
           style={{ opacity: isDark ? 0.6 : 0.45 }}
         />
 
-        {/* Ambient floating orbs with theme adaptation */}
+        {/* Ambient floating orbs with olive and champagne gold colors */}
         <FloatingOrb
           color={
             isDark
-              ? "radial-gradient(circle, rgba(30,95,191,0.5), transparent)"
-              : "radial-gradient(circle, rgba(20,184,166,0.18), transparent)"
+              ? "radial-gradient(circle, rgba(216,187,122,0.4), transparent)"
+              : "radial-gradient(circle, rgba(216,187,122,0.3), transparent)"
           }
           size={460}
           x="18%"
@@ -219,8 +218,8 @@ export default function SplashScreen({
         <FloatingOrb
           color={
             isDark
-              ? "radial-gradient(circle, rgba(20,184,166,0.45), transparent)"
-              : "radial-gradient(circle, rgba(30,95,191,0.14), transparent)"
+              ? "radial-gradient(circle, rgba(89,101,34,0.45), transparent)"
+              : "radial-gradient(circle, rgba(89,101,34,0.2), transparent)"
           }
           size={380}
           x="78%"
@@ -231,8 +230,8 @@ export default function SplashScreen({
         <FloatingOrb
           color={
             isDark
-              ? "radial-gradient(circle, rgba(232,115,74,0.3), transparent)"
-              : "radial-gradient(circle, rgba(232,115,74,0.12), transparent)"
+              ? "radial-gradient(circle, rgba(196,154,69,0.3), transparent)"
+              : "radial-gradient(circle, rgba(196,154,69,0.18), transparent)"
           }
           size={300}
           x="75%"
@@ -247,12 +246,12 @@ export default function SplashScreen({
           style={{
             backgroundImage: isDark
               ? `
-                linear-gradient(rgba(20,184,166,0.04) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(20,184,166,0.04) 1px, transparent 1px)
+                linear-gradient(rgba(216,187,122,0.04) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(216,187,122,0.04) 1px, transparent 1px)
               `
               : `
-                linear-gradient(rgba(20,184,166,0.03) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(20,184,166,0.03) 1px, transparent 1px)
+                linear-gradient(rgba(216,187,122,0.06) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(216,187,122,0.06) 1px, transparent 1px)
               `,
             backgroundSize: "60px 60px",
           }}
@@ -263,8 +262,8 @@ export default function SplashScreen({
           className="absolute inset-0 pointer-events-none"
           style={{
             background: isDark
-              ? "radial-gradient(ellipse 70% 70% at 50% 50%, transparent 40%, rgba(4,8,15,0.85) 100%)"
-              : "radial-gradient(ellipse 70% 70% at 50% 50%, transparent 40%, rgba(230,238,240,0.6) 100%)",
+              ? "radial-gradient(ellipse 70% 70% at 50% 50%, transparent 40%, rgba(10,12,5,0.85) 100%)"
+              : "radial-gradient(ellipse 70% 70% at 50% 50%, transparent 40%, rgba(240,235,225,0.6) 100%)",
           }}
         />
 
@@ -281,8 +280,8 @@ export default function SplashScreen({
                 bottom: "-5%",
                 left: "5%",
                 background: isDark
-                  ? "radial-gradient(ellipse, rgba(20,184,166,0.5) 0%, rgba(30,95,191,0.3) 40%, transparent 70%)"
-                  : "radial-gradient(ellipse, rgba(20,184,166,0.25) 0%, rgba(30,95,191,0.12) 50%, transparent 70%)",
+                  ? "radial-gradient(ellipse, rgba(216,187,122,0.45) 0%, rgba(89,101,34,0.3) 40%, transparent 70%)"
+                  : "radial-gradient(ellipse, rgba(216,187,122,0.3) 0%, rgba(89,101,34,0.15) 50%, transparent 70%)",
                 filter: "blur(28px)",
                 borderRadius: "50%",
               }}
@@ -302,7 +301,7 @@ export default function SplashScreen({
                 }}
               >
                 <Image
-                  src="/logo_transparent.png"
+                  src="/new_logo.png"
                   alt="MZ by LIORA"
                   width={1254}
                   height={836}
@@ -325,9 +324,9 @@ export default function SplashScreen({
                 key="tagline"
                 className="font-display font-medium text-center"
                 style={{
-                  fontSize: "clamp(12px, 1.6vw, 14px)",
+                  fontSize: "clamp(12px, 1.6vw, 15px)",
                   letterSpacing: "0.32em",
-                  color: isDark ? "rgba(45,212,191,0.95)" : "#0F3D8C",
+                  color: isDark ? "#D8BB7A" : "#4D581E",
                   textTransform: "uppercase",
                 }}
                 initial={{ opacity: 0, y: 10 }}
@@ -340,7 +339,7 @@ export default function SplashScreen({
           </AnimatePresence>
         </div>
 
-        {/* Fast, continuous progress bar (0% to 100% in 1.1s smoothly via CSS/motion) */}
+        {/* Fast, continuous progress bar */}
         <motion.div
           className="absolute bottom-0 left-0 right-0"
           initial={{ opacity: 0 }}
@@ -352,17 +351,17 @@ export default function SplashScreen({
             className="w-full"
             style={{
               height: 2.5,
-              background: isDark ? "rgba(255,255,255,0.08)" : "rgba(0,0,0,0.06)",
+              background: isDark ? "rgba(216,187,122,0.15)" : "rgba(89,101,34,0.1)",
             }}
           >
             {/* Fill */}
             <motion.div
               style={{
                 height: "100%",
-                background: "linear-gradient(90deg, #1E5FBF 0%, #14B8A6 60%, #2DD4BF 100%)",
+                background: "linear-gradient(90deg, #4D581E 0%, #596522 40%, #C49A45 75%, #D8BB7A 100%)",
                 boxShadow: isDark
-                  ? "0 0 12px rgba(20,184,166,0.7)"
-                  : "0 0 8px rgba(20,184,166,0.4)",
+                  ? "0 0 12px rgba(216,187,122,0.7)"
+                  : "0 0 8px rgba(196,154,69,0.5)",
                 transformOrigin: "left",
               }}
               initial={{ width: "0%" }}
@@ -378,7 +377,7 @@ export default function SplashScreen({
               style={{
                 fontSize: 11,
                 letterSpacing: "0.2em",
-                color: isDark ? "rgba(255,255,255,0.35)" : "rgba(15,23,42,0.4)",
+                color: isDark ? "rgba(255,255,255,0.45)" : "#303515/70",
               }}
             >
               mzbyliora.com
@@ -389,7 +388,7 @@ export default function SplashScreen({
                 fontSize: 10,
                 letterSpacing: "0.15em",
                 textTransform: "uppercase",
-                color: isDark ? "rgba(45,212,191,0.8)" : "rgba(20,184,166,0.9)",
+                color: isDark ? "#D8BB7A" : "#596522",
               }}
             >
               Botanical Rituals
