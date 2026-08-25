@@ -23,12 +23,17 @@ export default function AccountClient({
   const [activeTab, setActiveTab] = useState<"orders" | "addresses" | "profile">("orders");
 
   const displayName =
+    (profile.displayName && profile.displayName !== profile.emailAddress?.emailAddress?.split("@")[0]
+      ? profile.displayName
+      : [profile.firstName, profile.lastName].filter(Boolean).join(" ")) ||
+    (profile.defaultAddress
+      ? [profile.defaultAddress.firstName, profile.defaultAddress.lastName].filter(Boolean).join(" ")
+      : "") ||
     profile.displayName ||
-    [profile.firstName, profile.lastName].filter(Boolean).join(" ") ||
     "Valued Customer";
 
   const email = profile.emailAddress?.emailAddress || "";
-  const phone = profile.phoneNumber?.phoneNumber || "";
+  const phone = profile.phoneNumber?.phoneNumber || profile.defaultAddress?.phoneNumber || "";
   const initials = (profile.firstName?.[0] || displayName[0] || "M").toUpperCase();
 
   const tabs = [
