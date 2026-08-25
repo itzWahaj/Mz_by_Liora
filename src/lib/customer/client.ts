@@ -1,10 +1,17 @@
-import { getCustomerAuthConfig, getCustomerSession } from "./auth";
+import { getCustomerAuthConfig, getCustomerSession, decodeIdToken } from "./auth";
 import {
   CustomerAccountGraphQLResponse,
+  CustomerMetafield,
   CustomerOrder,
   CustomerProfile,
+  MetafieldsSetInput,
 } from "./types";
-import { getCustomerOrdersQuery, getCustomerProfileQuery } from "./queries";
+import {
+  customerMetafieldsSetMutation,
+  getCustomerOrdersQuery,
+  getCustomerProfileQuery,
+  getCustomerWishlistQuery,
+} from "./queries";
 
 export async function customerAccountFetch<T>({
   query,
@@ -96,4 +103,123 @@ export async function getCustomerOrders(
   });
 
   return res?.customer?.orders?.nodes || [];
+}
+
+/**
+ * Fetches customer wishlist product IDs from metafields.
+ */
+export async function getCustomerWishlist(
+  accessToken?: string
+): Promise<string[]> {
+  const res = await customerAccountFetch<{
+    customer: {
+      id: string;
+      metafield?: {
+        value?: string;
+      } | null;
+    };
+  }>({
+    query: getCustomerWishlistQuery,
+    accessToken,
+  });
+
+  const rawValue = res?.customer?.metafield?.value;
+  if (!rawValue) return [];
+
+  try {
+    const parsed = JSON.parse(rawValue);
+    if (Array.isArray(parsed)) {
+      return parsed.filter((item): item is string => typeof item === "string");
+    }
+    return [];
+  } catch {
+    return [];
+  }
+}
+
+/**
+ * Sets customer wishlist product IDs in metafields.
+ */
+export async function setCustomerWishlist(
+  productIds: string[],
+  accessToken?: string
+): Promise<boolean> {
+  // First retrieve the customer ID
+  let customerId = "";
+  const session = await getCustomerSession();
+  const token = accessToken || session?.accessToken;
+  if (!token) return false;
+
+  if (session?.idToken) {
+    const decoded = decodeIdToken(session.idToken);
+    if (decoded?.id && decoded.id.startsWith("gid://shopify/Customer/")) {
+      customerId = decoded.id;
+    }
+  }
+
+  if (!customerId) {
+    const profile = await getCustomerProfile(token);
+    customerId = profile?.id || "";
+  }
+
+  if (!customerId) {
+    console.error("Unable to resolve customerId for wishlist update.");
+    return false;
+  }
+
+  const cleanIds = Array.from(new Set(productIds));
+  const variables = {
+    metafields: [
+      {
+        ownerId: customerId,
+        namespace: "custom",
+        key: "wishlist",
+        type: "json",
+        value: JSON.stringify(cleanIds),
+      },
+    ],
+  };
+
+  const res = await customerAccountFetch<{
+    metafieldsSet?: {
+      metafields?: Array<{ key: string; namespace: string; value: string }>;
+      userErrors?: Array<{ field: string[]; message: string }>;
+    };
+  }>({
+    query: customerMetafieldsSetMutation,
+    variables,
+    accessToken: token,
+  });
+
+  if (res?.metafieldsSet?.userErrors && res.metafieldsSet.userErrors.length > 0) {
+    console.error("metafieldsSet userErrors:", res.metafieldsSet.userErrors);
+    return false;
+  }
+
+  return Boolean(res?.metafieldsSet?.metafields?.length);
+}
+
+/**
+ * Atomically toggles a product ID in customer's wishlist.
+ */
+export async function toggleCustomerWishlistItem(
+  productId: string,
+  accessToken?: string
+): Promise<{ inWishlist: boolean; wishlist: string[] }> {
+  const currentWishlist = await getCustomerWishlist(accessToken);
+  const exists = currentWishlist.includes(productId);
+
+  const updatedWishlist = exists
+    ? currentWishlist.filter((id) => id !== productId)
+    : [...currentWishlist, productId];
+
+  const success = await setCustomerWishlist(updatedWishlist, accessToken);
+  if (!success) {
+    throw new Error("Failed to update wishlist on Shopify Customer Account API");
+  }
+
+  return {
+    inWishlist: !exists,
+    wishlist: updatedWishlist,
+  };
 }

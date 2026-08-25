@@ -9,6 +9,7 @@ import WhatsAppButton from "@/components/whatsapp-button";
 import ExitIntentModal from "@/components/modal/exit-intent-modal";
 import MetaPixel from "@/components/analytics/meta-pixel";
 import { CartProvider } from "@/components/cart/cart-context";
+import { WishlistProvider } from "@/components/wishlist/wishlist-context";
 import LenisProvider from "@/components/providers/lenis-provider";
 import { ThemeProvider } from "@/components/providers/theme-provider";
 import SplashWrapper from "@/components/splash-wrapper";
@@ -190,14 +191,16 @@ export default async function RootLayout({
         <ThemeProvider>
           <SplashWrapper>
             <CartProvider cartPromise={cart}>
-              <LenisProvider>
-                <AnnouncementBar />
-                <Navbar />
-                {children}
-                <Footer />
-                <WhatsAppButton />
-                <ExitIntentModal products={recommendedProducts} />
-              </LenisProvider>
+              <WishlistProvider>
+                <LenisProvider>
+                  <AnnouncementBar />
+                  <Navbar />
+                  {children}
+                  <Footer />
+                  <WhatsAppButton />
+                  <ExitIntentModal products={recommendedProducts} />
+                </LenisProvider>
+              </WishlistProvider>
             </CartProvider>
           </SplashWrapper>
         </ThemeProvider>

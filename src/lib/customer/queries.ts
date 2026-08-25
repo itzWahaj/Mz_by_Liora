@@ -104,3 +104,34 @@ export const getCustomerOrdersQuery = /* GraphQL */ `
     }
   }
 `;
+
+export const getCustomerWishlistQuery = /* GraphQL */ `
+  query getCustomerWishlist {
+    customer {
+      id
+      metafield(namespace: "custom", key: "wishlist") {
+        id
+        key
+        namespace
+        value
+      }
+    }
+  }
+`;
+
+export const customerMetafieldsSetMutation = /* GraphQL */ `
+  mutation customerMetafieldsSet($metafields: [MetafieldsSetInput!]!) {
+    metafieldsSet(metafields: $metafields) {
+      metafields {
+        key
+        namespace
+        value
+      }
+      userErrors {
+        field
+        message
+        code
+      }
+    }
+  }
+`;

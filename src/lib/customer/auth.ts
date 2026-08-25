@@ -16,6 +16,7 @@ export const COOKIE_AUTH_REDIRECT_URI = "shopify_auth_redirect_uri";
 const DEFAULT_SCOPES = [
   "openid",
   "email",
+  "customer-account-api:full",
 ].join(" ");
 
 export function getCustomerAuthConfig(origin?: string) {
@@ -58,7 +59,7 @@ export function buildAuthorizationUrl(returnTo = "/account", origin?: string): {
   const codeVerifier = generateCodeVerifier(64);
   const codeChallenge = generateCodeChallenge(codeVerifier);
 
-  const authUrl = new URL(`https://shopify.com/${config.shopId}/auth/oauth/authorize`);
+  const authUrl = new URL(`https://shopify.com/authentication/${config.shopId}/oauth/authorize`);
   authUrl.searchParams.set("client_id", config.clientId);
   authUrl.searchParams.set("response_type", "code");
   authUrl.searchParams.set("redirect_uri", config.redirectUri);
@@ -103,7 +104,7 @@ export async function exchangeCodeForTokens(
   const savedRedirectUri = cookieStore.get(COOKIE_AUTH_REDIRECT_URI)?.value;
   const config = getCustomerAuthConfig();
   const redirectUri = redirectUriOverride || savedRedirectUri || config.redirectUri;
-  const tokenEndpoint = `https://shopify.com/${config.shopId}/auth/oauth/token`;
+  const tokenEndpoint = `https://shopify.com/authentication/${config.shopId}/oauth/token`;
 
   const body = new URLSearchParams({
     grant_type: "authorization_code",
@@ -146,7 +147,7 @@ export async function refreshCustomerAccessToken(
   refreshToken: string
 ): Promise<CustomerTokens | null> {
   const config = getCustomerAuthConfig();
-  const tokenEndpoint = `https://shopify.com/${config.shopId}/auth/oauth/token`;
+  const tokenEndpoint = `https://shopify.com/authentication/${config.shopId}/oauth/token`;
 
   const body = new URLSearchParams({
     grant_type: "refresh_token",

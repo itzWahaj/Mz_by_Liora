@@ -91,6 +91,22 @@ export type CustomerProfile = {
   orders?: {
     nodes: CustomerOrder[];
   };
+  wishlist?: string[];
+};
+
+export type MetafieldsSetInput = {
+  ownerId: string;
+  namespace: string;
+  key: string;
+  type?: string;
+  value: string;
+};
+
+export type CustomerMetafield = {
+  id?: string;
+  namespace?: string;
+  key?: string;
+  value?: string;
 };
 
 export type CustomerAccountGraphQLResponse<T> = {

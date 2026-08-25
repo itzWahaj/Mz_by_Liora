@@ -2,8 +2,11 @@
 
 import { useState } from "react";
 import { CustomerOrder, CustomerProfile } from "@/lib/customer/types";
+import { Product } from "@/lib/shopify/types";
 import OrdersList from "./orders-list";
 import AddressBook from "./address-book";
+import WishlistTab from "./wishlist-tab";
+import { useWishlist } from "@/components/wishlist/wishlist-context";
 import Link from "next/link";
 import {
   ShoppingBagIcon,
@@ -11,24 +14,35 @@ import {
   UserCircleIcon,
   ArrowRightOnRectangleIcon,
   SparklesIcon,
+  HeartIcon,
 } from "@heroicons/react/24/outline";
 
 export default function AccountClient({
   profile,
   orders,
+  wishlistProducts = [],
 }: {
   profile: CustomerProfile;
   orders: CustomerOrder[];
+  wishlistProducts?: Product[];
 }) {
-  const [activeTab, setActiveTab] = useState<"orders" | "addresses" | "profile">("orders");
+  const [activeTab, setActiveTab] = useState<"orders" | "wishlist" | "addresses" | "profile">("orders");
+  const { wishlist } = useWishlist();
+
+  const formattedAddressName = profile.defaultAddress
+    ? [profile.defaultAddress.firstName, profile.defaultAddress.lastName].filter(Boolean).join(" ")
+    : "";
+
+  const formattedProfileName = [profile.firstName, profile.lastName].filter(Boolean).join(" ");
 
   const displayName =
-    (profile.displayName && profile.displayName !== profile.emailAddress?.emailAddress?.split("@")[0]
+    (profile.displayName &&
+     !profile.displayName.includes("@") &&
+     profile.displayName !== profile.emailAddress?.emailAddress?.split("@")[0]
       ? profile.displayName
-      : [profile.firstName, profile.lastName].filter(Boolean).join(" ")) ||
-    (profile.defaultAddress
-      ? [profile.defaultAddress.firstName, profile.defaultAddress.lastName].filter(Boolean).join(" ")
       : "") ||
+    formattedProfileName ||
+    formattedAddressName ||
     profile.displayName ||
     "Valued Customer";
 
@@ -42,6 +56,12 @@ export default function AccountClient({
       label: "My Orders",
       count: orders.length,
       icon: ShoppingBagIcon,
+    },
+    {
+      id: "wishlist" as const,
+      label: "Wishlist",
+      count: wishlist.length || wishlistProducts.length,
+      icon: HeartIcon,
     },
     {
       id: "addresses" as const,
@@ -142,6 +162,10 @@ export default function AccountClient({
         {/* Tab Content */}
         <div className="mt-6">
           {activeTab === "orders" && <OrdersList orders={orders} />}
+
+          {activeTab === "wishlist" && (
+            <WishlistTab initialProducts={wishlistProducts} />
+          )}
 
           {activeTab === "addresses" && (
             <AddressBook

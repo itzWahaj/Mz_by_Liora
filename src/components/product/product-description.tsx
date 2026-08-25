@@ -4,6 +4,7 @@ import ProductAccordion from "./product-accordion";
 import ProductPrice from "./product-price";
 import StarRating from "./star-rating";
 import VariantSelector from "./variant-selector";
+import WishlistButton from "../wishlist/wishlist-button";
 
 export function ProductDescription({
   product,
@@ -29,9 +30,14 @@ export function ProductDescription({
 
       <VariantSelector options={product.options} variants={product.variants} />
 
-      {/* Prominent Add to Cart CTA */}
-      <div className="mt-4">
+      {/* Prominent Add to Cart CTA & Wishlist Button */}
+      <div className="mt-4 flex flex-col gap-3">
         <AddToCart product={product} />
+        <WishlistButton
+          productId={product.id}
+          productTitle={product.title}
+          variant="pdp"
+        />
       </div>
 
       {/* Compact Collapsible Product Details Accordion */}

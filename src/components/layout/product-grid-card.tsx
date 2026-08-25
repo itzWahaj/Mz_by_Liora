@@ -22,6 +22,7 @@ import PriceDisplay, {
   DiscountBadge,
 } from "../price-display";
 import { StarsRow } from "../product/star-rating";
+import WishlistButton from "../wishlist/wishlist-button";
 
 function firstAvailableVariant(product: Product): ProductVariant | undefined {
   return (
@@ -252,6 +253,13 @@ export default function ProductGridCard({ product }: { product: Product }) {
           />
         </div>
       </div>
+
+      {/* Wishlist Save Button */}
+      <WishlistButton
+        productId={product.id}
+        productTitle={product.title}
+        variant="floating"
+      />
 
       <div className="pointer-events-none absolute inset-x-0 bottom-0 bg-gradient-to-t from-[#FAF9F4]/95 via-[#FAF9F4]/30 to-transparent px-3 pb-3 pt-10 dark:from-black/75 dark:via-transparent dark:to-transparent">
         {multiOption.length > 0 ? (
