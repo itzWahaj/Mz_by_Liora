@@ -15,6 +15,8 @@ import {
   ArrowRightOnRectangleIcon,
   SparklesIcon,
   HeartIcon,
+  EnvelopeIcon,
+  CheckCircleIcon,
 } from "@heroicons/react/24/outline";
 
 export default function AccountClient({
@@ -212,6 +214,34 @@ export default function AccountClient({
                   <p className="mt-1 font-semibold text-[#596522]">
                     Shopify Customer Account (OAuth 2.0 PKCE)
                   </p>
+                </div>
+              </div>
+
+              {/* Email & Marketing Preferences */}
+              <div className="mt-8 border-t border-[#D8BB7A]/30 pt-6">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 rounded-2xl border border-[#D8BB7A]/40 bg-[#FAF9F4] p-5">
+                  <div className="flex items-start gap-3.5">
+                    <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[#596522]/10 text-[#596522]">
+                      <EnvelopeIcon className="h-5 w-5" />
+                    </div>
+                    <div>
+                      <div className="flex items-center gap-2">
+                        <h4 className="font-semibold text-sm text-[#303515]">
+                          Email & Marketing Preferences
+                        </h4>
+                        <span className="inline-flex items-center gap-1 rounded-full border border-emerald-300 bg-emerald-50 px-2.5 py-0.5 text-xs font-semibold text-emerald-800 dark:bg-emerald-950/60 dark:text-emerald-300">
+                          <CheckCircleIcon className="h-3.5 w-3.5" />
+                          Subscribed
+                        </span>
+                      </div>
+                      <p className="mt-1 text-xs text-[#303515]/75 dark:text-neutral-300 max-w-xl leading-relaxed">
+                        You are registered for MZ by LIORA botanical skincare notes, VIP restock alerts, and exclusive member promotions.
+                      </p>
+                      <p className="mt-2 text-[11px] text-[#303515]/50 dark:text-neutral-400">
+                        To unsubscribe, tap the opt-out link located at the footer of any marketing email sent to your inbox.
+                      </p>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
