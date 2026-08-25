@@ -1,7 +1,8 @@
 import { redirect } from "next/navigation";
-import { getCustomerSession } from "@/lib/customer/auth";
+import { decodeIdToken, getCustomerSession } from "@/lib/customer/auth";
 import { getCustomerOrders, getCustomerProfile } from "@/lib/customer/client";
 import AccountClient from "@/components/account/account-client";
+import { CustomerProfile } from "@/lib/customer/types";
 import { Metadata } from "next";
 
 export const dynamic = "force-dynamic";
@@ -19,18 +20,28 @@ export default async function AccountPage() {
   const session = await getCustomerSession();
 
   if (!session?.accessToken) {
-    redirect("/api/auth/login?returnTo=/account");
+    redirect("/account/login?returnTo=/account");
   }
 
-  const [profile, orders] = await Promise.all([
+  // Fetch GraphQL profile and order history concurrently
+  const [profileResult, ordersResult] = await Promise.allSettled([
     getCustomerProfile(session.accessToken),
     getCustomerOrders(session.accessToken),
   ]);
 
-  if (!profile) {
-    // If token was rejected by Shopify Customer Account API, redirect to login
-    redirect("/api/auth/login?returnTo=/account");
-  }
+  const profileFromGql = profileResult.status === "fulfilled" ? profileResult.value : null;
+  const orders = ordersResult.status === "fulfilled" ? ordersResult.value : [];
+
+  // If GraphQL profile fetch returned null, decode the ID token
+  const idPayload = session.idToken ? decodeIdToken(session.idToken) : null;
+
+  const profile: CustomerProfile = profileFromGql || {
+    id: idPayload?.id || "customer",
+    firstName: idPayload?.firstName || "",
+    lastName: idPayload?.lastName || "",
+    displayName: idPayload?.displayName || "Valued Customer",
+    emailAddress: idPayload?.email ? { emailAddress: idPayload.email } : undefined,
+  };
 
   return <AccountClient profile={profile} orders={orders} />;
 }

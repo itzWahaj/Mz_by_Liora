@@ -286,3 +286,42 @@ export async function getCustomerSession(): Promise<CustomerSession | null> {
   // Session is completely expired
   return null;
 }
+
+/**
+ * Decodes the JWT payload from an OpenID Connect ID Token without external dependencies.
+ */
+export function decodeIdToken(idToken: string): {
+  id: string;
+  email?: string;
+  firstName?: string;
+  lastName?: string;
+  displayName?: string;
+} | null {
+  try {
+    const parts = idToken.split(".");
+    if (parts.length < 2) return null;
+    const base64 = parts[1]!.replace(/-/g, "+").replace(/_/g, "/");
+    const jsonStr = Buffer.from(base64, "base64").toString("utf-8");
+    const payload = JSON.parse(jsonStr);
+
+    const email = payload.email || "";
+    const firstName = payload.given_name || (payload.name ? payload.name.split(" ")[0] : "");
+    const lastName = payload.family_name || (payload.name ? payload.name.split(" ").slice(1).join(" ") : "");
+    const displayName =
+      payload.name ||
+      [firstName, lastName].filter(Boolean).join(" ") ||
+      (email ? email.split("@")[0] : "") ||
+      "Valued Customer";
+
+    return {
+      id: payload.sub || "customer",
+      email,
+      firstName,
+      lastName,
+      displayName,
+    };
+  } catch (err) {
+    console.error("Failed to decode ID token:", err);
+    return null;
+  }
+}

@@ -31,7 +31,7 @@ export async function customerAccountFetch<T>({
     return null;
   }
 
-  const endpoint = `https://shopify.com/${config.shopId}/account/customer/api/2024-07/graphql.json`;
+  const endpoint = `https://shopify.com/${config.shopId}/account/customer/api/2024-07/graphql`;
 
   try {
     const response = await fetch(endpoint, {
