@@ -1,7 +1,8 @@
 "use client";
 
 import GradientButton from "@/components/ui/gradient-button";
-import { FormEvent, useState } from "react";
+import { FormEvent, useEffect, useState } from "react";
+import { SparklesIcon, CheckCircleIcon } from "@heroicons/react/24/outline";
 
 type SubmitStatus = "idle" | "submitting" | "success" | "error";
 
@@ -39,6 +40,30 @@ export default function FooterNewsletter() {
   const [email, setEmail] = useState("");
   const [status, setStatus] = useState<SubmitStatus>("idle");
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [isMember, setIsMember] = useState(false);
+  const [memberName, setMemberName] = useState("");
+
+  useEffect(() => {
+    let isMounted = true;
+    async function checkMember() {
+      try {
+        const res = await fetch("/api/auth/session", { cache: "no-store" });
+        if (res.ok) {
+          const data = await res.json();
+          if (isMounted && data.authenticated) {
+            setIsMember(true);
+            setMemberName(data.customer?.firstName || data.customer?.displayName || "");
+          }
+        }
+      } catch {
+        // Fallback
+      }
+    }
+    checkMember();
+    return () => {
+      isMounted = false;
+    };
+  }, []);
 
   async function onSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -75,7 +100,21 @@ export default function FooterNewsletter() {
         </div>
 
         <div className="w-full max-w-xl shrink-0">
-          {status === "success" ? (
+          {isMember ? (
+            <div className="flex items-center gap-3.5 rounded-full border border-[#D8BB7A]/60 bg-[#FFFDF8] px-6 py-3.5 shadow-sm dark:border-neutral-800 dark:bg-neutral-900">
+              <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-[#596522]/10 text-[#596522]">
+                <SparklesIcon className="h-4 w-4 text-[#C49A45]" />
+              </div>
+              <div>
+                <p className="text-sm font-semibold text-[#4D581E] dark:text-[#D8BB7A]">
+                  {memberName ? `${memberName}, you're part of the ritual` : "You're subscribed to the ritual"}
+                </p>
+                <p className="text-xs text-[#303515]/70 dark:text-neutral-400">
+                  Receiving VIP botanical skincare notes & exclusive member drops.
+                </p>
+              </div>
+            </div>
+          ) : status === "success" ? (
             <p
               className="rounded-full bg-[#596522] px-5 py-2.5 text-center text-sm font-medium text-white"
               role="status"

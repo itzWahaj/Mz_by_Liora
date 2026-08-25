@@ -30,6 +30,8 @@ export default function AccountClient({
 }) {
   const [activeTab, setActiveTab] = useState<"orders" | "wishlist" | "addresses" | "profile">("orders");
   const { wishlist } = useWishlist();
+  const [isSubscribed, setIsSubscribed] = useState(true);
+  const [isTogglingSub, setIsTogglingSub] = useState(false);
 
   const formattedAddressName = profile.defaultAddress
     ? [profile.defaultAddress.firstName, profile.defaultAddress.lastName].filter(Boolean).join(" ")
@@ -229,18 +231,70 @@ export default function AccountClient({
                         <h4 className="font-semibold text-sm text-[#303515]">
                           Email & Marketing Preferences
                         </h4>
-                        <span className="inline-flex items-center gap-1 rounded-full border border-emerald-300 bg-emerald-50 px-2.5 py-0.5 text-xs font-semibold text-emerald-800 dark:bg-emerald-950/60 dark:text-emerald-300">
-                          <CheckCircleIcon className="h-3.5 w-3.5" />
-                          Subscribed
+                        <span
+                          className={`inline-flex items-center gap-1 rounded-full border px-2.5 py-0.5 text-xs font-semibold ${
+                            isSubscribed
+                              ? "border-emerald-300 bg-emerald-50 text-emerald-800 dark:bg-emerald-950/60 dark:text-emerald-300"
+                              : "border-neutral-300 bg-neutral-100 text-neutral-600 dark:bg-neutral-800 dark:text-neutral-300"
+                          }`}
+                        >
+                          {isSubscribed ? (
+                            <>
+                              <CheckCircleIcon className="h-3.5 w-3.5" />
+                              Subscribed
+                            </>
+                          ) : (
+                            "Unsubscribed"
+                          )}
                         </span>
                       </div>
                       <p className="mt-1 text-xs text-[#303515]/75 dark:text-neutral-300 max-w-xl leading-relaxed">
-                        You are registered for MZ by LIORA botanical skincare notes, VIP restock alerts, and exclusive member promotions.
-                      </p>
-                      <p className="mt-2 text-[11px] text-[#303515]/50 dark:text-neutral-400">
-                        To unsubscribe, tap the opt-out link located at the footer of any marketing email sent to your inbox.
+                        {isSubscribed
+                          ? "You are registered for MZ by LIORA botanical skincare notes, VIP restock alerts, and exclusive member promotions."
+                          : "You are currently unsubscribed from marketing emails. You will still receive order confirmations and shipping updates."}
                       </p>
                     </div>
+                  </div>
+
+                  <div className="shrink-0 sm:self-center">
+                    <button
+                      type="button"
+                      disabled={isTogglingSub}
+                      onClick={async () => {
+                        if (isTogglingSub) return;
+                        setIsTogglingSub(true);
+                        try {
+                          if (isSubscribed) {
+                            await fetch("/api/unsubscribe", {
+                              method: "POST",
+                              headers: { "Content-Type": "application/json" },
+                              body: JSON.stringify({ email }),
+                            });
+                            setIsSubscribed(false);
+                          } else {
+                            await fetch("/api/subscribe", {
+                              method: "POST",
+                              headers: { "Content-Type": "application/json" },
+                              body: JSON.stringify({ email }),
+                            });
+                            setIsSubscribed(true);
+                          }
+                        } finally {
+                          setIsTogglingSub(false);
+                        }
+                      }}
+                      className={`rounded-full border px-4 py-2 text-xs font-semibold transition-all ${
+                        isSubscribed
+                          ? "border-[#D8BB7A]/60 bg-white text-[#303515] shadow-xs hover:border-red-300 hover:bg-red-50 hover:text-red-700"
+                          : "border-[#596522] bg-[#596522] text-white shadow-xs hover:bg-[#C49A45]"
+                      }`}
+                    >
+                      {isTogglingSub
+                        ? "Updating..."
+                        : isSubscribed
+                        ? "Unsubscribe"
+                        : "Re-subscribe"}
+                    </button>
                   </div>
                 </div>
               </div>
