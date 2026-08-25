@@ -11,19 +11,18 @@ export const COOKIE_EXPIRES_AT = "customer_token_expires_at";
 export const COOKIE_AUTH_STATE = "shopify_auth_state";
 export const COOKIE_AUTH_VERIFIER = "shopify_auth_verifier";
 export const COOKIE_AUTH_RETURN_TO = "shopify_auth_return_to";
+export const COOKIE_AUTH_REDIRECT_URI = "shopify_auth_redirect_uri";
 
 const DEFAULT_SCOPES = [
   "openid",
   "email",
   "customer-account-api:full",
-  "customer-account-api:orders",
-  "customer-account-api:addresses",
 ].join(" ");
 
-export function getCustomerAuthConfig() {
+export function getCustomerAuthConfig(origin?: string) {
   const shopId = process.env.SHOPIFY_CUSTOMER_ACCOUNT_SHOP_ID?.trim() || "";
   const clientId = process.env.SHOPIFY_CUSTOMER_ACCOUNT_CLIENT_ID?.trim() || "";
-  const siteUrl = getSiteUrl();
+  const siteUrl = origin || getSiteUrl();
   const redirectUri = `${siteUrl}/api/auth/callback`;
   const postLogoutRedirectUri = siteUrl;
 
@@ -43,12 +42,12 @@ export function getCustomerAuthConfig() {
  * Builds the Shopify Customer Account API hosted authorization URL.
  * Also stores state, verifier, and return path in temporary cookies.
  */
-export function buildAuthorizationUrl(returnTo = "/account"): {
+export function buildAuthorizationUrl(returnTo = "/account", origin?: string): {
   url: string;
   state: string;
   codeVerifier: string;
 } {
-  const config = getCustomerAuthConfig();
+  const config = getCustomerAuthConfig(origin);
   if (!config.isConfigured) {
     throw new Error(
       "Shopify Customer Account API is not configured. Please set SHOPIFY_CUSTOMER_ACCOUNT_SHOP_ID and SHOPIFY_CUSTOMER_ACCOUNT_CLIENT_ID."
@@ -84,6 +83,7 @@ export function buildAuthorizationUrl(returnTo = "/account"): {
   cookieStore.set(COOKIE_AUTH_STATE, state, tempCookieOptions);
   cookieStore.set(COOKIE_AUTH_VERIFIER, codeVerifier, tempCookieOptions);
   cookieStore.set(COOKIE_AUTH_RETURN_TO, returnTo, tempCookieOptions);
+  cookieStore.set(COOKIE_AUTH_REDIRECT_URI, config.redirectUri, tempCookieOptions);
 
   return {
     url: authUrl.toString(),
@@ -97,15 +97,19 @@ export function buildAuthorizationUrl(returnTo = "/account"): {
  */
 export async function exchangeCodeForTokens(
   code: string,
-  codeVerifier: string
+  codeVerifier: string,
+  redirectUriOverride?: string
 ): Promise<CustomerTokens> {
+  const cookieStore = cookies();
+  const savedRedirectUri = cookieStore.get(COOKIE_AUTH_REDIRECT_URI)?.value;
   const config = getCustomerAuthConfig();
+  const redirectUri = redirectUriOverride || savedRedirectUri || config.redirectUri;
   const tokenEndpoint = `https://shopify.com/${config.shopId}/auth/oauth/token`;
 
   const body = new URLSearchParams({
     grant_type: "authorization_code",
     client_id: config.clientId,
-    redirect_uri: config.redirectUri,
+    redirect_uri: redirectUri,
     code,
     code_verifier: codeVerifier,
   });

@@ -18,7 +18,7 @@ export async function GET(request: NextRequest) {
   const error = searchParams.get("error");
   const errorDescription = searchParams.get("error_description");
 
-  const siteUrl = getSiteUrl();
+  const origin = request.nextUrl.origin || getSiteUrl();
 
   if (error) {
     console.error("Shopify OAuth callback error:", error, errorDescription);
@@ -27,14 +27,14 @@ export async function GET(request: NextRequest) {
         `/account/login?error=${encodeURIComponent(error)}&error_description=${encodeURIComponent(
           errorDescription || ""
         )}`,
-        siteUrl
+        origin
       )
     );
   }
 
   if (!code || !state) {
     return NextResponse.redirect(
-      new URL("/account/login?error=missing_code_or_state", siteUrl)
+      new URL("/account/login?error=missing_code_or_state", origin)
     );
   }
 
@@ -47,14 +47,14 @@ export async function GET(request: NextRequest) {
   if (!savedState || savedState !== state) {
     console.error("OAuth state mismatch in callback (CSRF check failed).");
     return NextResponse.redirect(
-      new URL("/account/login?error=state_mismatch", siteUrl)
+      new URL("/account/login?error=state_mismatch", origin)
     );
   }
 
   if (!savedVerifier) {
     console.error("Missing PKCE code verifier in cookies.");
     return NextResponse.redirect(
-      new URL("/account/login?error=missing_verifier", siteUrl)
+      new URL("/account/login?error=missing_verifier", origin)
     );
   }
 
@@ -64,11 +64,11 @@ export async function GET(request: NextRequest) {
 
     // Clean destination redirect
     const destination = returnTo.startsWith("/") ? returnTo : "/account";
-    return NextResponse.redirect(new URL(destination, siteUrl));
+    return NextResponse.redirect(new URL(destination, origin));
   } catch (err) {
     console.error("Failed to exchange authorization code for tokens:", err);
     return NextResponse.redirect(
-      new URL("/account/login?error=token_exchange_failed", siteUrl)
+      new URL("/account/login?error=token_exchange_failed", origin)
     );
   }
 }

@@ -8,22 +8,21 @@ export async function GET(request: NextRequest) {
   const searchParams = request.nextUrl.searchParams;
   const returnTo = searchParams.get("returnTo") || "/account";
 
-  const config = getCustomerAuthConfig();
+  const origin = request.nextUrl.origin || getSiteUrl();
+  const config = getCustomerAuthConfig(origin);
   if (!config.isConfigured) {
-    const siteUrl = getSiteUrl();
     return NextResponse.redirect(
-      new URL("/account/login?error=not_configured", siteUrl)
+      new URL("/account/login?error=not_configured", origin)
     );
   }
 
   try {
-    const { url } = buildAuthorizationUrl(returnTo);
+    const { url } = buildAuthorizationUrl(returnTo, origin);
     return NextResponse.redirect(url);
   } catch (error) {
     console.error("Failed to initiate Shopify OAuth login:", error);
-    const siteUrl = getSiteUrl();
     return NextResponse.redirect(
-      new URL("/account/login?error=auth_init_failed", siteUrl)
+      new URL("/account/login?error=auth_init_failed", origin)
     );
   }
 }
