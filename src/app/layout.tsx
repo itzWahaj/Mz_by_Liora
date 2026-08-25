@@ -120,6 +120,48 @@ export default async function RootLayout({
     },
   };
 
+  const siteNavigationJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "ItemList",
+    itemListElement: [
+      {
+        "@type": "SiteNavigationElement",
+        position: 1,
+        name: "Shop All Products",
+        description: "Browse botanical skincare, hair oils, soaps, and radiant care rituals",
+        url: `${siteUrl}/search`,
+      },
+      {
+        "@type": "SiteNavigationElement",
+        position: 2,
+        name: "Best Sellers",
+        description: "Explore our most-loved and top-rated botanical skincare products",
+        url: `${siteUrl}/collections/best-sellers`,
+      },
+      {
+        "@type": "SiteNavigationElement",
+        position: 3,
+        name: "Customer Reviews",
+        description: "Read verified reviews and real customer experiences",
+        url: `${siteUrl}/reviews`,
+      },
+      {
+        "@type": "SiteNavigationElement",
+        position: 4,
+        name: "Our Story",
+        description: "Discover the pure botanical philosophy behind MZ by LIORA",
+        url: `${siteUrl}/our-story`,
+      },
+      {
+        "@type": "SiteNavigationElement",
+        position: 5,
+        name: "Contact Us",
+        description: "Reach out to our customer care and product consultation team",
+        url: `${siteUrl}/contact`,
+      },
+    ],
+  };
+
   return (
     <html lang="en" suppressHydrationWarning>
       <head>
@@ -134,6 +176,12 @@ export default async function RootLayout({
           type="application/ld+json"
           dangerouslySetInnerHTML={{
             __html: JSON.stringify(websiteJsonLd),
+          }}
+        />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify(siteNavigationJsonLd),
           }}
         />
       </head>
