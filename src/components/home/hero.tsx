@@ -121,17 +121,17 @@ export default function HomeHero({
       <div
         ref={blobARef}
         aria-hidden="true"
-        className="pointer-events-none absolute -left-24 top-8 h-72 w-72 transform-gpu will-change-transform rounded-full bg-[#596522]/15 blur-3xl dark:bg-[#596522]/20"
+        className="pointer-events-none absolute -left-24 top-8 hidden sm:block h-72 w-72 transform-gpu will-change-transform rounded-full bg-[#596522]/15 blur-3xl dark:bg-[#596522]/20"
       />
       <div
         ref={blobBRef}
         aria-hidden="true"
-        className="pointer-events-none absolute -right-16 top-24 h-80 w-80 transform-gpu will-change-transform rounded-full bg-[#D8BB7A]/25 blur-3xl dark:bg-[#D8BB7A]/15"
+        className="pointer-events-none absolute -right-16 top-24 hidden sm:block h-80 w-80 transform-gpu will-change-transform rounded-full bg-[#D8BB7A]/25 blur-3xl dark:bg-[#D8BB7A]/15"
       />
       <div
         ref={blobCRef}
         aria-hidden="true"
-        className="pointer-events-none absolute bottom-0 left-1/3 h-64 w-64 transform-gpu will-change-transform rounded-full bg-[#C49A45]/15 blur-3xl dark:bg-[#C49A45]/20"
+        className="pointer-events-none absolute bottom-0 left-1/3 hidden sm:block h-64 w-64 transform-gpu will-change-transform rounded-full bg-[#C49A45]/15 blur-3xl dark:bg-[#C49A45]/20"
       />
       <div
         aria-hidden="true"
@@ -181,7 +181,7 @@ export default function HomeHero({
               <Link
                 href="/search"
                 prefetch={true}
-                className="group relative inline-flex h-12 items-center justify-center gap-2 rounded-full bg-[#596522] px-7 text-sm font-semibold text-white shadow-[0_8px_24px_rgba(89,101,34,0.3)] transition-all duration-300 hover:bg-[#C49A45] hover:scale-[1.02] hover:shadow-[0_12px_32px_rgba(196,154,69,0.45)] active:scale-[0.98]"
+                className="group relative inline-flex h-12 items-center justify-center gap-2 rounded-full bg-[#596522] px-7 text-sm font-semibold text-white shadow-[0_8px_24px_rgba(89,101,34,0.3)] transition-all duration-300 hover:bg-[#C49A45] sm:hover:scale-[1.02] hover:shadow-[0_12px_32px_rgba(196,154,69,0.45)] active:scale-[0.98]"
               >
                 <span>Shop All Products</span>
                 <ArrowRightIcon className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" />
@@ -273,7 +273,7 @@ export default function HomeHero({
           >
             <div
               aria-hidden="true"
-              className="absolute inset-6 rounded-full bg-brand-gradient opacity-20 blur-3xl dark:opacity-30"
+              className="absolute inset-6 hidden sm:block rounded-full bg-brand-gradient opacity-20 blur-3xl dark:opacity-30"
             />
             <div className="relative aspect-[4/5] w-full max-w-[420px] overflow-hidden rounded-[1.75rem] border border-[#D8BB7A]/60 shadow-[0_30px_80px_rgba(89,101,34,0.16)] dark:border-[#D8BB7A]/20">
               {image?.url ? (

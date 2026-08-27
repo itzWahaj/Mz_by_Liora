@@ -57,10 +57,10 @@ export default function AccountButton() {
       >
         <UserIcon className="h-5 w-5 transition-transform duration-300 group-hover:scale-110" />
 
-        {/* Logged in indicator dot */}
+        {/* Logged in indicator dot — static on mobile, pulsing on desktop */}
         {isAuthenticated && (
           <span className="absolute right-1 top-1 flex h-2.5 w-2.5">
-            <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75" />
+            <span className="absolute hidden sm:inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75" />
             <span className="relative inline-flex h-2.5 w-2.5 rounded-full border border-white bg-emerald-500" />
           </span>
         )}

@@ -15,7 +15,8 @@ import {
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
+import clsx from "clsx";
 import MobileMenu from "./mobile-menu";
 import Search from "./search";
 import ThemeToggle from "./theme-toggle";
@@ -224,6 +225,20 @@ export default function NavbarClient({
   siteName: string;
 }) {
   const { theme } = useTheme();
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const updateIsMobile = () => {
+      setIsMobile(
+        window.innerWidth < 1024 ||
+        window.matchMedia("(pointer: coarse)").matches
+      );
+    };
+    updateIsMobile();
+    window.addEventListener("resize", updateIsMobile, { passive: true });
+    return () => window.removeEventListener("resize", updateIsMobile);
+  }, []);
+
   const { scrollY } = useScroll();
   const range = [SCROLL_START, SCROLL_END];
 
@@ -254,19 +269,27 @@ export default function NavbarClient({
 
   return (
     <motion.nav
-      style={{
-        height,
-        borderColor,
-        backgroundColor,
-        boxShadow,
-        backdropFilter,
-        // Safari
-        WebkitBackdropFilter: backdropFilter,
-      }}
-      className="sticky top-0 z-[100] overflow-visible border-b will-change-[height,backdrop-filter]"
+      style={
+        isMobile
+          ? undefined
+          : {
+              height,
+              borderColor,
+              backgroundColor,
+              boxShadow,
+              backdropFilter,
+              WebkitBackdropFilter: backdropFilter,
+            }
+      }
+      className={clsx(
+        "sticky top-0 z-[100] overflow-visible border-b border-[#D8BB7A]/40",
+        isMobile
+          ? "h-16 bg-[#FAF9F4]/95 dark:bg-black/95 backdrop-blur-md shadow-xs"
+          : "will-change-[height,backdrop-filter]"
+      )}
     >
       <motion.div
-        style={{ paddingTop: paddingY, paddingBottom: paddingY }}
+        style={isMobile ? undefined : { paddingTop: paddingY, paddingBottom: paddingY }}
         className="relative z-10 mx-auto flex h-full max-w-screen-2xl items-center justify-between gap-2 overflow-visible px-3 sm:px-4 lg:gap-4 lg:px-6"
       >
         {/* Mobile Menu Trigger (< lg) */}
@@ -276,7 +299,7 @@ export default function NavbarClient({
 
         {/* Left: Brand Logo & Desktop Navigation */}
         <div className="flex min-w-0 items-center gap-6 xl:gap-8">
-          <motion.div style={{ scale: logoScale }} className="origin-left shrink-0">
+          <motion.div style={isMobile ? undefined : { scale: logoScale }} className="origin-left shrink-0">
             <motion.div
               whileHover={{ scale: 1.03 }}
               whileTap={{ scale: 0.98 }}

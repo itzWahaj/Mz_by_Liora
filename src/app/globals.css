@@ -9,6 +9,8 @@
     scrollbar-color: #596522 #FAF9F4;
     -webkit-overflow-scrolling: touch;
     touch-action: manipulation;
+    /* Prevent font-size adjustment on orientation change */
+    -webkit-text-size-adjust: 100%;
   }
 
   body {
@@ -209,5 +211,59 @@ select {
   }
   to {
     background-position: -200% 0;
+  }
+}
+
+/* ─── Mobile-Only Performance Optimizations (< 768px) ─────────────────────── */
+/* These rules ONLY apply on mobile / touch screens.                            */
+/* Desktop experience is completely unchanged.                                  */
+@media (max-width: 767px) {
+  /* 1. Disable hover transitions on touch — they fire on tap and cause
+        a brief stutter before navigation / action fires */
+  .transition-brand {
+    transition-duration: 0.15ms !important;
+  }
+
+  /* 2. Remove expensive box-shadows from cards on mobile GPU */
+  .group:hover .group-hover\:shadow-\[0_12px_28px_rgba\(89\,101\,34\,0\.1\)\] {
+    box-shadow: none !important;
+  }
+
+  /* 3. Prevent card lift transform (hover:-translate-y-1) on touch */
+  .hover\:-translate-y-1:hover {
+    transform: none !important;
+  }
+
+  /* 4. Reduce heavy image hover scale on product cards */
+  .group-hover\:scale-105 {
+    transform: none !important;
+  }
+
+  /* 5. Hide custom scrollbar on mobile — let OS render native */
+  *::-webkit-scrollbar {
+    display: none;
+    width: 0;
+    height: 0;
+  }
+  * {
+    scrollbar-width: none;
+  }
+
+  /* 6. Prevent content-visibility auto from causing scroll jank */
+  .skeleton-shimmer {
+    animation: none !important;
+  }
+}
+
+/* Touch devices (pointer: coarse) — same rules for tablets in portrait */
+@media (pointer: coarse) {
+  /* Disable expensive hover scale on buttons — finger can't hover */
+  button:hover, a:hover {
+    transform: none !important;
+  }
+
+  /* Improve tap target feedback speed */
+  button, a {
+    -webkit-tap-highlight-color: transparent;
   }
 }
