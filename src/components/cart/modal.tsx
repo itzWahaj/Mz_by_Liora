@@ -13,14 +13,14 @@ import GradientButton from "@/components/ui/gradient-button";
 import LogoSquare from "@/components/logo-square";
 import Price from "../price";
 import LoadingDots from "../loading-dots";
-import { createCartAndSetCookie, redirectToCheckout } from "./actions";
+import { createCartAndSetCookie, redirectToCheckout, validateDiscountCode } from "./actions";
 import { useCart } from "./cart-context";
 import { trackMetaEvent } from "@/lib/meta/pixel";
 import CloseCart from "./close-cart";
 import { DeleteItemButton } from "./delete-item-button";
 import { EditItemQuantityButton } from "./edit-item-quantity-button";
 import OpenCart from "./open-cart";
-import { TagIcon, TruckIcon, CheckCircleIcon } from "@heroicons/react/24/outline";
+import { TagIcon, TruckIcon, CheckCircleIcon, XMarkIcon, TicketIcon } from "@heroicons/react/24/outline";
 
 type MerchandiseSearchParams = {
   [key: string]: string;
@@ -33,6 +33,28 @@ export default function CartModal() {
   const reduceMotion = Boolean(useReducedMotion());
   const openCart = () => setIsOpen(true);
   const closeCart = () => setIsOpen(false);
+
+  // Coupon code state
+  const [couponInput, setCouponInput] = useState("");
+  const [appliedCoupon, setAppliedCoupon] = useState("");
+  const [couponOpen, setCouponOpen] = useState(false);
+  const [couponError, setCouponError] = useState("");
+  const [couponLoading, setCouponLoading] = useState(false);
+
+  async function handleApplyCoupon() {
+    const code = couponInput.trim();
+    if (!code) return;
+    setCouponLoading(true);
+    setCouponError("");
+    const result = await validateDiscountCode(code);
+    setCouponLoading(false);
+    if (result.valid) {
+      setAppliedCoupon(code.toUpperCase());
+      setCouponOpen(false);
+    } else {
+      setCouponError(result.message || "Invalid promo code.");
+    }
+  }
 
   useEffect(() => {
     setMounted(true);
@@ -54,6 +76,13 @@ export default function CartModal() {
   }, []);
 
   const currencyCode = cart?.cost?.totalAmount?.currencyCode || "PKR";
+
+  // Free shipping threshold (Rs 500)
+  const FREE_SHIPPING_THRESHOLD = 500;
+  const cartTotal = Number(cart?.cost?.totalAmount?.amount || 0);
+  const shippingEligible = cartTotal >= FREE_SHIPPING_THRESHOLD;
+  const amountLeft = Math.max(0, FREE_SHIPPING_THRESHOLD - cartTotal);
+  const shippingProgress = Math.min(100, Math.round((cartTotal / FREE_SHIPPING_THRESHOLD) * 100));
 
   // Calculate original subtotal & savings
   const originalSubtotal = (cart?.lines || []).reduce((acc, item) => {
@@ -131,27 +160,64 @@ export default function CartModal() {
                 </div>
               ) : (
                 <div className="flex min-h-0 flex-1 flex-col pt-2">
-                  {/* Free Delivery Nationwide Highlight Bar */}
-                  <div className="mx-2 mb-2 flex items-center justify-between gap-3 rounded-2xl border border-[#D8BB7A]/60 bg-[#FAF9F4] p-3 text-xs shadow-xs dark:border-neutral-800 dark:bg-neutral-900/80">
-                    <div className="flex items-center gap-2.5">
-                      <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-[#596522] text-white shadow-xs">
-                        <TruckIcon className="h-4 w-4" />
-                      </span>
+                  {/* Free Shipping Progress Bar */}
+                  <div className="mx-2 mb-1.5 overflow-hidden rounded-xl border border-[#D8BB7A]/60 bg-[#FAF9F4] px-3 py-2 text-xs shadow-xs dark:border-neutral-800 dark:bg-neutral-900/80">
+                    {shippingEligible ? (
+                      /* Unlocked state */
+                      <div className="flex items-center justify-between gap-2">
+                        <div className="flex items-center gap-2">
+                          <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-[#596522] text-white shadow-xs">
+                            <TruckIcon className="h-3.5 w-3.5" />
+                          </span>
+                          <div>
+                            <p className="font-bold text-[#4D581E] dark:text-[#D8BB7A]">Free Shipping Unlocked! 🎉</p>
+                            <p className="text-[10px] text-[#303515]/65 dark:text-neutral-400">No delivery charges across Pakistan.</p>
+                          </div>
+                        </div>
+                        <span className="rounded-full bg-[#596522] px-2 py-0.5 text-[9px] font-bold uppercase tracking-wider text-white shadow-xs">
+                          FREE
+                        </span>
+                      </div>
+                    ) : (
+                      /* Progress state */
                       <div>
-                        <p className="font-bold text-[#4D581E] dark:text-[#D8BB7A]">
-                          Free Shipping Unlocked!
-                        </p>
-                        <p className="text-[11px] text-[#303515]/75 dark:text-neutral-400">
-                          No separate delivery charges across Pakistan.
+                        <div className="mb-1.5 flex items-center justify-between">
+                          <div className="flex items-center gap-1.5">
+                            <TruckIcon className="h-3.5 w-3.5 text-[#596522] dark:text-[#D8BB7A]" />
+                            <span className="font-medium text-[#303515] dark:text-neutral-200">
+                              Add{" "}
+                              <span className="font-bold text-[#596522] dark:text-[#D8BB7A]">
+                                Rs {amountLeft.toLocaleString()}
+                              </span>{" "}
+                              more for free shipping
+                            </span>
+                          </div>
+                          <span className="text-[10px] font-semibold text-[#303515]/60 dark:text-neutral-400">
+                            {shippingProgress}%
+                          </span>
+                        </div>
+                        {/* Progress track */}
+                        <div className="relative h-1.5 overflow-hidden rounded-full bg-[#D8BB7A]/30 dark:bg-neutral-700">
+                          <div
+                            className="h-full rounded-full bg-gradient-to-r from-[#596522] to-[#C49A45] transition-all duration-500 ease-out"
+                            style={{ width: `${shippingProgress}%` }}
+                          />
+                          {/* Glowing tip */}
+                          {shippingProgress > 5 && (
+                            <div
+                              className="absolute top-1/2 h-3 w-3 -translate-y-1/2 rounded-full bg-[#C49A45] shadow-[0_0_6px_rgba(196,154,69,0.8)] ring-2 ring-white dark:ring-neutral-900 transition-all duration-500"
+                              style={{ left: `calc(${shippingProgress}% - 6px)` }}
+                            />
+                          )}
+                        </div>
+                        <p className="mt-1 text-[10px] text-[#303515]/50 dark:text-neutral-500">
+                          Free shipping on orders over Rs {FREE_SHIPPING_THRESHOLD.toLocaleString()}
                         </p>
                       </div>
-                    </div>
-                    <span className="rounded-full bg-[#596522] px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider text-white shadow-xs">
-                      FREE
-                    </span>
+                    )}
                   </div>
 
-                  <ul className="min-h-0 flex-1 overflow-y-auto overscroll-contain py-2 pr-1">
+                  <ul className="min-h-0 flex-1 overflow-y-auto overscroll-contain py-1 pr-1">
                     <AnimatePresence initial={false}>
                       {cart.lines
                         .sort((a, b) =>
@@ -312,69 +378,142 @@ export default function CartModal() {
                   </ul>
 
                   {/* Pricing Breakdown & Checkout */}
-                  <div className="shrink-0 border-t border-[#D8BB7A]/40 bg-[#FFFDF8]/90 p-4 text-sm dark:border-neutral-800 dark:bg-neutral-900/40">
-                    {/* Subtotal */}
-                    <div className="mb-2 flex items-center justify-between">
-                      <p className="text-[#303515]/75 dark:text-neutral-400">Subtotal</p>
-                      <Price
-                        className="text-right font-semibold text-[#303515] dark:text-white"
-                        amount={String(originalSubtotal > 0 ? originalSubtotal : cart.cost.subtotalAmount.amount)}
-                        currencyCode={currencyCode}
-                      />
-                    </div>
+                  <div className="shrink-0 border-t border-[#D8BB7A]/40 bg-[#FFFDF8]/90 px-3 py-2.5 text-sm dark:border-neutral-800 dark:bg-neutral-900/40">
+                    {/* Compact summary row */}
+                    <div className="flex flex-col gap-0.5">
 
-                    {/* Total Savings / Discount */}
-                    {totalSavings > 0 && (
-                      <div className="mb-2 flex items-center justify-between text-[#596522] dark:text-[#D8BB7A]">
-                        <div className="flex items-center gap-1.5">
-                          <TagIcon className="h-3.5 w-3.5 shrink-0" />
-                          <span className="font-medium">Total Savings</span>
-                          {totalSavingsPercent > 0 && (
-                            <span className="rounded-full bg-[#596522]/15 px-2 py-0.5 text-[10px] font-bold text-[#596522] dark:bg-[#C49A45]/20 dark:text-[#D8BB7A]">
-                              {totalSavingsPercent}% OFF
-                            </span>
-                          )}
+                      {/* Subtotal */}
+                      <div className="flex items-center justify-between py-0.5">
+                        <p className="text-xs text-[#303515]/65 dark:text-neutral-400">Subtotal</p>
+                        <Price
+                          className="text-right text-xs font-semibold text-[#303515] dark:text-white"
+                          amount={String(originalSubtotal > 0 ? originalSubtotal : cart.cost.subtotalAmount.amount)}
+                          currencyCode={currencyCode}
+                        />
+                      </div>
+
+                      {/* Total Savings / Discount */}
+                      {totalSavings > 0 && (
+                        <div className="flex items-center justify-between py-0.5 text-[#596522] dark:text-[#D8BB7A]">
+                          <div className="flex items-center gap-1">
+                            <TagIcon className="h-3 w-3 shrink-0" />
+                            <span className="text-xs font-medium">Savings</span>
+                            {totalSavingsPercent > 0 && (
+                              <span className="rounded-full bg-[#596522]/15 px-1.5 py-0 text-[9px] font-bold text-[#596522] dark:bg-[#C49A45]/20 dark:text-[#D8BB7A]">
+                                {totalSavingsPercent}% OFF
+                              </span>
+                            )}
+                          </div>
+                          <span className="text-xs font-semibold">
+                            - <Price amount={String(totalSavings)} currencyCode={currencyCode} />
+                          </span>
                         </div>
-                        <span className="font-semibold">
-                          - <Price amount={String(totalSavings)} currencyCode={currencyCode} />
-                        </span>
-                      </div>
-                    )}
+                      )}
 
-                    {/* Shipping */}
-                    <div className="mb-3 flex items-center justify-between">
-                      <div className="flex items-center gap-1.5 text-xs text-[#303515]/80 dark:text-neutral-300">
-                        <TruckIcon className="h-4 w-4 text-[#596522] dark:text-[#D8BB7A]" />
-                        <span className="font-medium">Shipping & Delivery</span>
-                      </div>
-                      <div className="text-right">
-                        <span className="font-bold text-[#596522] dark:text-[#D8BB7A]">
-                          FREE
-                        </span>
-                        <span className="block text-[10px] text-[#303515]/60 dark:text-neutral-400">
-                          No delivery charges
-                        </span>
+                      {/* Shipping — compact inline */}
+                      {/* Shipping row — reflects actual eligibility */}
+                      <div className="flex items-center justify-between py-0.5">
+                        <div className="flex items-center gap-1 text-xs text-[#303515]/65 dark:text-neutral-400">
+                          <TruckIcon className="h-3 w-3 text-[#596522] dark:text-[#D8BB7A]" />
+                          <span>Shipping</span>
+                        </div>
+                        {shippingEligible ? (
+                          <span className="text-xs font-bold text-[#596522] dark:text-[#D8BB7A]">FREE</span>
+                        ) : (
+                          <span className="text-xs text-[#303515]/65 dark:text-neutral-400">Calculated at checkout</span>
+                        )}
                       </div>
                     </div>
 
                     {/* Total */}
-                    <div className="mb-4 flex items-center justify-between border-t border-[#D8BB7A]/40 pt-3 dark:border-neutral-800">
+                    <div className="mt-2 flex items-center justify-between border-t border-[#D8BB7A]/40 pt-2 dark:border-neutral-800">
                       <div>
-                        <p className="text-base font-bold text-[#4D581E] dark:text-white">
-                          Total
-                        </p>
-                        <p className="text-[11px] text-[#303515]/60 dark:text-neutral-400">
-                          Inclusive of all applicable taxes
-                        </p>
+                        <p className="text-sm font-bold text-[#4D581E] dark:text-white">Total</p>
+                        <p className="text-[10px] text-[#303515]/55 dark:text-neutral-400">Inclusive of all taxes</p>
                       </div>
                       <Price
-                        className="text-right text-xl font-bold text-[#4D581E] dark:text-white"
+                        className="text-right text-lg font-bold text-[#4D581E] dark:text-white"
                         amount={cart.cost.totalAmount.amount}
                         currencyCode={currencyCode}
                       />
                     </div>
 
                     {/* Checkout CTA */}
+                    {/* Coupon / Promo Code */}
+                    <div className="mb-2">
+                      {appliedCoupon ? (
+                        <div className="flex items-center justify-between rounded-lg border border-[#596522]/40 bg-[#596522]/8 px-2.5 py-1.5">
+                          <div className="flex items-center gap-1.5">
+                            <TicketIcon className="h-3.5 w-3.5 text-[#596522] dark:text-[#D8BB7A]" />
+                            <span className="text-xs font-semibold text-[#596522] dark:text-[#D8BB7A]">
+                              {appliedCoupon}
+                            </span>
+                            <span className="text-[10px] text-[#596522]/70 dark:text-[#D8BB7A]/70">applied at checkout</span>
+                          </div>
+                          <button
+                            type="button"
+                            onClick={() => { setAppliedCoupon(""); setCouponInput(""); setCouponOpen(false); }}
+                            className="ml-1 rounded-full p-0.5 text-[#596522]/70 hover:bg-[#596522]/15 hover:text-[#596522] dark:text-[#D8BB7A]/60"
+                            aria-label="Remove coupon"
+                          >
+                            <XMarkIcon className="h-3 w-3" />
+                          </button>
+                        </div>
+                      ) : couponOpen ? (
+                        <div className="flex items-center gap-1.5">
+                          <input
+                            type="text"
+                            value={couponInput}
+                            onChange={(e) => { setCouponInput(e.target.value.toUpperCase()); setCouponError(""); }}
+                            onKeyDown={(e) => {
+                              if (e.key === "Enter" && couponInput.trim() && !couponLoading) {
+                                handleApplyCoupon();
+                              }
+                            }}
+                            placeholder="Enter promo code"
+                            className="h-8 flex-1 rounded-lg border border-[#D8BB7A]/60 bg-white px-2.5 text-xs font-medium uppercase tracking-wider text-[#303515] placeholder:normal-case placeholder:tracking-normal placeholder:text-neutral-400 focus:border-[#596522] focus:outline-none dark:border-neutral-700 dark:bg-neutral-900 dark:text-white"
+                            autoFocus
+                          />
+                          <button
+                            type="button"
+                            disabled={!couponInput.trim() || couponLoading}
+                            onClick={handleApplyCoupon}
+                            className="h-8 rounded-lg bg-[#596522] px-3 text-xs font-semibold text-white disabled:opacity-40 hover:bg-[#C49A45] transition-colors flex items-center gap-1.5"
+                          >
+                            {couponLoading ? (
+                              <>
+                                <svg className="h-3 w-3 animate-spin" viewBox="0 0 24 24" fill="none">
+                                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z" />
+                                </svg>
+                                <span>Checking…</span>
+                              </>
+                            ) : "Apply"}
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => { setCouponOpen(false); setCouponInput(""); setCouponError(""); }}
+                            className="flex h-8 w-8 items-center justify-center rounded-lg border border-neutral-200 text-neutral-400 hover:border-neutral-300 dark:border-neutral-700"
+                            aria-label="Cancel"
+                          >
+                            <XMarkIcon className="h-3.5 w-3.5" />
+                          </button>
+                        </div>
+                      ) : (
+                        <button
+                          type="button"
+                          onClick={() => setCouponOpen(true)}
+                          className="flex w-full items-center gap-1.5 rounded-lg border border-dashed border-[#D8BB7A]/70 px-2.5 py-1.5 text-xs font-medium text-[#596522] transition-colors hover:border-[#596522] hover:bg-[#596522]/5 dark:border-neutral-700 dark:text-[#D8BB7A] dark:hover:border-[#D8BB7A]/60"
+                        >
+                          <TicketIcon className="h-3.5 w-3.5" />
+                          <span>Have a promo code?</span>
+                        </button>
+                      )}
+                      {couponError && (
+                        <p className="mt-1 text-[10px] text-red-500">{couponError}</p>
+                      )}
+                    </div>
+
                     <form
                       action={async () => {
                         if (cart) {
@@ -411,13 +550,15 @@ export default function CartModal() {
                             },
                           });
                         }
-                        await redirectToCheckout();
+                        await redirectToCheckout(appliedCoupon || undefined);
                       }}
-                      className="shrink-0"
+                      className="mt-2.5 shrink-0"
                     >
+
                       <CheckoutButton />
                     </form>
                   </div>
+
                 </div>
               )}
         </aside>

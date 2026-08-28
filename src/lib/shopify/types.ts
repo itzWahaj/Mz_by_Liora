@@ -341,3 +341,30 @@ export type ShopifyShopPoliciesOperation = {
     };
   };
 };
+
+export type ShopifyDiscountCodesUpdateOperation = {
+  data: {
+    cartDiscountCodesUpdate: {
+      cart: {
+        id: string;
+        discountCodes: {
+          code: string;
+          applicable: boolean;
+        }[];
+        cost: {
+          totalAmount: Money;
+          subtotalAmount: Money;
+        };
+      } | null;
+      userErrors: {
+        field: string[];
+        message: string;
+        code: string;
+      }[];
+    };
+  };
+  variables: {
+    cartId: string;
+    discountCodes: string[];
+  };
+};

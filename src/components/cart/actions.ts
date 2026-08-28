@@ -7,7 +7,10 @@ import {
   getCart,
   removeFromCart,
   updateCart,
+  shopifyFetch,
 } from "@/lib/shopify";
+import { applyDiscountCodeMutation } from "@/lib/shopify/mutations/cart";
+import { ShopifyDiscountCodesUpdateOperation } from "@/lib/shopify/types";
 import { revalidateTag } from "next/cache";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
@@ -117,7 +120,7 @@ export async function removeItem(prevState: any, merchandiseId: string) {
   }
 }
 
-export async function redirectToCheckout() {
+export async function redirectToCheckout(discountCode?: string) {
   let cartId = cookies().get("cartId")?.value;
 
   if (!cartId) {
@@ -130,7 +133,16 @@ export async function redirectToCheckout() {
     return "Error fetching cart";
   }
 
-  redirect(cart.checkoutUrl);
+  let checkoutUrl = cart.checkoutUrl;
+
+  // Append discount code to the checkout URL if provided
+  if (discountCode && discountCode.trim()) {
+    const url = new URL(checkoutUrl);
+    url.searchParams.set("discount", discountCode.trim().toUpperCase());
+    checkoutUrl = url.toString();
+  }
+
+  redirect(checkoutUrl);
 }
 
 export async function createCartAndSetCookie() {
@@ -144,4 +156,49 @@ export async function createCartAndSetCookie() {
   }
 
   cookies().set("cartId", cart.id);
+}
+
+/**
+ * Validates a discount code against the current cart using Shopify's
+ * cartDiscountCodesUpdate mutation. Returns { valid: true } if applicable,
+ * or { valid: false, message } if not.
+ */
+export async function validateDiscountCode(
+  code: string
+): Promise<{ valid: boolean; message?: string }> {
+  const cartId = cookies().get("cartId")?.value;
+
+  if (!cartId) {
+    return { valid: false, message: "No active cart found." };
+  }
+
+  if (!code.trim()) {
+    return { valid: false, message: "Please enter a promo code." };
+  }
+
+  try {
+    const res = await shopifyFetch<ShopifyDiscountCodesUpdateOperation>({
+      query: applyDiscountCodeMutation,
+      variables: { cartId, discountCodes: [code.trim().toUpperCase()] },
+      cache: "no-store",
+    });
+
+    const result = res.body.data?.cartDiscountCodesUpdate;
+
+    // Check for API-level user errors
+    if (result?.userErrors?.length) {
+      return { valid: false, message: result.userErrors[0]?.message || "Invalid code." };
+    }
+
+    // Check if the code was recognised but not applicable
+    const discountCode = result?.cart?.discountCodes?.[0];
+    if (!discountCode || !discountCode.applicable) {
+      return { valid: false, message: "This code is invalid or has expired." };
+    }
+
+    return { valid: true };
+  } catch (err) {
+    console.error("[validateDiscountCode]:", err);
+    return { valid: false, message: "Could not validate code. Try again." };
+  }
 }
